@@ -1,0 +1,35 @@
+DOCUMENTATION:
+
+Latest version is online at www.hilandtom.com/tombotterill/code
+
+Look at the following examples to see how to use:
+ransacTest/example.cpp -- RANSAC/BaySAC/Essential matrix and homography functions
+bowExample/bowExample.cpp -- Bag-of-Words 
+
+These depend on several libraries. boost, opencv and Eigen are also required.
+
+LIBRARIES:
+
+util: functions and datstructures used by all other libraries. Includes Exception class widely thrown when consistency checks fail (normally indicating programmer error). Defining _DEBUG symbol increases number of consistency checks (some speed penalty).
+
+params: used in parameter classes used by all other libraries
+
+timer: used to time some methods
+
+image: access pixels, convert colours in OpenCV IplImages
+
+ransac: Use RANSAC, BaySAC, SimSAC, PROSAC, Guided-MLESAC (sampler) for robust essential matrix and homography estimation. Also included simple E refinement code.
+Use getE and getH in geom.h.
+Requires:util, params
+
+featureExtract: Extract Shi-tomasi corners, Harris, FAST. Mostly wraps other classes (cvGoodFeaturesToTrack), includes faster versions of some OpenCV functions (Shi-Tomasi and subpixel refinement).
+
+featureDescription: Sample patches around corners as descriptors. Also supports SURF descriptors. There are some minor known-issues with this code which will be fixed soon, the simple patch descriptors with no normalisation appear to work though. Code for clustering (CLARA k-medoids) is found here.
+
+cameraGeom: C2dPoint, C3dPoint and C3dRotation (quaternion) classes. Includes 3d reconstruction, homography decomposition, camera matrix disambiguation, calibration, projection, etc.
+
+imageSource: Load all the images in a directory and access sequentially (alphabetically) by index. Will support images from cameras/video files in the future.
+
+bagOfWords: Bag-of-Words image database. Add descriptor sets, train periodically (or once), return most similar images to a query image. Also computes fast correspondences, ideal for BaySAC.
+Requires: util, params, featureDescription, image
+

@@ -1,0 +1,88 @@
+Guide to building and use BoWSLAM (for mosaicing, see mosaicing/README)
+
+IMPORTANT NOTE: BoWSLAM is "experimental" and is under active development. It may or may not work with different versions of libraries to the ones listed, and the default configuration may or may not work well on your dataset. Try it with an "easy" dataset first (e.g. lots of features and no sharp corners).  
+
+IMPORTANT NOTE 2: BoWSLAM is a single camera SLAM scheme, so does not make use of your robot's other sensors, like wheel encoders, or other assumptions about the robot's motion, e.g. that is is constrained to a plane. For small scale AR applications in static environments, with steady camera motion, you should probably use some bundle-adjustment based SLAM scheme, e.g. PTAM. 
+
+
+Contents:
+1) Required libraries
+2) What to build
+3) Configuration + running
+
+Linux + gcc version 4.5 or later + Netbeans IDE 7.0.1 or later recommended!! Most of the libraries can be built and used in Windows, but I haven't tried porting everything.
+
+
+
+1) Required libraries
+
+All of my code requires the following 3 libraries (see http://www.hilandtom.com/tombotterill/code/index.php#install)
+
+1) boost http://www.boost.org/ (version 1.42.0 or later) including compiled libraries. 
+
+2) Eigen 3.0
+
+3) opencv 2.2 (may work with 2.0 or 2.1; #define USE_OLD_OPENCV to use these)
+
+4) BoWSLAM also requires 'board' library from libboard.sourceforge.net (for eps output)
+
+
+
+These libraries must all be visible to gcc (automatic with OpenCV2.2, and the boost Ubuntu/Debian package).
+
+
+2) What to build
+
+Netbeans IDE 7.0 or later recommended (Eclipse CDT may also work). The netbeans makefiles also work from a terminal.
+
+a) Check out entire workspace:
+
+svn co https://open.grcnz.com/svn/point-stereo/trunk/workspace
+
+b) Either build BoWSLAM project from Netbeans, or cd workspace/BoWSLAM; make. This should build each individual library: util, params, image, imagesource, ransac, cameraGeom, timer, bagOfWords, bowSpeedometer
+
+c) Build Release build of the project workspace/ShowIm. This program is run by BoWSLAM and displays images. Without it you won't get real-time feedback.
+
+
+3) Configuration 
+
+Edit a config file, e.g. workspace/BoWSLAM/config/params5-3-2.cfg
+**You need to give a path to the folder where your images are found**
+
+
+4) Camera calibration
+
+Save a file called calib.txt *in the same folder as the source images*
+
+Camera calibration file format: 3x3 calibration matrix, then number of radial distortion coefficients, then list of radial distortion coefficients. All seperated by whitespace. Example:
+    739.0  0         403.31196
+    0          735.0 257.79306
+    0          0         1
+
+    1
+    -0.06887
+
+At most 2 RD coefficients are supported: x *= 1 + K1 r^2 + K2 r^4
+Note the difference in sign of K1, K2 from MATLAB camera calibration toolbox coefficients.
+
+ 
+5) Running
+
+cd workspace/BoWSLAM
+
+Then start BoWSLAM with something like:
+./Release/BoWSLAM ./config/params5-3-2.cfg
+or
+./Debug/BoWSLAM ./path/to/config/file.cfg
+
+I've used workspace/BoWSLAM/config/params5-3-2.cfg for recent runs.
+
+
+5) Tips
+
+Use gcc 4.5 or later.
+
+It helps if the first 10 or so frames are fairly easy (i.e. no rapid cornering, and not stationary), while the dictionary is initialised.
+
+To get at position estimates use the TORO graph files (these are output at regular intervals). These list absolute positions and relative poses.
+

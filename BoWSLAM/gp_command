@@ -1,0 +1,3 @@
+./Release/BoWSLAM
+gprof ./Release/BoWSLAM > gprofout
+gedit gprofout

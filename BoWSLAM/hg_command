@@ -1,0 +1,2 @@
+valgrind --tool=helgrind --log-file=helgrindout --gen-suppressions=all --suppressions=suppressions-hg ./Release/BoWSLAM
+

@@ -1,0 +1,49 @@
+PatchDescriptor.Patch.PATCH_SCALE=[1,5]
+ResolveScale.MIN_INLIERS_1DALIGN=[3,10] # min=2, max=1000, default=3
+ResolveScale.ALIGNMENT_THETA_MAX_ERR=[0.05,0.4] # min=0.01, max=0.9, default=0.15
+RECURSE_DEPTH=[1,10] # min=1, max=25, default=2
+RANSAC.MAX_ITERS=[20,1000] # min=1, max=1000000, default=250
+RANSAC.E_INLIER_THRESH_PX=[1.0,15.0] # min=0.001, max=3.40282e+38, default=0.25
+NEARBY_TIME=[1,5] # min=0, max=250, default=15
+MIN_INLIERS_NEARBY=[10,50] # min=8, max=50, default=20
+MIN_INLIERS_DISTANT=[10,50] # min=8, max=100, default=28
+LinkSelection.NUM_TO_LINK_LC=[1,3] # min=0, max=16, default=1
+LinkSelection.NUM_TO_LINK=[2,8] # min=1, max=16, default=3
+LinkSelection.MAX_NUM_TO_TRY_LINKING_LC=[1,5] # min=0, max=16, default=2
+LinkSelection.MAX_NUM_TO_TRY_LINKING=[1,10] # min=1, max=16, default=4
+DescriptorSetClustering.CLARA_KMedoids.MAX_DESCRIPTORS_KM=[60,250] # min=10, max=1000, default=200
+DescriptorSetClustering.CLARA_KMedoids.CLARA_ITERS=[1,5] # min=1, max=100, default=1
+Corner.MAX_FEATURES=[100,800] # min=10, max=100000, default=400
+BOWMatching.MATCH_NN=[1,8] # min=1, max=12, default=3
+BOW.BOWClustering.RECLUSTER_FREQUENCY=[1.25,5] # min=-1, max=10, default=-1
+BOW.BOWClustering.LEVELS=[2,7] # min=1, max=10, default=1
+BOW.BOWClustering.DESCRIPTORS_PER_WORD=[5,50] # min=5, max=100, default=15
+BOW.BOWClustering.BF_LEVEL=[2,7] # min=0, max=10, default=3
+BOW.DescriptorBinning.LOWER_BOUND=[1,15] # min=1, max=64, default=1
+RANSAC.TOPDOWN_SCALEDOWN=[0.4,1.2] # min=0.1, max=1.2, default=0.8
+RANSAC.TOPDOWN_ITERS=[1,5] # min=1, max=1000, default=3
+RANSAC.TOPDOWN_EXPAND=[1.0,8.0] # min=0.2, max=10, default=2
+RANSAC.PROB_SUCCESS=[0.8,0.99] # min=0.8, max=0.999, default=0.98
+Corner.CornerDetector.FASTCORNER_TWO_PASS_BINNING=[0,1]
+Corner.CornerDetector.FASTCORNER_T=[1,50] # min=1, max=255, default=21
+Corner.CornerDetector.FASTCORNER_MIN_SEPERATION=[3,32] # min=1, max=64, default=4
+ResolveScale.MOTION_MODEL=0
+ResolveScale.MOTION_MODEL_MAX_TIME=[1,50]
+ResolveScale.MOTION_MODEL_SD=[0.001,10]
+ResolveScale.MOTION_MODEL_ZERO_SD=[0.1,500]
+ResolveScale.PROB_NO_MOTION_MODEL=[0.0,1.0]
+RefineRT.ROBUST_COST=[0,1]
+RefineRT.ROBUST_COST_THRESH=[0.0001,1]
+RefineRT.ROBUST_COST_SCALE=[0.0001,1] 
+RefineRT.ROBUST_COST_CONDITION_THRESH=[0.000001,1.0]
+RefineRT.ROBUST_COST_CONDITION_SCALE=[0.1,1000]
+DEPTH_THRESH=[0.01,100]
+BOWSpeedo.MAX_PROP_COOCCURANCES=[0.0001,0.1] # min=1e-06, max=1, default=0.01
+BOWSpeedo.NUM_OBJECTS=[0,25000]
+Corner.SURF.EXTENDED=[0,1]
+Corner.SURF.HESSIAN_THRESH=[300,500] # min=300, max=500, default=400
+Im.ImageDir.LOAD_SUBSET=[5,15]
+Im.ILLUMINATION_CORRECTION=[0,3]# NoIlluminationCorrection, EqualiseHist, EqualiseMean, EqualiseMeanSD
+Corner.SURF.CORNER_MIN_DIST=[2,15]
+
+

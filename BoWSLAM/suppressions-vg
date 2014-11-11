@@ -1,0 +1,141 @@
+{
+   JpegReader
+   Memcheck:Addr4
+   fun:_ZN11RMBitStream3GetEi
+   fun:_ZN15GrFmtJpegReader8GetBlockEPii
+   fun:_ZN15GrFmtJpegReader11ProcessScanEPiiPhii
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+
+{
+   openCvLib
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:cvUseOptimized
+   fun:cvRegisterModule
+   fun:_ZN8CvModuleC1EP12CvModuleInfo
+   obj:/lib/opencv-1.0.0-gtk/lib/libcxcore.so.1.0.0
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+}
+{
+   openCvLib2
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:cvUseOptimized
+   fun:cvRegisterModule
+   fun:_ZN8CvModuleC1EP12CvModuleInfo
+   obj:/lib/opencv-1.0.0-gtk/lib/libcxcore.so.1.0.0
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+}
+{
+   opencvLib3
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:cvUseOptimized
+   fun:cvRegisterModule
+   fun:_ZN8CvModuleC1EP12CvModuleInfo
+   obj:/usr/local/lib/libcxcore.so.2.0.0
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+}
+{
+   opencvLib4
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:cvUseOptimized
+   fun:cvRegisterModule
+   fun:_ZN8CvModuleC1EP12CvModuleInfo
+   obj:/usr/local/lib/libcxcore.so.2.0.0
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+}
+
+{
+   opencvLib5
+   Memcheck:Addr4
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:cvUseOptimized
+   fun:cvRegisterModule
+   fun:_ZN8CvModuleC1EP12CvModuleInfo
+   obj:/usr/local/lib/libcxcore.so.2.0.0
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+}
+{
+   opencvLib6
+   Memcheck:Cond
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   obj:/lib/ld-2.7.so
+   obj:/lib/tls/i686/cmov/libdl-2.7.so
+   fun:dlopen
+   fun:cvUseOptimized
+   fun:cvRegisterModule
+   fun:_ZN8CvModuleC1EP12CvModuleInfo
+   obj:/usr/local/lib/libcxcore.so.2.0.0
+   obj:/lib/ld-2.7.so
+   obj:/lib/ld-2.7.so
+}
+
+{
+   libcFree
+   Memcheck:Free
+   fun:free
+   obj:/lib/tls/i686/cmov/libc-2.9.so
+   obj:/lib/tls/i686/cmov/libc-2.9.so
+   fun:_vgnU_freeres
+   fun:_Exit
+   fun:(below main)
+}
+
+{
+   leakInLibboard
+   Memcheck:Leak
+   obj:/usr/lib/libboard.so
+   fun:call_init
+   fun:_dl_init
+   obj:/lib/ld-2.10.1.so
+}
+{
+   OpenCVVidFrameDecode
+   Memcheck:Cond
+   fun:ff_h264_decode_picture_parameter_set
+}
+{
+   OpenCVVidFrameDecode2
+   Memcheck:Cond
+   fun:ff_h264_decode_nal
+}
+

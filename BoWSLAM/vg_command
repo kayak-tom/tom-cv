@@ -1,0 +1,2 @@
+valgrind --tool=memcheck --log-file=valgrindout --leak-check=full --show-reachable=yes --error-limit=no --suppressions=suppressions-vg --gen-suppressions=all --track-origins=no ./Debug/BoWSLAM  ./config/params5-3-2.cfg
+

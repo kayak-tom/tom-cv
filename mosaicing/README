@@ -1,0 +1,62 @@
+Guide to building and use RT-AIM Real-time aerial image mosaicing software (for single camera SLAM, see BoWSLAM/README)
+
+Contents:
+1) Required libraries
+2) What to build
+3) Configuration + running
+
+Linux + gcc recommended, although the mosaicing software has been built and run under Windows.
+
+
+1) Required libraries
+
+All of my code requires the following 3 libraries (see http://www.hilandtom.com/tombotterill/code/index.php#install)
+
+1) boost http://www.boost.org/ (a recent version like 1.42.0, or the latest) including compiled libraries. Upgrade to 1.42.0 or later if you cannot build files using boost::spirit 
+
+2) Eigen v2 (shortly to be upgraded to Eigen 3.0 which should increase performance substantially. Builds but does not work with the beta version of Eigen 3)
+
+3) opencv 2.2 (should also work with 2.0 or 2.1 -- #define USE_OLD_OPENCV to use these)
+
+These libraries must all be visible to gcc (automatic with OpenCV2.2, and the boost Ubuntu/Debian package).
+
+
+2) What to build
+
+Netbeans IDE 6.9 or later recommended (Eclipse CDT also works). The netbeans makefiles also work from a terminal.
+
+a) Check out entire workspace:
+
+svn co https://open.grcnz.com/svn/point-stereo/trunk/workspace
+
+b) Either build mosaicing project from Netbeans, or cd workspace/mosaicing; make. This should build each individual library: util, params, image, imagesource, ransac, cameraGeom, timer, bagOfWords
+
+
+3) Configuration 
+
+Edit a config file, e.g. workspace/mosaicing/default.cfg
+**You need to give a path to the folder where your images are found**
+
+
+4) Camera calibration
+
+If radial distortion is low, then calibration is not necessary, but you still need a calib.txt
+
+Save a file called calib.txt *in the same folder as your images*. Something like this; change the 320x240 to match your image centre:
+
+1 0 320
+0 1 240
+0 0 1
+
+0
+
+
+5) Running
+
+cd workspace/mosaicing
+
+Then start mosaicing with something like:
+./[netbeans_build_dir]/mosaicing ./default.cfg
+
+
+Good luck!

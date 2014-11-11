@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{92A07885-A9B7-4374-8377-483BEAE17E77}</ProjectGuid>
+    <RootNamespace>DTA - Image Mosaicing 2</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</EmbedManifest>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</EmbedManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)\imageSource;$(SolutionDir)\bagOfWords;$(SolutionDir)/util;$(SolutionDir)/timing;$(SolutionDir)/featureDescription;$(SolutionDir)\params;$(SolutionDir)\cameraGeom;$(SolutionDir)\ransac;$(SolutionDir)\featureExtract;$(SolutionDir)\image;C:\Users\tom\lib\opencv\build\include;C:\Users\tom\lib\eigen;C:\Users\tom\lib\boost_1_48_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cv210d.lib;cxcore210d.lib;highgui210d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)\imageSource;$(SolutionDir)\bagOfWords;$(SolutionDir)/util;$(SolutionDir)/timing;$(SolutionDir)/featureDescription;$(SolutionDir)\params;$(SolutionDir)\cameraGeom;$(SolutionDir)\ransac;$(SolutionDir)\bagOfWords;$(SolutionDir)\featureExtract;$(SolutionDir)\image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cv210d.lib;cxcore210d.lib;highgui210d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\imageSource;$(SolutionDir)\bagOfWords;$(SolutionDir)/util;$(SolutionDir)/timing;$(SolutionDir)/featureDescription;$(SolutionDir)\params;$(SolutionDir)\cameraGeom;$(SolutionDir)\ransac;$(SolutionDir)\featureExtract;$(SolutionDir)\image;C:\Users\tom\lib\opencv\build\include;C:\Users\tom\lib\eigen;C:\Users\tom\lib\boost_1_48_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cv210.lib;cxcore210.lib;highgui210.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\imageSource;$(SolutionDir)\bagOfWords;$(SolutionDir)/util;$(SolutionDir)/timing;$(SolutionDir)/featureDescription;$(SolutionDir)\params;$(SolutionDir)\cameraGeom;$(SolutionDir)\ransac;$(SolutionDir)\bagOfWords;$(SolutionDir)\featureExtract;$(SolutionDir)\image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cv210.lib;cxcore210.lib;highgui210.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BaySACTransformEstimator.cpp" />
+    <ClCompile Include="BFFeatureMatcher.cpp" />
+    <ClCompile Include="BoWFeatureMatcher.cpp" />
+    <ClCompile Include="CorrespondenceSet.cpp" />
+    <ClCompile Include="cvGeom.cpp" />
+    <ClCompile Include="Descriptor.cpp" />
+    <ClCompile Include="DijkstraCutRenderer.cpp" />
+    <ClCompile Include="DoGBlobDetector.cpp" />
+    <ClCompile Include="DumbTransformEstimator.cpp" />
+    <ClCompile Include="FastAsymFeatureMatcher.cpp" />
+    <ClCompile Include="FeatheredRenderer.cpp" />
+    <ClCompile Include="FeatheredRenderer2.cpp" />
+    <ClCompile Include="FeatureExtractor.cpp" />
+    <ClCompile Include="FeatureMatcher.cpp" />
+    <ClCompile Include="ImageSource.cpp" />
+    <ClCompile Include="IncrementalRenderer.cpp" />
+    <ClCompile Include="LevenbergMarquardt.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MultiScaleFeatheredRenderer.cpp" />
+    <ClCompile Include="RansacPerspectiveTransformEstimator.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ShiTomasiFeatureDetector.cpp" />
+    <ClCompile Include="SimpleAsymFeatureMatcher.cpp" />
+    <ClCompile Include="SpeedTest.cpp" />
+    <ClCompile Include="SumSquaredErrorEvaluationFunction.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="TransformEngine.cpp" />
+    <ClCompile Include="TransformErrFunction.cpp" />
+    <ClCompile Include="TransformEstimator.cpp" />
+    <ClCompile Include="TransformInfo.cpp" />
+    <ClCompile Include="TransformSet.cpp" />
+    <ClCompile Include="Warp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaySACTransformEstimator.h" />
+    <ClInclude Include="BFFeatureMatcher.h" />
+    <ClInclude Include="BoWFeatureMatcher.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="Convert.h" />
+    <ClInclude Include="CorrespondenceSet.h" />
+    <ClInclude Include="cvGeom.h" />
+    <ClInclude Include="Descriptor.h" />
+    <ClInclude Include="DijkstraCutRenderer.h" />
+    <ClInclude Include="DoGBlobDetector.h" />
+    <ClInclude Include="DumbTransformEstimator.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="EvaluationFunction.h" />
+    <ClInclude Include="FastAsymFeatureMatcher.h" />
+    <ClInclude Include="FeatheredRenderer.h" />
+    <ClInclude Include="FeatheredRenderer2.h" />
+    <ClInclude Include="FeatureDetector.h" />
+    <ClInclude Include="FeatureExtractor.h" />
+    <ClInclude Include="FeatureMatcher.h" />
+    <ClInclude Include="GRCException.h" />
+    <ClInclude Include="HSI.h" />
+    <ClInclude Include="image.h" />
+    <ClInclude Include="image2.h" />
+    <ClInclude Include="ImageSource.h" />
+    <ClInclude Include="ImageSourceSimple.h" />
+    <ClInclude Include="IncrementalRenderer.h" />
+    <ClInclude Include="LevenbergMarquardt.h" />
+    <ClInclude Include="MultiScaleFeatheredRenderer.h" />
+    <ClInclude Include="myGetSet2D.h" />
+    <ClInclude Include="Patch.h" />
+    <ClInclude Include="PatchDescriptor.h" />
+    <ClInclude Include="RansacPerspectiveTransformEstimator.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ShiTomasiFeatureDetector.h" />
+    <ClInclude Include="SimpleAsymFeatureMatcher.h" />
+    <ClInclude Include="SpeedTest.h" />
+    <ClInclude Include="SumSquaredErrorEvaluationFunction.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="TransformEngine.h" />
+    <ClInclude Include="TransformErrFunction.h" />
+    <ClInclude Include="TransformEstimator.h" />
+    <ClInclude Include="TransformInfo.h" />
+    <ClInclude Include="TransformSet.h" />
+    <ClInclude Include="Warp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default.cfg" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

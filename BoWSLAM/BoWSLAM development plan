@@ -1,0 +1,123 @@
+Test timer
+
+Add constraint on submatrix of LM --doesn't seem to help (outliers again)
+
+Eigen 3 
+
+Sparse SVD? SVD for rotations as well as scale drift (*can I use the same cycles??*)
+
+Faster Shi-Tomasi corners, try out SURF, improve cluster re-assignment
+
+Motion model--add to TORO map. Also fix TORO variances by looking at variance of MEDIAN analytically.
+
+Upright mode--limit match distances in y direction.
+Output: Select different combination of axes (for maps and for Toro 2d)
+
+Bag-of-Words--use new BF matching
+
+How are weights affected when more images are added--todo look through and check
+
+On LC start merging nodes.
+
+Patch descriptors should be subpixel-sampled --IS THE DOWNSAMPLER WRECKING PATCHES?!
+
+Fixed radius clustering, dynamic word initialisation, fast mapping to new clusters
+
+**getCorrespondences might also find 1-1 corr's at higher level**
+To test getCorrespondences look at which clusters descriptors are being mapped to, is the next closest too close??
+
+For mapping, remove the nodes with high badness compared to neighbours. 
+
+Polymorphic RANSAC datapoint type (for 3d point align)
+
+Test Cluster in seperate thread
+
+Update SCORE to use real variances
+
+Choose links to add to map for refinement
+
+Prior prob for bow matches
+
+Find remaining statics/externs
+
+intLog, intPow to config.h (or lookup.h??)
+
+extend thread to transfer CException
+
+Fast Norms: Try MMX. Also can a K-d tree search be modified for speed???
+
+//Make a symlink from workspace to Boost, Eigen, Opencv. find and fix /home/tom/ws/opencv/include/opencv issues
+
+Get example working
+
+Separate out clustering
+
+Change library build target to ../../LibsDebug, etc.
+
+\*\s*\w+\s*=\s*new to ARRAY, smart pointers
+
+Model number of words--something like:
+* rate new words observed
+* world contains 1000000 unique words....
+* Descriptor space can be partitioned into huge number/not so huge number of words.
+* experiment
+Read lit!
+
+//Ostringstream that dumps to cout when out of scope (so TS, and less locking)
+class print
+{
+
+}
+
+#define CHECK(x,s) _DEBUG && check(x, s)
+inline function _DEBUG && check(x, s) //stops x being evaluated???
+{
+	if (x)...
+}??????
+
+Make ParamClass a recursive template class??? To reduce coding needed to setup
+ParamClass<class p1, class paramClass> p1=CNumParam<int, 23,25,24,"NAME"> ???
+
+Homography refinement, improve
+Eigen inversion, SVD, Real eigendecomposition
+VS2005 project files+solution (script)
+
+///////////////////////////////
+
+Can a class override double/int etc. and count unnecessary operations??
+sqrt(1) etc.
+sqrt(1.01) etc that should be bin. expanded,
+repeated assignment of same value (==repeated log(x) or whatever)
+
+*unused assignments*
+*uninitialised use*
+nan/inf
+
+Need an 'instrument' method that recursively updates code in a directory--adding a header and replacing double with CDouble everywhere maybe. (* flag sizeof(8*....))
+
+
+Could do the same with a smart pointer?
+
+Also find values never accessed, especially class members and member functions that are never read.
+
+////////////////////
+
+Change Harris/Shi-Tomasi detector to calculate local gradient as d f(x)/dx
+where f is the patch function (RGB) or whatever.
+
+
+/////////////
+KNOWN ISSUES etc.
+
+Patch sampler orientation-invariance and illumination-invariance believed to be buggy. Also isn't subsampling properly around patches, works well enough though. Fix coming soon.
+
+OpenCV corner detection is buggy also (v1.1 and 1.0) as it doesn't sort corners correctly.
+
+SURF and SIFT features haven't been tested for a while
+
+In Windows only colour input images should be used (I think greyscale images will be opened as 3-channel colour images). 
+
+TF-IDF calculation varies in literature. I'll be confirming I'm using the correct one at some stage.
+
+Better algorithms, e.g. Trivedi's and H+Z gold standard algorithm should be used for final essential matrix refinement.
+

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="hydrologicalModel" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="OneDModel.cpp"/>
+    <File Name="flowUtil.h"/>
+    <File Name="flowsAndStores.h"/>
+    <File Name="subcatchment.h"/>
+    <File Name="graphbase.h"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-Wall;-DUNIX -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_NO_DEBUG" C_Options="-g;-O0;-Wall" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+        <IncludePath Value="/home/tom/workspace/g2o/trunk/EXTERNAL/csparse"/>
+        <IncludePath Value="ext_csparse"/>
+        <IncludePath Value="/usr/include/suitesparse/"/>
+      </Compiler>
+      <Linker Options="-rdynamic -Wl,-rpath" Required="yes">
+        <Library Value="cholmod"/>
+        <Library Value="g2o_core"/>
+        <Library Value="g2o_solver_csparse"/>
+        <Library Value="g2o_types_slam2d"/>
+        <Library Value="csparse"/>
+        <Library Value="g2o_cli"/>
+        <Library Value="g2o_incremental"/>
+        <Library Value="g2o_interactive"/>
+        <Library Value="g2o_interface"/>
+        <Library Value="g2o_math_groups"/>
+        <Library Value="g2o_parser"/>
+        <Library Value="g2o_solver_cholmod"/>
+        <Library Value="g2o_solver_dense"/>
+        <Library Value="g2o_stuff"/>
+        <Library Value="cxsparse"/>
+        <Library Value="g2o_core"/>
+        <Library Value="g2o_stuff"/>
+        <Library Value="QtXml"/>
+        <Library Value="QtOpenGL"/>
+        <Library Value="QtGui"/>
+        <Library Value="QtCore"/>
+        <Library Value="GL"/>
+        <Library Value="GLU"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+        <IncludePath Value="/home/hilandtom/workspace/g2o/trunk/EXTERNAL/csparse"/>
+        <IncludePath Value="ext_csparse"/>
+        <IncludePath Value="/usr/include/suitesparse/"/>
+      </Compiler>
+      <Linker Options="-v" Required="yes">
+        <Library Value="cholmod"/>
+        <Library Value="g2o_core"/>
+        <Library Value="g2o_solver_csparse"/>
+        <Library Value="g2o_types_slam2d"/>
+        <Library Value="csparse"/>
+        <Library Value="g2o_cli"/>
+        <Library Value="g2o_incremental"/>
+        <Library Value="g2o_interactive"/>
+        <Library Value="g2o_interface"/>
+        <Library Value="g2o_math_groups"/>
+        <Library Value="g2o_parser"/>
+        <Library Value="g2o_solver_cholmod"/>
+        <Library Value="g2o_solver_dense"/>
+        <Library Value="g2o_stuff"/>
+        <Library Value="cxsparse"/>
+        <Library Value="g2o_core"/>
+        <Library Value="g2o_stuff"/>
+        <Library Value="QtXml"/>
+        <Library Value="QtOpenGL"/>
+        <Library Value="QtGui"/>
+        <Library Value="QtCore"/>
+        <Library Value="GL"/>
+        <Library Value="GLU"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

@@ -1,0 +1,3 @@
+cgfile="callgrind.out-"$(date +%d%m%y-%H%M%S)
+valgrind --tool=callgrind --callgrind-out-file=$cgfile ./dist/Release/GNU-Linux-x86/ransactest
+kcachegrind $cgfile

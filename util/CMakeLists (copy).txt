@@ -1,0 +1,61 @@
+cmake_minimum_required (VERSION 2.6)
+project (util)
+
+
+file(GLOB util_SRC
+    "./util/*.*"
+)
+
+include_directories(.)
+
+
+####################################################
+
+ # Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
+  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+    "MinSizeRel" "RelWithDebInfo")
+
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "-O3")        ## Optimize
+  endif()    
+endif()
+
+find_package (Boost 1.54.0 REQUIRED COMPONENTS system filesystem thread)
+include_directories (SYSTEM ${Boost_INCLUDE_DIR})
+message(STATUS "boost include dir= ${Boost_INCLUDE_DIR}")
+
+#############
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ../cmake)
+find_package(OpenCV 2.4 REQUIRED COMPONENTS core highgui imgproc legacy ml) 
+
+message(STATUS "opencv include dir= ${OpenCV_INCLUDE_DIR}")
+message(STATUS "opencv root dir+include= ${OpenCV_ROOT_DIR}/include")
+
+
+message(STATUS "opencv_found= ${OpenCV_FOUND}")
+
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
+include_directories(SYSTEM "${OpenCV_ROOT_DIR}/include")
+
+#############
+
+FIND_PACKAGE(Eigen3 3.1 REQUIRED)
+
+message(STATUS "Eigen3 include dir= ${EIGEN3_INCLUDE_DIR}")
+
+message(STATUS "Eigen3_found= ${EIGEN3_FOUND}")
+
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+
+####################################################
+
+
+
+
+
+add_library(util ${util_SRC})

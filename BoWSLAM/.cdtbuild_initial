@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<?fileVersion 3.1.0?>
+<ManagedProjectBuildInfo>
+  <project id="BoWSLAM.cdt.managedbuild.target.gnu.exe.340852394" name="Executable (Gnu)" projectType="cdt.managedbuild.target.gnu.exe">
+    <configuration id="cdt.managedbuild.config.gnu.exe.debug.1800718889" name="Debug" description="" parent="cdt.managedbuild.config.gnu.exe.debug" artifactName="BoWSLAM" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" artifactExtension="" cleanCommand="rm -rf">
+      <toolChain superClass="cdt.managedbuild.toolchain.gnu.exe.debug" id="cdt.managedbuild.toolchain.gnu.exe.debug.358889792" name="GCC Tool Chain">
+        <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631" name="GCC C++ Compiler">
+          <option superClass="gnu.cpp.compiler.option.preprocessor.def" id="gnu.cpp.compiler.option.preprocessor.def.126202290" valueType="definedSymbols">
+            <listOptionValue value="_DEBUG" builtIn="false"/>
+            <listOptionValue value="CLUSTER_IN_SEPERATE_THREAD" builtIn="false"/>
+            <listOptionValue value="VL_USEFASTMATH=1" builtIn="false"/>
+            <listOptionValue value="GCC" builtIn="false"/>
+          </option>
+          <option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.76148909" valueType="includePath">
+            <listOptionValue value="/home/tom/ws/SURF-V1.0.9" builtIn="false"/>
+            <listOptionValue value="/usr/include/glibmm-2.4/glibmm" builtIn="false"/>
+            <listOptionValue value="/usr/include/gtkmm-2.4" builtIn="false"/>
+            <listOptionValue value="/usr/lib/boost_inc/" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/cv/include" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/cxcore/include" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/otherlibs/highgui" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/cvaux/include" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/newmat11" builtIn="false"/>
+          </option>
+          <option superClass="gnu.cpp.compiler.option.other.other" id="gnu.cpp.compiler.option.other.other.541619729" value="-c -fmessage-length=0" valueType="string"/>
+        </tool>
+        <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug" id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1942882336" name="GCC C Compiler"/>
+        <tool superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug" id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.171213170" name="GCC C Linker"/>
+        <tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1489992868" name="GCC C++ Linker">
+          <option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.2112879656" valueType="libs">
+            <listOptionValue value="boost_thread-gcc42-mt-d" builtIn="false"/>
+            <listOptionValue value="Surf" builtIn="false"/>
+            <listOptionValue value="cv" builtIn="false"/>
+            <listOptionValue value="cvaux" builtIn="false"/>
+            <listOptionValue value="highgui" builtIn="false"/>
+            <listOptionValue value="newmat" builtIn="false"/>
+          </option>
+          <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.608358698" valueType="stringList">
+            <listOptionValue value="/home/tom/ws/newmat11" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/SURF-V1.0.9" builtIn="false"/>
+            <listOptionValue value="/lib/opencv/lib" builtIn="false"/>
+            <listOptionValue value="/usr/lib/boost_libs" builtIn="false"/>
+          </option>
+          <option superClass="gnu.cpp.link.option.flags" id="gnu.cpp.link.option.flags.183086396" value="`pkg-config gtkmm-2.4 --cflags --libs`" valueType="string"/>
+        </tool>
+        <tool superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug" id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1735250493" name="GCC Assembler"/>
+        <macros/>
+      </toolChain>
+      <resourceConfiguration id="cdt.managedbuild.config.gnu.exe.debug.1800718889./BoWSLAM/BoWSLAM_Main/BoWSLAM.cpp" name="BoWSLAM.cpp" exclude="false" resourcePath="/BoWSLAM/BoWSLAM_Main/BoWSLAM.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631./BoWSLAM/BoWSLAM_Main/BoWSLAM.cpp" rcbsApplicability="disable">
+        <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631./BoWSLAM/BoWSLAM_Main/BoWSLAM.cpp" name="GCC C++ Compiler">
+          <option superClass="gnu.cpp.compiler.option.other.other" id="gnu.cpp.compiler.option.other.other.1809275333" value="-c -fmessage-length=0 `pkg-config gtkmm-2.4 --cflags`" valueType="string"/>
+        </tool>
+      </resourceConfiguration>
+      <resourceConfiguration id="cdt.managedbuild.config.gnu.exe.debug.1800718889./BoWSLAM/BoWSLAM_Main/gui.cpp" name="gui.cpp" exclude="false" resourcePath="/BoWSLAM/BoWSLAM_Main/gui.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631./BoWSLAM/BoWSLAM_Main/gui.cpp" rcbsApplicability="disable">
+        <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.986431631./BoWSLAM/BoWSLAM_Main/gui.cpp" name="GCC C++ Compiler">
+          <option superClass="gnu.cpp.compiler.option.other.other" id="gnu.cpp.compiler.option.other.other.1154651311" value="-c -fmessage-length=0 `pkg-config gtkmm-2.4 --cflags`" valueType="string"/>
+        </tool>
+      </resourceConfiguration>
+    </configuration>
+    <configuration id="cdt.managedbuild.config.gnu.exe.release.1069777576" name="Release" description="" parent="cdt.managedbuild.config.gnu.exe.release" artifactName="BoWSLAM" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" cleanCommand="rm -rf">
+      <toolChain superClass="cdt.managedbuild.toolchain.gnu.exe.release" id="cdt.managedbuild.toolchain.gnu.exe.release.1588343817" name="GCC Tool Chain">
+        <tool superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.2106700407" name="GCC C++ Compiler">
+          <option superClass="gnu.cpp.compiler.option.preprocessor.def" id="gnu.cpp.compiler.option.preprocessor.def.126202290" valueType="definedSymbols">
+            <listOptionValue value="_DEBUG" builtIn="false"/>
+            <listOptionValue value="CLUSTER_IN_SEPERATE_THREAD" builtIn="false"/>
+            <listOptionValue value="VL_USEFASTMATH=1" builtIn="false"/>
+            <listOptionValue value="GCC" builtIn="false"/>
+          </option>
+          <option superClass="gnu.cpp.compiler.option.include.paths" id="gnu.cpp.compiler.option.include.paths.76148909" valueType="includePath">
+            <listOptionValue value="/home/tom/ws/SURF-V1.0.9" builtIn="false"/>
+            <listOptionValue value="/usr/lib/boost_inc/" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/cv/include" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/cxcore/include" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/otherlibs/highgui" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/opencv-1.0.0/cvaux/include" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/newmat11" builtIn="false"/>
+          </option>
+        </tool>
+        <tool superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release" id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1636301983" name="GCC C Compiler"/>
+        <tool superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release" id="cdt.managedbuild.tool.gnu.c.linker.exe.release.838385854" name="GCC C Linker"/>
+        <tool superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.783618180" name="GCC C++ Linker">
+          <option superClass="gnu.cpp.link.option.libs" id="gnu.cpp.link.option.libs.2112879656" valueType="libs">
+            <listOptionValue value="boost_thread-gcc42-mt-d" builtIn="false"/>
+            <listOptionValue value="Surf" builtIn="false"/>
+            <listOptionValue value="cv" builtIn="false"/>
+            <listOptionValue value="cvaux" builtIn="false"/>
+            <listOptionValue value="highgui" builtIn="false"/>
+            <listOptionValue value="newmat" builtIn="false"/>
+          </option>
+          <option superClass="gnu.cpp.link.option.paths" id="gnu.cpp.link.option.paths.608358698" valueType="stringList">
+            <listOptionValue value="/home/tom/ws/newmat11" builtIn="false"/>
+            <listOptionValue value="/home/tom/ws/SURF-V1.0.9" builtIn="false"/>
+            <listOptionValue value="/lib/opencv/lib" builtIn="false"/>
+            <listOptionValue value="/usr/lib/boost_libs" builtIn="false"/>
+          </option>
+        </tool>
+        <tool superClass="cdt.managedbuild.tool.gnu.assembler.exe.release" id="cdt.managedbuild.tool.gnu.assembler.exe.release.1592685132" name="GCC Assembler"/>
+        <macros/>
+      </toolChain>
+    </configuration>
+    <macros/>
+  </project>
+</ManagedProjectBuildInfo>
