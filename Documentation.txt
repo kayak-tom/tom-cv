@@ -1,16 +1,12 @@
 DOCUMENTATION:
 
-Latest version is online at www.hilandtom.com/tombotterill/code
-
 Look at the following examples to see how to use:
 ransacTest/example.cpp -- RANSAC/BaySAC/Essential matrix and homography functions
 bowExample/bowExample.cpp -- Bag-of-Words 
 
-These depend on several libraries. boost, opencv and Eigen are also required.
-
 LIBRARIES:
 
-util: functions and datstructures used by all other libraries. Includes Exception class widely thrown when consistency checks fail (normally indicating programmer error). Defining _DEBUG symbol increases number of consistency checks (some speed penalty).
+util: functions and datastructures used by all other libraries. Includes Exception class widely thrown when consistency checks fail (normally indicating programmer error). Defining _DEBUG symbol increases number of consistency checks (some speed penalty).
 
 params: used in parameter classes used by all other libraries
 

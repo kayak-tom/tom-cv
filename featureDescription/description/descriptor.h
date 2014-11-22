@@ -98,8 +98,8 @@ public:
 
 	CDescriptor * clone() const
 	{
-		CDescriptor * pClone = 0;//(CDescriptor *)malloc(size());
-		memcpy(pClone, this, size());
+		CDescriptor * pClone = (CDescriptor *)malloc(size());
+		memcpy((void *)pClone, this, size());
 
 		if(IS_DEBUG) CHECK(distance(pClone) != 0, "Clone failed");
 		if(IS_DEBUG) CHECK(!(pClone->location() == location()), "Clone failed");

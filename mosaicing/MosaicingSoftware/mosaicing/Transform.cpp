@@ -161,10 +161,17 @@ void PerspectiveTransform::applyToPoints(const CvMat * positions, CvMat * newPos
     }
 }
 
+cv::Mat matFromOldMat(const CvMat * points)
+{
+    return cv::Mat(points->height, points->width, CV_64FC1, points->data.db);
+}
+
 //!Estimate transform from a set of points
 void PerspectiveTransform::estimateFromPoints(const CvMat * points1, const CvMat * points2)
 {
-    cvFindHomography(points1, points2, (CvMat*)*this);
+    //cvFindHomography(points1, points2, (CvMat*)*this);
+    cv::Mat thisMat(3,3,CV_64FC1,this->data.db);
+    cv::findHomography(matFromOldMat(points1), matFromOldMat(points2), thisMat);
 }
 
 void PerspectiveTransform::applyToImage(const IplImage * sourceIm, IplImage * destIm) const
@@ -292,15 +299,16 @@ void AffineTransform::applyToPoints(const CvMat * positions, CvMat * newPosition
 //!Estimate transform from a set of points
 void AffineTransform::estimateFromPoints(const CvMat * points1, const CvMat * points2)
 {
-    double perspectiveMatData[3*3];
-    CvMat matPerspective = cvMat(3, 3, CV_64FC1, perspectiveMatData);
-    cvFindHomography(points1, points2, &matPerspective);
+    cv::Mat matPerspective(3, 3, CV_64FC1);
+    //cvFindHomography(points1, points2, &matPerspective);
+    cv::findHomography(matFromOldMat(points1), matFromOldMat(points2), matPerspective);
+
 //Todo: adapt cvGetAffineTransform--it's in Warp.cpp
-    cvConvertScale(&matPerspective, &matPerspective, 1. / cvmGet(&matPerspective, 2, 2));
+    matPerspective *= 1. / matPerspective.at<double>(2, 2);
     for(int x=0; x < ROWS; x++)
         for(int y=0; y < COLS; y++)
         {
-            cvmSet(*this, x, y, cvmGet(&matPerspective, x, y));
+            cvmSet(*this, x, y, matPerspective.at<double>(x, y));
         }
 }
 

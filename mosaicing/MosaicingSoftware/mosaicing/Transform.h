@@ -74,6 +74,8 @@ namespace grc {
         
         //! Estimate transform from a set of points (use a least-squares estimate)
         virtual void estimateFromPoints(const CvMat * points1, const CvMat * points2) = 0;
+        
+        virtual ~Transform() {}
     };
 
     //!Implements a perspective transform

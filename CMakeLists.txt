@@ -31,6 +31,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   endif()    
 endif()
 
+set(LIBRARY_OUTPUT_PATH "../${CMAKE_BUILD_TYPE}")
+
 find_package (Boost 1.54.0 REQUIRED COMPONENTS system filesystem thread)
 include_directories (SYSTEM ${Boost_INCLUDE_DIR})
 message(STATUS "boost include dir= ${Boost_INCLUDE_DIR}")
@@ -116,7 +118,8 @@ add_subdirectory(ransacTest)
 add_subdirectory(ransacAndRefine)
 add_subdirectory(bowExample)
 
-#add_subdirectory(mosaicing)
+add_subdirectory(mosaicing)
 add_subdirectory(BoWSLAM)
+add_subdirectory(ShowIm) # needed for BoWSLAM
 
 

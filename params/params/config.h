@@ -112,7 +112,7 @@ protected:
         std::ifstream fileSettings(szName);
         while(!fileSettings.is_open())
         {
-            std::cout << "Waiting for cfg: " << szName << "...\n";
+            std::cout << "Path to config file must be given as a command line argument (" << szName << ")\n";
             std::cout.flush();
             fileSettings.close();
             safeSleep(1000);

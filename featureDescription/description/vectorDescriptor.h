@@ -127,7 +127,7 @@ templateVSSet class CVectorSpaceDescriptorSet : public CDescriptorSet
     bool KmeansIterate(CClusterSet * pCentres) const;
 public:
     CClusterSet * Cluster(int nClusters) const;
-	unsigned int Count() const { return (unsigned int)vDescriptors.size(); };
+	int Count() const { return (int)vDescriptors.size(); };
 
 	CVectorSpaceDescriptorSet(int nDescriptorCountEstimate = 0) { vDescriptors.reserve(nDescriptorCountEstimate); };
 

@@ -7,26 +7,24 @@ All other code is free to use/modify/redistribute for any purpose. Please send m
 
 PRE-REQUISITES:
 
-Most components require:
-1) boost (I use 1.39.0, works with other versions, libraries need to be built)
-2) openCV (latest version 2.0 recomended, needed for homography estimation, N-point Essential matrix estimation (N>=8) and anything using images)
-3) Eigen (a fast header-only matrix library, much faster if the convergence threshhold for eigenvector computation is raised and the complex eigenvector code is removed)
-
+1) boost (I use 1.54.0, works with other versions, libraries need to be built)
+2) openCV (latest version 2.4.9 recomended)
+3) Eigen 3.1 or later
+4) cmake
+(5) for BoWSLAM, 'board' library is required)
 
 BUILD:
 
-Project files for the following IDEs are included. You may have to fix some absolute paths, especially under Linux.
+Use cmake:
 
-WINDOWS:
-Visual Studio 2008 (open util.sln)
-Visual Studio 2005 (MODIFY all the .sln and .vcproj files to change Version="9.00" to Version="7.00")
+cd to the tom-cv directory.
 
-LINUX:
-1) Make 3 symlinks in the workspace directory: ln -s PATH_TO_YOUR_OPENCV_DIR opencv; ln -s PATH_TO_YOUR_EIGEN_DIR opencv; ln -s PATH_TO_YOUR_BOOST_DIR boost
+mkdir build
+cd build
+cmake ..
+make -j8
 
-Eclipse CDT (Galileo)
-
-The makefiles supplied are just the ones generated from Eclipse but should work. E.g. "cd util/Debug; make" will build libutil.a with debugging info, etc.
+(This will build everything, and will put the executables under 'build', and libraries in RelWithDebInfo (default cmake build type).
 
 
 DOCUMENTATION:
@@ -41,5 +39,3 @@ My publications (with links and bibtex) are listed at www.hilandtom.com/tombotte
 My Bag-of-Words scheme is described in: "Speeded-up Bag-of-Words algorithm for robot localisation through scene recognition" and used in "A Bag-of-Words Speedometer for Single Camera SLAM" and "An Integrated IMU, GNSS and Image Recognition Sensor for Pedestrian Navigation"
 
 BaySAC is described in "New Conditional Sampling Strategies for Speeded-Up RANSAC"
-
-Another paper on Visual SLAM (BoWSLAM) that uses all of this code is waiting for review; a video is online at www.hilandtom.com/tombotterill

@@ -679,7 +679,7 @@ public:
 		}
     }*/
 
-    static CvStatus warp_BB_8u(const uchar *src, int step, CvSize ssize, uchar *dst, int dststep, CvSize dsize, const double *matrix, const double *inv_mat)
+    static void warp_BB_8u(const uchar *src, int step, CvSize ssize, uchar *dst, int dststep, CvSize dsize, const double *matrix, const double *inv_mat)
     {
         step /= sizeof (src[0]);
         dststep /= sizeof (dst[0]);
@@ -710,8 +710,6 @@ public:
         boost::thread oneThread(boost::bind(warpInBB, boost::ref(ssize), dst, dststep, matrix, src, step, boost::ref(bbFirstThread)));
         warpInBB(ssize, dst, dststep, matrix, src, step, bb2ndThread);
         oneThread.join();
-
-        return CV_OK;
 	}
 };
 
@@ -735,7 +733,7 @@ WarpAffine( const CvArr* srcarr, CvArr* dstarr, const CvMat* matrix,
     //CvWarpAffineFunc func;
     CvSize ssize, dsize;
 
-    CvStatus (CV_CDECL *func)(const uchar *,int,CvSize,uchar *,int,CvSize,const double *,const double *) = 0;
+    void (CV_CDECL *func)(const uchar *,int,CvSize,uchar *,int,CvSize,const double *,const double *) = 0;
 
      src = cvGetMat( srcarr, &srcstub );
      dst = cvGetMat( dstarr, &dststub );
@@ -767,8 +765,8 @@ WarpAffine( const CvArr* srcarr, CvArr* dstarr, const CvMat* matrix,
     }
 
 
-    ssize = cvGetMatSize(src);
-    dsize = cvGetMatSize(dst);
+    ssize = cvSize(src->width, src->height);// cvGetMatSize(src);
+    dsize = cvSize(dst->width, dst->height);//cvGetMatSize(dst);
 
     /*if( icvWarpAffineBack_8u_C1R_p && MIN( ssize.width, dsize.width ) >= 4 &&
         MIN( ssize.height, dsize.height ) >= 4 )
@@ -832,8 +830,8 @@ WarpAffine( const CvArr* srcarr, CvArr* dstarr, const CvMat* matrix,
     if( !func )
         THROW( "CV_StsUnsupportedFormat No Affine warp function available" );
 
-    IPPI_CALL( func( src->data.ptr, src->step, ssize, dst->data.ptr,
-                     dst->step, dsize, dst_matrix, 0 ));
+    func( src->data.ptr, src->step, ssize, dst->data.ptr,
+                     dst->step, dsize, dst_matrix, 0 );
 
 }
 
@@ -977,7 +975,7 @@ inline double invertApproxCache(double x)
     return x_inv_cached;
 }
 
-static CvStatus icvWarpPerspective_NN_BB_8u_C1( const uchar* src, int step, CvSize ssize, uchar* dst, int dststep, CvSize dsize, const double* matrix, int cn, const double* inv_mat ) {
+/*static CvStatus icvWarpPerspective_NN_BB_8u_C1( const uchar* src, int step, CvSize ssize, uchar* dst, int dststep, CvSize dsize, const double* matrix, int cn, const double* inv_mat ) {
 
     double A11 = (double)matrix[0], A12 = (double)matrix[1], A13 = (double)matrix[2];
     double A21 = (double)matrix[3], A22 = (double)matrix[4], A23 = (double)matrix[5];
@@ -1037,12 +1035,12 @@ static CvStatus icvWarpPerspective_NN_BB_8u_C1( const uchar* src, int step, CvSi
             {
                 //We're close enough (todo: if we do this lots then may need to stop errors accumulating??)
                 //Gen. binomial expansion (1+x)^-1 ~= 1-x
-                /*
+                / *
                     given x^-1 want (x+d)^-1
 
                     (x+d)^-1 = ((x*x^-1)*(x+d))^-1 = ((x)*(1+x^-1*d))^-1 = x^-1 * (1+x^-1*d)^-1
                      = x^-1 * (1 - x^-1*d) when x^-1*d small
-                */
+                * /
                 x_inv_cached = x_inv_cached*(1. - x_inv_cached*x_minus_x_old);
                 maxTimeUntilNextDiv--;
             }
@@ -1258,7 +1256,7 @@ static CvStatus icvWarpAffine_NN_BB_8u_C1( const uchar* src, int step, CvSize ss
 //go back to incrementing xs0 etc.
 //test division
 
-/* Approx NN version with inlined taylor series division (no statics)--Yes this is faster that the inlining */
+/ * Approx NN version with inlined taylor series division (no statics)--Yes this is faster that the inlining * /
 CvStatus icvWarpPerspective_NN_8u_CnR( const uchar* src, int step, CvSize ssize, uchar* dst, int dststep, CvSize dsize, const double* matrix, int cn, const uchar* fillval ) {
 
     double A11 = (double)matrix[0], A12 = (double)matrix[1], A13 = (double)matrix[2];
@@ -1289,12 +1287,12 @@ CvStatus icvWarpPerspective_NN_8u_CnR( const uchar* src, int step, CvSize ssize,
             {
                 //We're close enough (todo: if we do this lots then may need to stop errors accumulating??)
                 //Gen. binomial expansion (1+x)^-1 ~= 1-x
-                /*
+                / *
                     given x^-1 want (x+d)^-1
 
                     (x+d)^-1 = ((x*x^-1)*(x+d))^-1 = ((x)*(1+x^-1*d))^-1 = x^-1 * (1+x^-1*d)^-1
                      = x^-1 * (1 - x^-1*d) when x^-1*d small
-                */
+                * /
                 x_inv_cached = x_inv_cached*(1. - x_inv_cached*x_minus_x_old);
                 maxTimeUntilNextDiv--;
             }
@@ -1329,7 +1327,7 @@ CvStatus icvWarpPerspective_NN_8u_CnR( const uchar* src, int step, CvSize ssize,
             }
         }
     } return CV_OK;
-}
+}*/
 
 /* Bilinear version with faster division */
 // isn't fully optimised (no bounding box, repeated arithmatic, division needs checked)--see above
@@ -1684,7 +1682,7 @@ WarpPerspective( const CvArr* srcarr, CvArr* dstarr,
           invA = cvMat( 3, 3, CV_64F, dst_matrix );
     CvSize ssize, dsize;
 
-    CvStatus (CV_CDECL *func)(const uchar *,int,CvSize,uchar *,int,CvSize,const double *,const double *) = 0;
+    void (CV_CDECL *func)(const uchar *,int,CvSize,uchar *,int,CvSize,const double *,const double *) = 0;
 
     if( method == CV_INTER_AREA )
         THROW("Area interpolation not supported" );
@@ -1720,8 +1718,8 @@ WarpPerspective( const CvArr* srcarr, CvArr* dstarr,
     if( flags & CV_WARP_FILL_OUTLIERS )
         THROW( "CV_StsBadArg Outlier fiulling no longer implemented" );
 
-    ssize = cvGetMatSize(src);
-    dsize = cvGetMatSize(dst);
+    ssize = cvSize(src->width, src->height);// cvGetMatSize(src);
+    dsize = cvSize(dst->width, dst->height);//cvGetMatSize(dst);
 
     /*if( icvWarpPerspectiveBack_8u_C1R_p )
     {
@@ -1804,9 +1802,9 @@ WarpPerspective( const CvArr* srcarr, CvArr* dstarr,
     if( !func )
         THROW( "CV_StsUnsupportedFormat No perspective warp fn" );
 
-    IPPI_CALL( func( src->data.ptr, src->step, ssize, dst->data.ptr,
+     func( src->data.ptr, src->step, ssize, dst->data.ptr,
                      dst->step, dsize, dst_matrix,
-                     src_matrix )); //use the now-unused void pointer param to pass in inverse matrix (for bounding box)
+                     src_matrix ); //use the now-unused void pointer param to pass in inverse matrix (for bounding box)
 
 }
 
