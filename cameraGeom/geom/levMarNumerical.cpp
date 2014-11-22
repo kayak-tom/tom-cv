@@ -266,12 +266,17 @@ const double CLevMar::RMSError() const
 
 CLMFunction::eLMSuccessStatus CLevMar::robustFunction(const Eigen::VectorXd & params, Eigen::VectorXd &resids, bool bVerbose, const int nParamChanged)
 {
-    CLMFunction::eLMSuccessStatus result = function.function(params, resids, bVerbose, -1);
+    //return function.function(params, resids, bVerbose, -1);
+    if(pseudoHuber_t<=0)
+        return function.function(params, resids, bVerbose, nParamChanged);
     
-    if(pseudoHuber_t>0)
+    const double b_sq = sqr(pseudoHuber_t);
+    
+    if(nParamChanged == -1)
     {
+        CLMFunction::eLMSuccessStatus result = function.function(params, resids, bVerbose, -1);
+        
         //Reweight residuals
-        const double b_sq = sqr(pseudoHuber_t);
         //const Eigen::ArrayXd d_abs = resids.array().abs() + 1e-12;
 
         //C(delta) = 2*b^2*(sqrt(1+(delta/b)^2) - 1);
@@ -280,8 +285,23 @@ CLMFunction::eLMSuccessStatus CLevMar::robustFunction(const Eigen::VectorXd & pa
         //cout << "Weights: " << weights.transpose() << endl;
         //resids.array() /= weights;
         //cout << "After " << resids.transpose() << endl;
+
+        return result;
     }
-    return result;
+    else //only a few residuals will change
+    {
+        const double NO_RESID = -99999;
+        Eigen::VectorXd tempResids = Eigen::VectorXd::Constant(resids.rows(), NO_RESID);
+        CLMFunction::eLMSuccessStatus result =  function.function(params, tempResids, bVerbose, nParamChanged);
+        
+        for(int nResid = 0; nResid < resids.rows(); nResid++)
+        {
+            if(tempResids(nResid) != NO_RESID)
+                resids(nResid) = sqrt(2 * b_sq * (sqrt(1 + sqr(tempResids(nResid) / pseudoHuber_t)) - 1));
+        }
+
+        return result;
+    }
 }
 
 #ifdef _WIN32
