@@ -13,7 +13,7 @@ PRE-REQUISITES:
 4) cmake
 (5) for BoWSLAM, 'board' library is required)
 
-BUILD:
+BUILD IN LINUX:
 
 Use cmake:
 
@@ -25,6 +25,20 @@ cmake ..
 make -j8
 
 (This will build everything, and will put the executables under 'build', and libraries in RelWithDebInfo (default cmake build type).
+
+BUILD IN WINDOWS: (sorry it is complicated! I don't know any better way to make cmake work in Windows)
+
+1) Download+install "Github for Windows" and "Cmake for Windows"
+
+2) Use Github for Windows to clone the tom-cv repo
+https://github.com/kayak-tom/tom-cv
+
+3) **Edit the top few lines of tom-cv/CMakeLists.txt to set the location of opencv, Eigen, Boost.**
+
+4) Run cmake on the tom-cv directory (click "Configure" then "Generate")
+
+5) Visual studio project files should be created. [You may need to add OpenCV (everything) and Boost libraries (system, filesystem, boost) to the project settings]
+
 
 
 DOCUMENTATION:
@@ -39,3 +53,5 @@ My publications (with links and bibtex) are listed at www.hilandtom.com/tombotte
 My Bag-of-Words scheme is described in: "Speeded-up Bag-of-Words algorithm for robot localisation through scene recognition" and used in "A Bag-of-Words Speedometer for Single Camera SLAM" and "An Integrated IMU, GNSS and Image Recognition Sensor for Pedestrian Navigation"
 
 BaySAC is described in "New Conditional Sampling Strategies for Speeded-Up RANSAC"
+
+Mosaicing is described in "Real-time aerial image mosaicing"

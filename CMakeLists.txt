@@ -12,6 +12,7 @@ IF(WIN32) # (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(OpenCV_INCLUDE_DIR "G:/Users/Tom Botterill/Documents/lib/opencv/opencv/build/include")
   set(EIGEN3_INCLUDE_DIR "G:/Users/Tom Botterill/Documents/lib/eigen")
   set(Boost_LIBRARY_DIRS  "G:/Users/Tom Botterill/Documents/lib/boost_1_55_0/stage/lib")
+  set(Boost_FOUND  TRUE)
   set(OpenCV_LIBRARIES "G:/Users/Tom Botterill/Documents/lib/opencv/opencv/build/x64/vc12/lib")
 endif()
 
@@ -54,7 +55,7 @@ endif()
 set(LIBRARY_OUTPUT_PATH "../${CMAKE_BUILD_TYPE}")
 
 
-IF(NOT Boost_INCLUDE_DIR)
+IF(NOT Boost_FOUND)
   find_package (Boost 1.54.0 REQUIRED COMPONENTS system filesystem thread)
 ENDIF()
 
