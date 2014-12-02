@@ -1632,3 +1632,36 @@ std::ostream& operator<<(std::ostream& s, const C3dPose & X) {
     s << X.t << " " << X.R;
     return s;
 }
+
+TTransformMat makeTransformMatrix(const Eigen::Matrix3d & R, const Eigen::Vector3d & X)
+{
+    TTransformMat T = TTransformMat::Identity();
+    
+    T.block<3,3>(0,0) = R; 
+    T.block<3,1>(0,3) = X;
+    
+    return T;
+}
+
+TTransformMat makeTransformMatrix(const C3dRotationQuat & q, const Eigen::Vector3d & X)
+{
+    Eigen::Matrix3d R;
+    q.asMat(R);
+    const TTransformMat T_extra = makeTransformMatrix(R, X);
+    return T_extra;
+}
+
+void transformMatrixToRt(const TTransformMat & T, C3dRotationQuat & q, Eigen::Vector3d & X)
+{
+    const Eigen::Matrix3d R = T.block<3,3>(0,0); 
+    q = C3dRotationQuat(R);
+    X=T.block<3,1>(0,3);
+}
+
+Eigen::Vector3d rotatePoint(const Eigen::Vector3d & point_in, const C3dRotationQuat & q)
+{
+    const C3dPoint t = Eigen::Vector3d(point_in);
+    const C3dPoint t_rot = q*t;
+    return t_rot.asVector();
+}
+

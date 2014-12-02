@@ -750,4 +750,12 @@ bool decomposeHomography(const Eigen::Matrix3d & H_in, C3dRotation & rotation, C
 
 std::ostream& operator<<(std::ostream& s, const C3dPose & X);
 
+//Move here so we can share with Scott's path planning component
+typedef Eigen::Matrix4d TTransformMat;
+
+TTransformMat makeTransformMatrix(const Eigen::Matrix3d & R, const Eigen::Vector3d & X);
+TTransformMat makeTransformMatrix(const C3dRotationQuat & q, const Eigen::Vector3d & X);
+void transformMatrixToRt(const TTransformMat & T, C3dRotationQuat & q, Eigen::Vector3d & X);
+Eigen::Vector3d rotatePoint(const Eigen::Vector3d & point_in, const C3dRotationQuat & q);
+
 #endif
