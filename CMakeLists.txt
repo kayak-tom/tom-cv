@@ -8,12 +8,12 @@
 IF(WIN32) # (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   MESSAGE(STATUS "The easiest way to make cmake find boost/Eigen/OpenCV is to provide all of the paths to library and include dirs here (NB use FORWARD SLASHES).")
 
-  set(Boost_INCLUDE_DIR "G:/Users/Tom Botterill/Documents/lib/boost_1_55_0")
-  set(OpenCV_INCLUDE_DIR "G:/Users/Tom Botterill/Documents/lib/opencv/opencv/build/include")
-  set(EIGEN3_INCLUDE_DIR "G:/Users/Tom Botterill/Documents/lib/eigen")
-  set(Boost_LIBRARY_DIRS  "G:/Users/Tom Botterill/Documents/lib/boost_1_55_0/stage/lib")
+  set(Boost_INCLUDE_DIR "C:/Users/Tiro-Tom/Documents/lib/boost_1_57_0")
+  set(OpenCV_INCLUDE_DIR "C:/Users/Tiro-Tom/Documents/lib/opencv/opencv/build/include")
+  set(EIGEN3_INCLUDE_DIR "C:/Users/Tiro-Tom/Documents/lib/eigen")
+  set(Boost_LIBRARY_DIRS  "C:/Users/Tiro-Tom/Documents/lib/boost_1_57_0/stage/lib")
   set(Boost_FOUND  TRUE)
-  set(OpenCV_LIBRARIES "G:/Users/Tom Botterill/Documents/lib/opencv/opencv/build/x64/vc12/lib")
+  set(OpenCV_LIBRARIES "C:/Users/Tiro-Tom/Documents/lib/opencv/opencv/build/x64/vc12/staticlib")
 endif()
 
 ######################

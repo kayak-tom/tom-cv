@@ -412,7 +412,8 @@ endLine:
         }
     }
 
-    void apply(T f(T)) {
+    /* Deprecate these--causing issues in Windows
+	void apply(T f(T)) {
         for (iterator p = begin(); p < end(); p++)
             *p = f(*p);
     }
@@ -420,7 +421,7 @@ endLine:
     void apply(T f(const T &)) {
         for (iterator p = begin(); p < end(); p++)
             *p = f(*p);
-    }
+    }*/
 
     void copyInto(CDynArray<T> & dest) const {
         dest.resize(size());

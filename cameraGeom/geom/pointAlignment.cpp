@@ -741,7 +741,7 @@ void grubbsInliers(CDynArray<double> & scales, double alpha, double & dMean, dou
     }
 }
 
-int saveScales(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, const char * fileName, const char * fileNameInliers, bool bLogs)
+/*int saveScales(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, const char * fileName, const char * fileNameInliers, bool bLogs)
 {
     CDynArray<double> scales;
 
@@ -768,7 +768,7 @@ int saveScales(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_
     scales.pp("\n", inliers);
 
     return scales.size();
-}
+}*/
 
 int getDG(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, double & dMean, double & dVar, bool bVerbose)
 {
@@ -779,8 +779,9 @@ int getDG(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA
     if(scales.size() == 0)
         return 0;
 
-    double (& pflog)(double) = log;
-    scales.apply(pflog);
+    //double (& pflog)(double) = log;
+	for (int i = 0; i < scales.size();i++)
+		scales[i] = log(i);
 
     if(bVerbose)
     {

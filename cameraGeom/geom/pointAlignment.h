@@ -79,7 +79,7 @@ int getTandR_1d_MeanLogs(const T3dPointMatchVector &vPointMatches, const double 
 
 int getTandR_1d_RANSACLogs(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, const double dRANSAC1dPropThresh, const int nRANSAC1dMinInliers, double &c, double & dVar);
 
-int saveScales(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, const char * fileName, const char * fileNameInliers, bool bLogs);
+//int saveScales(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, const char * fileName, const char * fileNameInliers, bool bLogs);
 
 int getDG(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA_MAX_ERR, double & dMean, double & dVar, bool bVerbose);
 
