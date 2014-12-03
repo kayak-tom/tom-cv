@@ -17,7 +17,7 @@ class TransformEngine
 {
     TransformEstimator2 & transformEstimator_; //!< Called to estimate pairwise transforms between images
     size_t latestFrameId_; //!< Keep track of the latest frame--updated by ImageSource as frames arrive
-    static const size_t NO_FRAME = -1; //!< For initialising frame ids that are not yet known
+    static const size_t NO_FRAME = 2147483647; //!< For initialising frame ids that are not yet known
     bool finished_; //! We've been notified that video has finished
     static const bool renderAllFrames_ = true; //! Wait for renderer to render every frame
     
