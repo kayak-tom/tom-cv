@@ -117,7 +117,7 @@ public:
 
 #define THROW(s) THROW_int(ex_OP(s))
 #define CHECK(x, s) { if(x) THROW(s)}
-#define CHECK_P(x, expr, s) {CHECK_PROFILING; if(x) { std::cout << "CHECK_P: " << #expr << "=" << expr << std::endl; THROW(s); }}
+#define CHECK_P(x, expr, s) {CHECK_PROFILING; if(x) { std::cout << "CHECK_P: " << #expr << "=" << expr << std::endl; std::cerr << "CHECK_P: " << #expr << "=" << expr << std::endl;  THROW(s); }}
 #define CHECKNAN(x) {CHECK_PROFILING; CHECK(std::isnan((double)x) || std::isinf((double)x), #x " is inf or nan");}
 #define CHECKBADNUM(x) {CHECKNAN(x); const double xabs=std::fabs((double)x); CHECK_P((xabs>0&&xabs<1e-50) || xabs>1e+100, x, #x " is *probably* uninitialised (denormal, or >>HUGE)")};
 #define CHECKNOTNULL(x) {CHECK_PROFILING; CHECK(!x, #x " is null");}
