@@ -1081,9 +1081,9 @@ class CSVMTraining : public CSVMTraining_base
                 adNuVals.push_back(std::pow(2.0, dPow));
         }
         
-        //adGammaVals.push_back(-1); //linear
+        adGammaVals.push_back(-1); //linear
         
-        double dLogGammaStart = -12, dLogGammaEnd = 5, dGammaStep = (dLogGammaEnd-dLogGammaStart)/9.01; //10 steps
+        double dLogGammaStart = -12, dLogGammaEnd = 5, dGammaStep = (dLogGammaEnd-dLogGammaStart)/15.01; //16 steps
         for(double dLogGamma = dLogGammaStart; dLogGamma < dLogGammaEnd; dLogGamma+=dGammaStep) { //a bit random results below -1
             adGammaVals.push_back(exp(dLogGamma));
         }
