@@ -1167,8 +1167,8 @@ class CSVMTraining : public CSVMTraining_base
         BOOST_FOREACH(CSVMParameterisation & parameterisation, aParameterisations) {
             if(parameterisation.getCVScore() > bestParameterisationForThisSubset.getCVScore())
                 bestParameterisationForThisSubset = parameterisation;
-
-            surfaceTSVFile << parameterisation.getSvmParams().nu << '\t' << log(parameterisation.getSvmParams().gamma) << '\t' << parameterisation.getCVScore() << '\t' << parameterisation.getNumSVs() << endl;
+            const double dGamma = parameterisation.getSvmParams().gamma, dLogGamma = (dGamma>0) ? log(dGamma) : -20;
+            surfaceTSVFile << parameterisation.getSvmParams().nu << '\t' << dLogGamma << '\t' << parameterisation.getCVScore() << '\t' << parameterisation.getNumSVs() << endl;
         }
         cout << "Best parameterisation for this subset has score " << bestParameterisationForThisSubset.getCVScore() << endl;
 
