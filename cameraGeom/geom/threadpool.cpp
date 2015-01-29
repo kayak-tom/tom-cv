@@ -58,6 +58,11 @@ class CThreadpool : public CThreadpool_base
             if(!szErrorMessage)
                 szErrorMessage = szEXITING;
         }
+        catch(const std::exception & ex)
+        {
+            cout << "ERROR: std::exception caught in threadpool: " << ex.what() << endl;
+            szErrorMessage = "std::exception"; 
+        }
         catch(...)
         {
             szErrorMessage = szUnknown;

@@ -465,7 +465,7 @@ class CSVMTraining : public CSVMTraining_base
     const std::string path, label;
 
     static const bool bMT = true;
-    static const int K = 6; // for k-fold cross-validation (= # threads)
+    static const int K = 6; // for k-fold cross-validation 
     boost::scoped_ptr<CThreadpool_base> pSVMThreadpool;
 
     TLabelledFeatures aaadFeatures[2]; //[0] negative and [1] positive examples
@@ -1069,10 +1069,11 @@ class CSVMTraining : public CSVMTraining_base
             adNuVals.push_back(0.01);
             adNuVals.push_back(0.02);
             adNuVals.push_back(0.033);
-            adNuVals.push_back(0.1); //Make sure we don't end up with far too many SVs
+            adNuVals.push_back(0.05);
+            /*adNuVals.push_back(0.1); //Make sure we don't end up with far too many SVs
             adNuVals.push_back(0.2);
             adNuVals.push_back(0.3);
-            adNuVals.push_back(0.4);
+            adNuVals.push_back(0.4);*/
             //adNuVals.push_back(0.5);
         }
         else if(SVM_TYPE == cv::SVM::C_SVC)
@@ -1081,9 +1082,9 @@ class CSVMTraining : public CSVMTraining_base
                 adNuVals.push_back(std::pow(2.0, dPow));
         }
         
-        adGammaVals.push_back(-1); //linear
-        
-        double dLogGammaStart = -12, dLogGammaEnd = 5, dGammaStep = (dLogGammaEnd-dLogGammaStart)/15.01; //16 steps
+        //adGammaVals.push_back(-1); //linear
+        #pragma message("TB:  back to dLogGammaEnd = 5")
+        double dLogGammaStart = -12, dLogGammaEnd = 2, dGammaStep = (dLogGammaEnd-dLogGammaStart)/9.01; //10 steps
         for(double dLogGamma = dLogGammaStart; dLogGamma < dLogGammaEnd; dLogGamma+=dGammaStep) { //a bit random results below -1
             adGammaVals.push_back(exp(dLogGamma));
         }
