@@ -56,7 +56,7 @@ class CSVMTraining_base
 {
     
 public:
-    enum eSVMFeatureSelectionMethod {eFFS, eBFS, eLoadFromFile }; 
+    enum eSVMFeatureSelectionMethod {eFFS, eBFS, eLoadFromFile, eNoFS }; 
 
     CSVMTraining_base() {}
     virtual ~CSVMTraining_base() {}

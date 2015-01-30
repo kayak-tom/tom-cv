@@ -1224,7 +1224,7 @@ class CSVMTraining : public CSVMTraining_base
             CHECK_P(candidateSubsetsToTry.size()==0 || (int)candidateSubsetsToTry.size() > nDims, candidateSubsetsToTry.size(), "Bad load from featurefile");
 
             featureSelectionMode=eLoadFromFile;
-        } else if(featureSelectionMode == eBFS) {
+        } else if(featureSelectionMode == eBFS || featureSelectionMode == eNoFS) {
             TFeatureIdxSubset candidateSubset(nDims);
             for(int i=0; i < nDims; i++)
                 candidateSubset[i] = i;
@@ -1284,7 +1284,7 @@ class CSVMTraining : public CSVMTraining_base
                 bestFeatureSubsetOverall = bestFeatureSubsetThisSize;
             }
 
-            if(featureSelectionMode==eLoadFromFile)
+            if(featureSelectionMode==eLoadFromFile || featureSelectionMode == eNoFS)
                 break;
 
             makeNewSubsets(bestFeatureSubsetThisSize, candidateSubsetsToTry, featureSelectionMode == eFFS);
@@ -1391,7 +1391,7 @@ public:
     virtual void addTrainingFeature(CSVMFeature_base * pFeature, const bool bLabel) {
         boost::mutex::scoped_lock lock(mxLockToAdd);
 
-        const bool bVerbose = false;
+        const bool bVerbose = true;
         
         const cv::Mat & entireFeature=pFeature->getEntireFeature();
         
