@@ -511,7 +511,7 @@ class CSVMTraining : public CSVMTraining_base
         double dNumRemovedBelow = -1;
         cout << "Sorted features: " << (aSortedFeatures.size()) << endl;
         for(int i=0; i<((int)aSortedFeatures.size())-1; i++) {
-            if(bVerbose && i<10) cout << i << ": " << aSortedFeatures[i].first << "-" << aSortedFeatures[i].second << endl;
+            if(bVerbose && i<10) cout << i << ": " << aSortedFeatures[i].first << "-" << aSortedFeatures[i].second << " ";
 
             if(aSortedFeatures[i].second)
                 dPos++;
@@ -524,6 +524,9 @@ class CSVMTraining : public CSVMTraining_base
                 dNumRemovedBelow = dNeg;
             }
         }
+        if(bVerbose)
+            cout << endl;
+            
         const double dMinimumPower = 0.1;
         const double dPropOfNegativeExamplesRemoved = dNumRemovedBelow / (double)aaadFeatures[false].size();
         if(dPropOfNegativeExamplesRemoved < dMinimumPower || dNumRemovedBelow < 50) {
@@ -1391,19 +1394,22 @@ public:
     virtual void addTrainingFeature(CSVMFeature_base * pFeature, const bool bLabel) {
         boost::mutex::scoped_lock lock(mxLockToAdd);
 
-        const bool bVerbose = true;
+        const bool bVerbose = false, bRemoveDuplicates = false;
         
         const cv::Mat & entireFeature=pFeature->getEntireFeature();
         
-        BOOST_FOREACH(const cv::Mat & sample, aaadFeatures[bLabel])
+        if(bRemoveDuplicates)
         {
-            if(equal(sample, entireFeature))
+            BOOST_FOREACH(const cv::Mat & sample, aaadFeatures[bLabel])
             {
-                if(bVerbose)
-                    cout << "Duplicate feature " << bLabel << " " << aaadFeatures[bLabel].back() << endl;
-                
-                return;
-            }             
+                if(equal(sample, entireFeature))
+                {
+                    if(bVerbose)
+                        cout << "Duplicate feature " << bLabel << " " << aaadFeatures[bLabel].back() << endl;
+                    
+                    return;
+                }             
+            }
         }
         
         aaadFeatures[bLabel].push_back(entireFeature);
