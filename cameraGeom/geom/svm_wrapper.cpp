@@ -1065,14 +1065,23 @@ class CSVMTraining : public CSVMTraining_base
         std::vector<double> adNuVals, adGammaVals;
         if(SVM_TYPE == cv::SVM::NU_SVC)
         {
+            adNuVals.push_back(0.0005);
+            adNuVals.push_back(0.00066);
+            adNuVals.push_back(0.00083);
             adNuVals.push_back(0.001);
+            adNuVals.push_back(0.00125);
+            adNuVals.push_back(0.0015);
             adNuVals.push_back(0.002);
+            adNuVals.push_back(0.0025);
+            /*adNuVals.push_back(0.003);
             adNuVals.push_back(0.0033);
+            
             adNuVals.push_back(0.006);
             adNuVals.push_back(0.01);
             adNuVals.push_back(0.02);
             adNuVals.push_back(0.033);
-            adNuVals.push_back(0.05);
+            adNuVals.push_back(0.05);*/
+            
             /*adNuVals.push_back(0.1); //Make sure we don't end up with far too many SVs
             adNuVals.push_back(0.2);
             adNuVals.push_back(0.3);
