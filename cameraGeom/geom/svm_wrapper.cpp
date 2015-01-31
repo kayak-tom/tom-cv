@@ -1058,14 +1058,45 @@ class CSVMTraining : public CSVMTraining_base
             svmParams.setCVScore(dKFoldCVScore-dPenalty, dAvNumSVs);
         }
     };
+    
+    void loadHyperparams(const std::string & name, double & lo, double & hi, int & steps) const
+    {
+        const bool bVerbose = true;
+        std::string filename = getPath() + "/" + name + "-LoHiSteps";
+        if(bVerbose) cout << "Looking for hyperparameter ranges in " << filename << endl;
+        if(boost::filesystem::exists(filename))
+        {
+            std::ifstream ranges(filename.c_str());
+            ranges >> lo;
+            ranges >> hi;
+            ranges >> steps;
+        }
+        else
+        {
+            std::ofstream ranges(filename.c_str());
+            ranges << lo << ' ' << hi << ' ' << steps;
+        }
+        if(bVerbose) cout << "lo=" << lo;
+        if(bVerbose) cout << " hi=" << hi;
+        if(bVerbose) cout << " steps=" << steps << endl;
+    }
 
     std::vector<CSVMParameterisation> getHyperparamSets() const {
         std::vector<CSVMParameterisation> aParameterisations;
-
+        double nu_lo=0.0005, nu_hi=0.4, loggamma_lo=-14, loggamma_hi=5;
+        int nu_steps = 10, gamma_steps = 10;
+        loadHyperparams("nu", nu_lo, nu_hi, nu_steps);
+        loadHyperparams("loggamma", loggamma_lo, loggamma_hi, gamma_steps);
+        
         std::vector<double> adNuVals, adGammaVals;
         if(SVM_TYPE == cv::SVM::NU_SVC)
         {
-            adNuVals.push_back(0.0005);
+            const double lognu_lo=log(nu_lo),lognu_hi=log(nu_hi), nu_step = (lognu_hi-lognu_lo)/(nu_steps-0.999);
+            for(double dLogNu = lognu_lo; dLogNu < lognu_hi; dLogNu+=nu_step) { //a bit random results below -1
+                adNuVals.push_back(exp(dLogNu));
+            }            
+            
+            /*adNuVals.push_back(0.0005);
             adNuVals.push_back(0.00066);
             adNuVals.push_back(0.00083);
             adNuVals.push_back(0.001);
@@ -1073,7 +1104,7 @@ class CSVMTraining : public CSVMTraining_base
             adNuVals.push_back(0.0015);
             adNuVals.push_back(0.002);
             adNuVals.push_back(0.0025);
-            /*adNuVals.push_back(0.003);
+            adNuVals.push_back(0.003);
             adNuVals.push_back(0.0033);
             
             adNuVals.push_back(0.006);
@@ -1095,9 +1126,9 @@ class CSVMTraining : public CSVMTraining_base
         }
         
         //adGammaVals.push_back(-1); //linear
-        #pragma message("TB:  back to dLogGammaEnd = 5")
-        double dLogGammaStart = -12, dLogGammaEnd = 2, dGammaStep = (dLogGammaEnd-dLogGammaStart)/9.01; //10 steps
-        for(double dLogGamma = dLogGammaStart; dLogGamma < dLogGammaEnd; dLogGamma+=dGammaStep) { //a bit random results below -1
+        //#pragma message("TB:  back to dLogGammaEnd = 5")
+        const double dGammaStep = (loggamma_hi-loggamma_lo)/(gamma_steps - 0.999); //10 steps
+        for(double dLogGamma = loggamma_lo; dLogGamma < loggamma_hi; dLogGamma+=dGammaStep) { //a bit random results below -1
             adGammaVals.push_back(exp(dLogGamma));
         }
 
