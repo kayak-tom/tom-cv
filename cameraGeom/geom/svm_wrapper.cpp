@@ -434,6 +434,7 @@ public:
     }
 
     bool keepPotentialCandidate(CSVMFeature_base * pFeature) const {
+        CHECKNOTNULL(pFeature);
         const double dFeatureVal = pFeature->value(state.getFeatureIdx());
         return keepPotentialCandidate(dFeatureVal);
     }
