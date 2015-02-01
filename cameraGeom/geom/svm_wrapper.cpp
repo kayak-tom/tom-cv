@@ -22,6 +22,7 @@
 #include <Eigen/Core>
 #include <opencv2/core/core_c.h>
 #include <boost/thread/mutex.hpp>
+#include "levMarNumerical.h"
 
 static const int SVM_TYPE = cv::SVM::NU_SVC;
 
@@ -46,6 +47,47 @@ cv::Mat vectorToMat(const TLabelledFeatures & aLabelledFeatures)
     return M;
 }
 
+bool svmClass(const float fScore) {
+    return fScore>0;
+}
+
+class CSigmoidParams
+{
+    //friend class CSavedSVMState;
+    //friend class CSVMTraining::CLMForSVMSigmoid;
+
+
+public:
+    double dThreshLo, dThreshHi, dShift, dScale;
+
+    CSigmoidParams(const double dThreshLo=0.1, const double dThreshHi=0.9, const double dShift=0, const double dScale=1)
+        : dThreshLo(dThreshLo), dThreshHi(dThreshHi), dShift(dShift), dScale(dScale) {
+
+    }
+
+    void validate() const {
+        CHECKPROBABILITY(dThreshLo);
+        CHECKPROBABILITY(dThreshHi);
+        CHECK(dThreshLo >= dThreshHi, "Bad thresholds");
+        CHECK(dScale<=0, "Bad scale");
+        CHECK(dThreshLo >= dThreshHi, "Bad thresholds");
+    }
+
+    double prob(const double dResponse) const {
+        const double dProb = dThreshLo + (dThreshHi-dThreshLo)*logisticSigmoid(dScale * (dResponse - dShift));
+        return dProb;
+    }
+    
+    static double logisticSigmoid(const double x) {
+        return 1.0/(1.0+exp(-x));    /*range 0 to 1 */
+    }
+    static double logisticSigmoid_inv(const double x) {
+        CHECKPROBABILITY(x);
+        
+        return -log(1.0/clip(x, 0.0001, 0.9999) - 1);
+    }
+    
+};
 
 class CBoosterState
 {
@@ -106,8 +148,7 @@ public:
         fs["normalisingMean"] >> adNormalisingMean;
         fs["normalisingScale"] >> adNormalisingScale;
 
-        if(bVerbose)
-        {
+        if(bVerbose) {
             cout << "Loaded feature index subset " << substateIndexMat << endl;
             cout << "Loaded normalisingMean " << cv::Mat(adNormalisingMean) << endl;
             cout << "Loaded normalisingScale " << cv::Mat(adNormalisingScale) << endl;
@@ -199,36 +240,36 @@ class CSavedSVMState
     //TNormalisingCoefficients adNormalisingMean, adNormalisingScale;
     double dSignCorrection;
     double dClassificationBoundary;
-    
-    static double interpPrecisionBoundary(const double dTargetPrecision, const TPRLookup & PRLookup) 
-    {
+
+    CSigmoidParams sigmoidParams;
+
+    static double interpPrecisionBoundary(const double dTargetPrecision, const TPRLookup & PRLookup) {
         //Interpolate off 2 closest (should work off the ends as well)
         double dBoundary1=0,dBoundary2=0,dP1=HUGE,dP2=HUGE;
         {
-            for(int i=0;i<(int)PRLookup.first.size();i++)
-            {
+            for(int i=0; i<(int)PRLookup.first.size(); i++) {
                 const double dBoundary = PRLookup.first[i];
                 const double dPrecision = PRLookup.second[i];
-                if(fabs(dPrecision - dTargetPrecision) < fabs(dP1 - dTargetPrecision))
-                {
-                    dP2 = dP1; dBoundary2 = dBoundary1;
-                    dP1 = dPrecision; dBoundary1 = dBoundary;
-                }
-                else if(fabs(dPrecision - dTargetPrecision) < fabs(dP2 - dTargetPrecision))
-                {
-                    dP2 = dPrecision; dBoundary2 = dBoundary;
+                if(fabs(dPrecision - dTargetPrecision) < fabs(dP1 - dTargetPrecision)) {
+                    dP2 = dP1;
+                    dBoundary2 = dBoundary1;
+                    dP1 = dPrecision;
+                    dBoundary1 = dBoundary;
+                } else if(fabs(dPrecision - dTargetPrecision) < fabs(dP2 - dTargetPrecision)) {
+                    dP2 = dPrecision;
+                    dBoundary2 = dBoundary;
                 }
             }
-            
+
             // Fit straight line:
             // dBoundary1 = m*dP1+c
             // dBoundary2 = m*dP2+c
-            
+
             const double m = (dBoundary2-dBoundary1)/(dP2-dP1);
             const double c = dBoundary1-m*dP1;
-            
+
             CHECK(!zero(c-(dBoundary2-m*dP2)), "Line fit failed (probably a horizontal line)");
-            
+
             return dTargetPrecision*m+c;
         }
     }
@@ -247,22 +288,28 @@ public:
         featureSubset.load(fs);
 
         fs["signCorrection"] >> dSignCorrection;
-        
+
         TPRLookup PRLookup;
-        if(!fs["boundaries"].empty() && dPrecision != CSVMClassifier_base::NO_PRECISION)
-        {
+        if(!fs["boundaries"].empty() && dPrecision != CSVMClassifier_base::NO_PRECISION) {
             fs["boundaries"] >> PRLookup.first;
             fs["precision"] >> PRLookup.second;
             dClassificationBoundary = interpPrecisionBoundary(dPrecision, PRLookup);
         }
-        
+
+        if(!fs["sigmoid_thresh_lo"].empty()) {
+            fs["sigmoid_thresh_lo"] >> sigmoidParams.dThreshLo;
+            fs["sigmoid_thresh_hi"] >> sigmoidParams.dThreshHi;
+            fs["sigmoid_scale"] >> sigmoidParams.dScale;
+            fs["sigmoid_shift"] >> sigmoidParams.dShift;
+        }
+
         if(dSignCorrection == 0)
             cout << "Boosted classifier has no svm training--all training outliers can be removed by boosting." << endl;
     }
 
     //Save back settings from training
-    CSavedSVMState(const std::string path, const std::string label, const TBoosterStates & boosterStates, const CFeatureSubsetSelecter & featureSubset, cv::SVM & svm, double dSignCorrection, TPRLookup & PRLookup)
-        : path(path), label(label), boosterStates(boosterStates), featureSubset(featureSubset), dSignCorrection(dSignCorrection) {
+    CSavedSVMState(const std::string path, const std::string label, const TBoosterStates & boosterStates, const CFeatureSubsetSelecter & featureSubset, cv::SVM & svm, double dSignCorrection, TPRLookup & PRLookup, const CSigmoidParams & sigmoidParams)
+        : path(path), label(label), boosterStates(boosterStates), featureSubset(featureSubset), dSignCorrection(dSignCorrection), sigmoidParams(sigmoidParams) {
 
         boost::filesystem::create_directories(path);
         cv::FileStorage fs(getExtraFilename().c_str(), cv::FileStorage::WRITE);
@@ -281,13 +328,22 @@ public:
 
         fs << "signCorrection" << dSignCorrection; //0 == boosting only.
         featureSubset.save(fs);
-        
+
         fs << "boundaries" << PRLookup.first;
         fs << "precision" << PRLookup.second;
-        
+
         if(dSignCorrection != 0) {
             svm.save(getSVMFilename().c_str(), label.c_str());
         }
+
+        fs << "sigmoid_thresh_lo" << sigmoidParams.dThreshLo;
+        fs << "sigmoid_thresh_hi" << sigmoidParams.dThreshHi;
+        fs << "sigmoid_scale" << sigmoidParams.dScale;
+        fs << "sigmoid_shift" << sigmoidParams.dShift;
+    }
+
+    const CSigmoidParams & getSigmoidParams() const {
+        return sigmoidParams;
     }
 
     const CFeatureSubsetSelecter & getFeatureSubset() const {
@@ -311,9 +367,8 @@ public:
     double getSignCorrection() const {
         return dSignCorrection;
     }
-    
-    double getClassificationBoundary() const
-    {
+
+    double getClassificationBoundary() const {
         return dClassificationBoundary;
     }
 
@@ -451,6 +506,12 @@ public:
         return savedState.getSignCorrection()*dSVMVal;
     }
 
+    double probability(CSVMFeature_base * pFeature) {
+        savedState.getSigmoidParams().validate();
+        const double dProb = savedState.getSigmoidParams().prob(classify(pFeature));
+        CHECKPROBABILITY(dProb);
+        return dProb;
+    }
 };
 
 CSVMClassifier_base * CSVMClassifier_base::makeSVMClassifier(const std::string path, const std::string label, const double dPrecision)
@@ -465,7 +526,7 @@ class CSVMTraining : public CSVMTraining_base
     const std::string path, label;
 
     static const bool bMT = true;
-    static const int K = 6; // for k-fold cross-validation 
+    static const int K = 6; // for k-fold cross-validation
     boost::scoped_ptr<CThreadpool_base> pSVMThreadpool;
 
     TLabelledFeatures aaadFeatures[2]; //[0] negative and [1] positive examples
@@ -526,15 +587,15 @@ class CSVMTraining : public CSVMTraining_base
         }
         if(bVerbose)
             cout << endl;
-            
+
         const double dMinimumPower = 0.1;
         const double dPropOfNegativeExamplesRemoved = dNumRemovedBelow / (double)aaadFeatures[false].size();
         if(dPropOfNegativeExamplesRemoved < dMinimumPower || dNumRemovedBelow < 50) {
             return TBoosterCandidate(0, CBoosterState());
         }
-        
+
         if(bVerbose)cout << "One candidate " << dPropOfNegativeExamplesRemoved << " nIdx=" << nIdx << " dBestThreshPosBelow=" << dBestThreshPosBelow << " bRejectAbove=" << bRejectAbove << endl;
-        
+
         return TBoosterCandidate(dPropOfNegativeExamplesRemoved, CBoosterState(nIdx, dBestThreshPosBelow, bRejectAbove));
     }
 
@@ -554,7 +615,7 @@ class CSVMTraining : public CSVMTraining_base
             //Otherwise we found a booster state.
             aBoosterStates.push_back(boosterState);
             CBoostedFilter filter(boosterState);
-            
+
             const int nNegFeaturesBefore = (int)aaadFeatures[0].size();
             //Filter and repeat.
             for(int bLabel=0; bLabel < 2; bLabel++) {
@@ -566,9 +627,9 @@ class CSVMTraining : public CSVMTraining_base
                 }
                 aaadFeatures[bLabel] = newFeatures;
             }
-            
+
             const int nNegFeaturesAfter = (int)aaadFeatures[0].size();
-            
+
             CHECK_P(nNegFeaturesAfter >= nNegFeaturesBefore, nNegFeaturesAfter, "Boosting failed");
         }
     }
@@ -594,22 +655,77 @@ class CSVMTraining : public CSVMTraining_base
         return bestBoosterCandidate.second;
     }
 
-    /*void normaliseFeatures() {
-        const bool bVerbose = true;
-        for(int bLabel=0; bLabel < 2; bLabel++) {
-            BOOST_FOREACH(cv::Mat & feature, aaadFeatures[bLabel]) {
-                if(bVerbose)
-                    cout << "Feature before normalisation " << feature << endl;
+    class CLMForSVMSigmoid : public CLMFunction
+    {
+        const cv::Mat & labels;
+        const cv::Mat & test_labels;
+        const double dSignCorrection;
+        CSigmoidParams & sigmoidParams;
+    public:
+        CLMForSVMSigmoid(const cv::Mat & labels, const cv::Mat & test_labels, double & dSignCorrection, CSigmoidParams & sigmoidParams)
+            : labels(labels), test_labels(test_labels), dSignCorrection(dSignCorrection),sigmoidParams(sigmoidParams) {
 
-                feature -= normalisingMean;
-                cv::multiply(feature, normalisingScale, feature);
-
-                if(bVerbose)
-                    cout << "Feature after normalisation " << feature << endl;
-            }
         }
-    }*/
-    double propCorrect(const cv::SVM & svm, const cv::Mat & features, const cv::Mat & labels, double & dSignCorrection, double & dPrecision, const double dBoundary) const {
+
+        virtual int inputs() const {
+            return 4;
+        }
+        virtual int values() const { return test_labels.rows; }
+
+        /**
+         * @brief Objective function to optimise
+         * @param x Parameter vector (size inputs())
+         * @param resids Residual vector to fill (size values())
+         * @param bVerbose If CLevMar has a bVerbose flag set, then calls to 'function' are verbose iff not computing numerical derivatives.
+         * @param nParamChanged If only one parameter has changed since this residual vector was calculated, nParamChanged is set to that parameter index (the function only needs to update relevent residuals). Otherwise nParamChanges = -1
+         * @return eLMSuccess (unless parameters are invalid, e.g. eLMFail, which will cause the optimisation to either step back or fail without converging.
+         */
+        virtual eLMSuccessStatus function(const Eigen::VectorXd &x, Eigen::VectorXd &resids, bool bVerbose = false, const int nParamChanged = -1) {
+            sigmoidParams.dScale=x(0);
+            sigmoidParams.dShift=x(1);
+            sigmoidParams.dThreshHi=CSigmoidParams::logisticSigmoid(x(2));
+            sigmoidParams.dThreshLo=CSigmoidParams::logisticSigmoid(x(3));
+
+            for(int i=0; i < test_labels.rows; i++) {
+                const double dSVMResponse = dSignCorrection * test_labels.at<float>(i);
+                
+                const double dProb = sigmoidParams.prob(dSVMResponse);
+                
+                const double labelGT = labels.at<float>(i);
+                const bool bGTClass = svmClass((float)labelGT);
+                
+                resids(i) = dProb - (bGTClass ? 1 : 0);
+                
+                if(bVerbose) cout << "dSVMResponse=" << dSVMResponse << "\tdProb=" << dProb <<"\tscale_shift_threshhilo=" << x.transpose() <<"\tlabelGT=" << labelGT <<"\tbGTClass=" << bGTClass << endl;
+            }
+            return eLMSuccess;
+        }
+        
+        virtual Eigen::VectorXd init() {
+            Eigen::VectorXd initParams = Eigen::VectorXd::Zero(inputs());
+
+            initParams(0) = sigmoidParams.dScale;
+            initParams(1) = sigmoidParams.dShift;
+            initParams(2) = CSigmoidParams::logisticSigmoid_inv(sigmoidParams.dThreshHi);
+            initParams(3) = CSigmoidParams::logisticSigmoid_inv(sigmoidParams.dThreshLo);
+
+            return initParams;
+        }
+    };
+
+    void fitSigmoid(const cv::Mat & labels, const cv::Mat & test_labels, double & dSignCorrection, CSigmoidParams & sigmoidParams) const {
+        const bool bVerbose = false;
+
+        CLMForSVMSigmoid sigmoidFit(labels, test_labels, dSignCorrection, sigmoidParams);
+        CLevMar LM(sigmoidFit, bVerbose);
+        
+        Eigen::VectorXd params = sigmoidFit.init();
+        LM.minimise(params);
+        
+        sigmoidParams.validate();
+    }
+
+    double propCorrect(const cv::SVM & svm, const cv::Mat & features, const cv::Mat & labels, double & dSignCorrection, double & dPrecision, const double dBoundary, CSigmoidParams * pSigmoid) const {
         const bool bVerbose = (dBoundary!=0);
 
         cv::Mat test_labels = 0*labels;
@@ -627,7 +743,7 @@ class CSVMTraining : public CSVMTraining_base
             for(int i=0; i<test_labels.rows; i++) {
                 cv::Mat row = features.row(i);
                 const double dSVMResponse = svm.predict(row, true);
-				test_labels.at<float>(i) = (float)(dSVMResponse - dBoundary);
+                test_labels.at<float>(i) = (float)(dSVMResponse - dBoundary);
 
                 //cout << "Feature " << row << " response " << dSVMResponse << endl;
             }
@@ -683,8 +799,10 @@ class CSVMTraining : public CSVMTraining_base
 
             if(bVerbose)
                 cout << "BSR=" << dBSR << " dTotalSuccessRate=" << dTotalSuccessRate << endl;
-            
+
             dPrecision = computePrecision(labels, test_labels, dSignCorrection, bVerbose);
+
+            if(pSigmoid) fitSigmoid(labels, test_labels, dSignCorrection, *pSigmoid);
 
             return dTotalSuccessRate;
         }
@@ -717,16 +835,15 @@ class CSVMTraining : public CSVMTraining_base
 
         return dTotalSuccessRate;
     }
-    
+
     double computePrecision(const cv::Mat & labels, const cv::Mat & test_labels, const double dSignCorrection, const bool bVerbose) const {
-        
+
         int nNumActuallyCorrect=0, nNumLabelledCorrect=0, nTotalCorrectExamples=0;
         for(int i=0; i < labels.rows; i++) {
             const double labelGT = labels.at<float>(i);
-			const bool bGTClass = svmClass((float)labelGT);
+            const bool bGTClass = svmClass((float)labelGT);
             const bool bPredictedClass = svmClass((float)dSignCorrection*test_labels.at<float>(i));
-            if(bPredictedClass)
-            {
+            if(bPredictedClass) {
                 nNumLabelledCorrect++;
                 if(bGTClass)
                     nNumActuallyCorrect++;
@@ -736,13 +853,13 @@ class CSVMTraining : public CSVMTraining_base
         }
         const double dPrecision = (double)nNumActuallyCorrect/(double)nNumLabelledCorrect;
         const double dRecall = (double)nNumActuallyCorrect/(double)nTotalCorrectExamples;
-        
+
         if(bVerbose)
             cout << "Precision=" << dPrecision << " Recall=" << dRecall << endl;
-        
+
         return dPrecision;
     }
-    
+
 
     double computeBSR(const cv::Mat & labels, const cv::Mat & test_labels, const double dSignCorrection, const bool bVerbose) const {
         double dBSR = 0; //2-class balanced success rate, as defined in "A User's Guide to Support Vector Machines"
@@ -773,10 +890,7 @@ class CSVMTraining : public CSVMTraining_base
     }
 
     float svmScore(const bool bLabel) const {
-        return bLabel ? 1.0f : -1.0f; //Unfortunately can't send fNegativeScore to opencv;
-    }
-    bool svmClass(const float fScore) const {
-        return fScore>0;
+        return bLabel ? 1.0f : -1.0f; 
     }
 
     class CTrainValidateFeatureSet
@@ -833,17 +947,19 @@ class CSVMTraining : public CSVMTraining_base
                 cout << aLabels[eTrain] << endl;
             }
             svm.train(aFeatures[eTrain], aLabels[eTrain], cv::Mat(), cv::Mat(), svmParams);
-            
+
             nNumSVs = svm.get_support_vector_count();
-            
+
             return validate(svm);
         }
-        
-        int dims() const { return aFeatures[eTrain].cols; }
+
+        int dims() const {
+            return aFeatures[eTrain].cols;
+        }
     private:
         double validate(const cv::SVM & svm) const {
             double dSignCorrection = 0, dPrecision=0;
-            return pTrainer->propCorrect(svm, aFeatures[eValidate], aLabels[eValidate], dSignCorrection, dPrecision, 0);
+            return pTrainer->propCorrect(svm, aFeatures[eValidate], aLabels[eValidate], dSignCorrection, dPrecision, 0, 0);
         }
     };
 
@@ -868,15 +984,15 @@ class CSVMTraining : public CSVMTraining_base
             dCVScore = dNewCVScore;
             dNumSVs = dNewNumSVs;
         }
-        
+
         double getCVScore() const {
             return dCVScore;
         }
-        
+
         double getNumSVs() const {
             return dNumSVs;
         }
-        
+
         const cv::SVMParams& getSvmParams() const {
             return svmParams;
         }
@@ -972,7 +1088,7 @@ class CSVMTraining : public CSVMTraining_base
         }
 
     public:
-        double trainOnAll(cv::SVM & svm_final, const CSVMParameterisation & bestParameterisation, double & dSignFix, TPRLookup & adPrecision) const {
+        double trainOnAll(cv::SVM & svm_final, const CSVMParameterisation & bestParameterisation, double & dSignFix, TPRLookup & adPrecision, CSigmoidParams & sigmoidParams) const {
             //Select all features
             std::vector<cv::Mat> aFeaturesVec;
             std::vector<float> aLabelsVec;
@@ -985,22 +1101,22 @@ class CSVMTraining : public CSVMTraining_base
             cv::Mat allFeatures = vectorToMat(aFeaturesVec);
             cv::Mat allLabels(aLabelsVec);
             svm_final.train(allFeatures, allLabels, cv::Mat(), cv::Mat(), bestParameterisation.getSvmParams());
-            
-            
+
+
             double dPrecision = -1;
             for(double dBoundary = -1; dBoundary <= 1; dBoundary += 0.1) {
-                pTrainer->propCorrect(svm_final, allFeatures, allLabels, dSignFix, dPrecision, dBoundary);
-                
+                pTrainer->propCorrect(svm_final, allFeatures, allLabels, dSignFix, dPrecision, dBoundary, 0);
+
                 adPrecision.first.push_back(dBoundary);
                 adPrecision.second.push_back(dPrecision);
             }
-            
-            
+
+
             for(int i=0; i<aFeaturesVec[0].cols-1; i++) {
                 outputDecisionBoundary(bestParameterisation, svm_final, aFeaturesVec[0]*0, i, i+1);
             }
 
-            const double dScore = pTrainer->propCorrect(svm_final, allFeatures, allLabels, dSignFix, dPrecision, 0);
+            const double dScore = pTrainer->propCorrect(svm_final, allFeatures, allLabels, dSignFix, dPrecision, 0, &sigmoidParams);
             return dScore;
         }
 
@@ -1039,40 +1155,39 @@ class CSVMTraining : public CSVMTraining_base
             const bool bVerbose = false;
 
             double dKFoldCVScore = 0, dAvNumSVs = 0;
-            
+
+            int nVal=0;
             BOOST_FOREACH(const CTrainValidateFeatureSet & featureSet, aFeatureDivisions) {
-                int nNumSVs = 0; 
+                int nNumSVs = 0;
                 dKFoldCVScore += featureSet.trainAndValidate(svmParams.getSvmParams(), nNumSVs);
                 dAvNumSVs += nNumSVs;
+                
+                nVal++;
+                cout << "Completed " << nVal << " of " << aFeatureDivisions.size() << " (" << svmParams.toString() << ")" << endl;
             }
             dKFoldCVScore /= (double)aFeatureDivisions.size();
             dAvNumSVs /= (double)aFeatureDivisions.size();
-            
+
             const double dPenalty = 0.003*aFeatureDivisions[0].dims();
-            
-            if(bVerbose)
-            { 
+
+            if(bVerbose) {
                 cout << aFeatureDivisions.size() << "-fold cross validation score=" << dKFoldCVScore << endl;
                 cout << "Penalty = " << dPenalty << endl;
             }
             svmParams.setCVScore(dKFoldCVScore-dPenalty, dAvNumSVs);
         }
     };
-    
-    void loadHyperparams(const std::string & name, double & lo, double & hi, int & steps) const
-    {
+
+    void loadHyperparams(const std::string & name, double & lo, double & hi, int & steps) const {
         const bool bVerbose = true;
         std::string filename = getPath() + "/" + name + "-LoHiSteps";
         if(bVerbose) cout << "Looking for hyperparameter ranges in " << filename << endl;
-        if(boost::filesystem::exists(filename))
-        {
+        if(boost::filesystem::exists(filename)) {
             std::ifstream ranges(filename.c_str());
             ranges >> lo;
             ranges >> hi;
             ranges >> steps;
-        }
-        else
-        {
+        } else {
             std::ofstream ranges(filename.c_str());
             ranges << lo << ' ' << hi << ' ' << steps;
         }
@@ -1087,15 +1202,15 @@ class CSVMTraining : public CSVMTraining_base
         int nu_steps = 10, gamma_steps = 10;
         loadHyperparams("nu", nu_lo, nu_hi, nu_steps);
         loadHyperparams("loggamma", loggamma_lo, loggamma_hi, gamma_steps);
-        
+
         std::vector<double> adNuVals, adGammaVals;
-        if(SVM_TYPE == cv::SVM::NU_SVC)
-        {
-            const double lognu_lo=log(nu_lo),lognu_hi=log(nu_hi), nu_step = (lognu_hi-lognu_lo)/(nu_steps-0.999);
+        if(SVM_TYPE == cv::SVM::NU_SVC) {
+            const double dBase = 1.5;
+            const double lognu_lo=log_b(nu_lo, dBase),lognu_hi=log_b(nu_hi, dBase), nu_step = (lognu_hi-lognu_lo)/(nu_steps-0.999);
             for(double dLogNu = lognu_lo; dLogNu < lognu_hi; dLogNu+=nu_step) { //a bit random results below -1
-                adNuVals.push_back(exp(dLogNu));
-            }            
-            
+                adNuVals.push_back(pow(dBase, dLogNu));
+            }
+
             /*adNuVals.push_back(0.0005);
             adNuVals.push_back(0.00066);
             adNuVals.push_back(0.00083);
@@ -1106,25 +1221,23 @@ class CSVMTraining : public CSVMTraining_base
             adNuVals.push_back(0.0025);
             adNuVals.push_back(0.003);
             adNuVals.push_back(0.0033);
-            
+
             adNuVals.push_back(0.006);
             adNuVals.push_back(0.01);
             adNuVals.push_back(0.02);
             adNuVals.push_back(0.033);
             adNuVals.push_back(0.05);*/
-            
+
             /*adNuVals.push_back(0.1); //Make sure we don't end up with far too many SVs
             adNuVals.push_back(0.2);
             adNuVals.push_back(0.3);
             adNuVals.push_back(0.4);*/
             //adNuVals.push_back(0.5);
-        }
-        else if(SVM_TYPE == cv::SVM::C_SVC)
-        {
+        } else if(SVM_TYPE == cv::SVM::C_SVC) {
             for(double dPow = -5; dPow <= 15; dPow += 2)
                 adNuVals.push_back(std::pow(2.0, dPow));
         }
-        
+
         //adGammaVals.push_back(-1); //linear
         //#pragma message("TB:  back to dLogGammaEnd = 5")
         const double dGammaStep = (loggamma_hi-loggamma_lo)/(gamma_steps - 0.999); //10 steps
@@ -1137,7 +1250,7 @@ class CSVMTraining : public CSVMTraining_base
                 aParameterisations.push_back(CSVMParameterisation(nu, gamma, pClassWeights));
             }
         }
-        
+
         return aParameterisations;
     }
 
@@ -1280,7 +1393,7 @@ class CSVMTraining : public CSVMTraining_base
     }
 
     /* train nu and gamma and subset (CSVMParameterisation) to maximise k-fold X-validation score */
-    void trainSVM(CFeatureSubsetSelecter & featureSubset, cv::SVM & svm_final, double & dSignFix, TPRLookup & PRLookup) {
+    void trainSVM(CFeatureSubsetSelecter & featureSubset, cv::SVM & svm_final, double & dSignFix, TPRLookup & PRLookup, CSigmoidParams & sigmoidParams) {
 
         const int nDims = aaadFeatures[false][0].cols;
 
@@ -1337,7 +1450,7 @@ class CSVMTraining : public CSVMTraining_base
         featureSubset.setFeatureIdxSubset(bestFeatureSubsetOverall);
         CKfoldTrainValidateFeatureSet bestTrainAndValidateData(this, aaadFeatures, featureSubset, K);
 
-        const double dFinalScoreOverall = bestTrainAndValidateData.trainOnAll(svm_final, bestParameterisationOverall, dSignFix, PRLookup);
+        const double dFinalScoreOverall = bestTrainAndValidateData.trainOnAll(svm_final, bestParameterisationOverall, dSignFix, PRLookup, sigmoidParams);
         cout << "Score on training set after retrain on all: " << dFinalScoreOverall << endl;
     }
 
@@ -1349,8 +1462,6 @@ class CSVMTraining : public CSVMTraining_base
         pClassWeights = cvCreateMat(2,1,CV_32FC1);
         cvmSet(pClassWeights, 0, 0, fNegativeScore);
         cvmSet(pClassWeights, 1, 0, svmScore(true));
-        //pClassWeights = cv::Mat(2,1,CV_32FC1, svmScore(true));
-        //pClassWeights.at<float>(0) = fNegativeScore;
 
         cout << "fNegativeScore=" << fNegativeScore << endl;
     }
@@ -1360,7 +1471,7 @@ class CSVMTraining : public CSVMTraining_base
     }
 
 public:
-    CSVMTraining(const std::string path, const std::string label, const float fNegRelativeWeight, const eSVMFeatureSelectionMethod featureSelectionMode, const bool bFilterHyperparams) : path(path), label(label), pSVMThreadpool(CThreadpool_base::makeThreadpool(bMT ? K : 1)), fNegRelativeWeight(fNegRelativeWeight), pClassWeights(0), featureSelectionMode(featureSelectionMode), bFilterHyperparams(bFilterHyperparams) {
+    CSVMTraining(const std::string path, const std::string label, const float fNegRelativeWeight, const eSVMFeatureSelectionMethod featureSelectionMode, const bool bFilterHyperparams) : path(path), label(label), pSVMThreadpool(CThreadpool_base::makeThreadpool(bMT ? 6 : 1)), fNegRelativeWeight(fNegRelativeWeight), pClassWeights(0), featureSelectionMode(featureSelectionMode), bFilterHyperparams(bFilterHyperparams) {
         boost::filesystem::create_directories(path);
 
         CHECK(fNegRelativeWeight <= 0, "Bad fNegRelativeWeight");
@@ -1389,13 +1500,12 @@ public:
 
         int nNumPos=(int)aaadFeatures[true].size(), nNumNeg = (int)aaadFeatures[false].size();
         cout << "Training from " << nNumPos << " positive and " << nNumNeg << " negative examples" << endl;
-        
-        if(nNumPos < 20 || nNumNeg < 20)
-        {
+
+        if(nNumPos < 20 || nNumNeg < 20) {
             cout << "INSUFFICIENT TRAINING DATA" << endl;
             return;
         }
-        
+
         TBoosterStates aBoosterStates = findBoosterStates();
         //features in aaadFeatures are now filtered
 
@@ -1404,8 +1514,9 @@ public:
         double dSignFix = 0;
         nNumPos=(int)aaadFeatures[true].size(), nNumNeg = (int)aaadFeatures[false].size();
         cout << nNumPos << " positive and " << nNumNeg << " negative examples after boosting" << endl;
-        
+
         TPRLookup PRLookup;
+        CSigmoidParams sigmoidParams;
 
         if(nNumPos > 0 && nNumNeg > 0) {
             //We've still got something to train from...
@@ -1413,21 +1524,20 @@ public:
 
             featureSubset.findNormalisingCoeffs(aaadFeatures);
 
-            trainSVM(featureSubset, svm, dSignFix, PRLookup);
+            trainSVM(featureSubset, svm, dSignFix, PRLookup, sigmoidParams);
         } else {
             cout << "Boosting left no training data. Save boosting-only classifier." << endl;
         }
-        CSavedSVMState savedState(path, label, aBoosterStates, featureSubset, svm, dSignFix, PRLookup);
+        CSavedSVMState savedState(path, label, aBoosterStates, featureSubset, svm, dSignFix, PRLookup, sigmoidParams);
 
         if(pClassWeights) cvReleaseMat(&pClassWeights);
     }
-    
-    static bool equal(const cv::Mat & M1, const cv::Mat & M2)
-    {
-        for(int i=0;i<M1.rows;i++)
+
+    static bool equal(const cv::Mat & M1, const cv::Mat & M2) {
+        for(int i=0; i<M1.rows; i++)
             if(M1.at<float>(i) != M2.at<float>(i) )
                 return false;
-                
+
         return true;
     }
 
@@ -1435,25 +1545,22 @@ public:
         boost::mutex::scoped_lock lock(mxLockToAdd);
 
         const bool bVerbose = false, bRemoveDuplicates = false;
-        
+
         const cv::Mat & entireFeature=pFeature->getEntireFeature();
-        
-        if(bRemoveDuplicates)
-        {
-            BOOST_FOREACH(const cv::Mat & sample, aaadFeatures[bLabel])
-            {
-                if(equal(sample, entireFeature))
-                {
+
+        if(bRemoveDuplicates) {
+            BOOST_FOREACH(const cv::Mat & sample, aaadFeatures[bLabel]) {
+                if(equal(sample, entireFeature)) {
                     if(bVerbose)
                         cout << "Duplicate feature " << bLabel << " " << aaadFeatures[bLabel].back() << endl;
-                    
+
                     return;
-                }             
+                }
             }
         }
-        
+
         aaadFeatures[bLabel].push_back(entireFeature);
-        
+
         if(bVerbose)
             cout << "Added feature " << bLabel << " " << aaadFeatures[bLabel].back() << endl;
     }
