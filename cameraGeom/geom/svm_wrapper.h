@@ -50,7 +50,7 @@ public:
     bool binaryClassify(CSVMFeature_base * pFeature) { return classify(pFeature) > 0; }
     
     //Probability of +vs sample, throws if sigmoid training is unavailable. Unreliable if training set is heavily biased, or boosting is particularly effective.
-    virtual double probability(CSVMFeature_base * pFeature) = 0;
+    virtual double probability(CSVMFeature_base * pFeature, double * pdScore = 0) = 0;
 
     static const double NO_PRECISION;
 };

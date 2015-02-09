@@ -507,10 +507,16 @@ public:
         return savedState.getSignCorrection()*dSVMVal;
     }
 
-    double probability(CSVMFeature_base * pFeature) {
+    double probability(CSVMFeature_base * pFeature, double * pdScore) {
         savedState.getSigmoidParams().validate();
-        const double dProb = savedState.getSigmoidParams().prob(classify(pFeature));
+        
+        const double dScore = classify(pFeature);
+        if(pdScore)
+            *pdScore = dScore;
+            
+        const double dProb = savedState.getSigmoidParams().prob(dScore);
         CHECKPROBABILITY(dProb);
+        
         return dProb;
     }
 };
