@@ -549,6 +549,9 @@ class CSVMTraining : public CSVMTraining_base
     boost::mutex mxLockToAdd;
 
     std::map<double, CBoosterState, std::greater<double> > aBoosterStates;
+
+    std::ofstream featuresFile; //save all features
+
     typedef std::pair<double, CBoosterState> TBoosterCandidate;
 
     typedef std::pair<double, bool> TOneFeatureVal;
@@ -1476,12 +1479,14 @@ class CSVMTraining : public CSVMTraining_base
     std::string getPath() const {
         return path;
     }
-
 public:
     CSVMTraining(const std::string path, const std::string label, const float fNegRelativeWeight, const eSVMFeatureSelectionMethod featureSelectionMode, const bool bFilterHyperparams) : path(path), label(label), pSVMThreadpool(CThreadpool_base::makeThreadpool(bMT ? 6 : 1)), fNegRelativeWeight(fNegRelativeWeight), pClassWeights(0), featureSelectionMode(featureSelectionMode), bFilterHyperparams(bFilterHyperparams) {
         boost::filesystem::create_directories(path);
 
         CHECK(fNegRelativeWeight <= 0, "Bad fNegRelativeWeight");
+        
+        std::string featuresFilename =path + "/" + label + "-features.tsv"; 
+        featuresFile.open(featuresFilename.c_str());
     }
 
     /*
@@ -1570,6 +1575,11 @@ public:
 
         if(bVerbose)
             cout << "Added feature " << bLabel << " " << aaadFeatures[bLabel].back() << endl;
+            
+        featuresFile << bLabel << '\t';
+        for(int nDim=0;nDim < entireFeature.cols; nDim++)
+            featuresFile << entireFeature.at<float>(nDim) << '\t';
+        featuresFile << endl;
     }
 };
 
