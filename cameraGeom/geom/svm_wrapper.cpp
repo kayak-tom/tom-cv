@@ -689,7 +689,7 @@ class CSVMTraining : public CSVMTraining_base
                 dNeg++;
 
             // Is a split below here good enough to be worthwhile?
-            if(dPos < 0.01 * dNeg &&
+            if(dPos < 0.0005 * dNeg &&  //0.01 will break really badly with unblanced classes!
                aSortedFeatures[i].first !=
                    aSortedFeatures[i + 1].first) { // Force the split to occur away from integral values
                 dBestThreshPosBelow = 0.5 * (aSortedFeatures[i].first + aSortedFeatures[i + 1].first);
@@ -701,7 +701,7 @@ class CSVMTraining : public CSVMTraining_base
 
         const double dMinimumPower = 0.1;
         const double dPropOfNegativeExamplesRemoved = dNumRemovedBelow / (double)aaadFeatures[false].size();
-        if(dPropOfNegativeExamplesRemoved < dMinimumPower || dNumRemovedBelow < 50) {
+        if(dPropOfNegativeExamplesRemoved < dMinimumPower || dNumRemovedBelow < 150) {
             return TBoosterCandidate(0, CBoosterState());
         }
 
@@ -1829,7 +1829,7 @@ public:
 
             featureSubset.findNormalisingCoeffs(aaadFeatures);
 
-            trainSVM(featureSubset, svm, dSignFix, PRLookup, sigmoidParams, 0);
+            trainSVM(featureSubset, svm, dSignFix, PRLookup, sigmoidParams, &summary);
         } else {
             cout << "Boosting left no training data. Save boosting-only classifier." << endl;
         }
