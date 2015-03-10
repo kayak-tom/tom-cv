@@ -123,8 +123,8 @@ public:
     {
         if(getActualNumThreads() == 0 || aJobs.size() <= 1) //special case
         {
-            doJobs();
             mainThreadFn();
+            doJobs();
         }
         else
         {

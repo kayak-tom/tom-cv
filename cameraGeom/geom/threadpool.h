@@ -13,7 +13,6 @@ typedef std::tr1::function<TNullaryFn> TNullaryFnObj;
 
 class CThreadpool_base
 {
-    static void nothingFn() {}
 public:
     CThreadpool_base() {}
     virtual ~CThreadpool_base() { }
@@ -26,6 +25,8 @@ public:
     virtual void waitForAll(TNullaryFnObj mainThreadFn = (TNullaryFnObj)(nothingFn)) = 0;
     
     virtual int getNumThreads() const = 0;
+
+    static void nothingFn() {}
 };
 
 #endif // CTHREADPOOL_H
