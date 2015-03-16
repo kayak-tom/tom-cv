@@ -3,6 +3,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#include <util/random.h>
 
 static const char * szEXITING = "Exiting from worker thread", * szUnknown = "Unknown exception caught from job run by threadpool";
 
@@ -119,8 +120,25 @@ public:
         aJobs.push_back(function);
     }
     
+    static void delay() 
+    {
+        int nTop = CRandom::Uniform(RAND_MAX);
+        int y=-1;
+        for(int x=0;x<nTop; x++)
+            y ^= x;
+            
+        cout << y << endl;
+    }
+    
     virtual void waitForAll(TNullaryFnObj mainThreadFn)
     {
+        /*Add arbitrary delays for stress testing: 
+        for(int i=0;i<10;i++)
+        {
+            TNullaryFnObj fn = CThreadpool::delay;
+            addJob(fn);
+        }*/
+            
         if(getActualNumThreads() == 0 || aJobs.size() <= 1) //special case
         {
             mainThreadFn();
