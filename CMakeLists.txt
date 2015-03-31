@@ -52,6 +52,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   endif()    
 endif()
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fPIC")
+  message(STATUS "Building everything with -fPIC so it can be linked into dynamic libraries. CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
+endif()
+
 set(LIBRARY_OUTPUT_PATH "../${CMAKE_BUILD_TYPE}")
 
 
