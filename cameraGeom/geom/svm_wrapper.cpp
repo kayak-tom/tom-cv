@@ -1798,7 +1798,6 @@ public:
      */
     virtual ~CSVMTraining()
     {
-
         std::ostringstream summary;
 
         int nNumPos = (int)aaadFeatures[true].size(), nNumNeg = (int)aaadFeatures[false].size();
@@ -1810,7 +1809,9 @@ public:
             return;
         }
 
-        TBoosterStates aBoosterStates = findBoosterStates();
+        TBoosterStates aBoosterStates;
+        const bool bUseBoosting = false;
+        if(bUseBoosting) aBoosterStates = findBoosterStates();
         // features in aaadFeatures are now filtered
 
         CFeatureSubsetSelecter featureSubset;
