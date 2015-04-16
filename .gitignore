@@ -1,2 +1,5 @@
 *.txt
 *.mk
+*Debug*
+*Release*
+*build*
