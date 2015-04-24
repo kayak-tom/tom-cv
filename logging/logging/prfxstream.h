@@ -77,5 +77,9 @@ public:
     
     void setNumBytesPrinted(const size_t nMaxNumBytesPrinted_in);
 };
-char * getTimeAndDate(bool bAugment);
+std::string getTimeAndDate(bool bAugment);
+
+//Format: ./logs/TIMESTAMP/output.log
+std::string makeNiceFolderName();
+
 #endif /* _PRFXSTREAM_H_ */

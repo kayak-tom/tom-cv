@@ -2,6 +2,7 @@
 
 #include "redirectCout.h"
 #include "prfxstream.h"
+#include <boost/filesystem.hpp>
 
 redirectCout::redirectCout(const char * szLogfileName, bool bSpawnGedit)
 {
@@ -24,4 +25,50 @@ redirectCout::~redirectCout()
 int redirectCout::numBytesPrinted() const
 {
     return pOut->numBytesPrinted();
+}
+
+std::string makeNiceFolderName()
+{
+    // Setup logging, windows, output directory, etc.
+
+    std::string strFolderName = "logs/";
+
+    const bool bRemoveLogsOnStartup = false;
+    if(bRemoveLogsOnStartup) {
+        if (boost::filesystem::exists(strFolderName)) {
+            try {
+                boost::filesystem::remove_all(strFolderName);
+            } catch (...) {
+                cout << "Error removing " << strFolderName << endl;
+            }
+        }
+    }
+
+    if (!boost::filesystem::exists(strFolderName)) {
+        cout << "Creating directory " << strFolderName << endl;
+        boost::filesystem::create_directory(strFolderName);
+    }
+
+    strFolderName.append(getTimeAndDate(false));
+    strFolderName.append("/");
+
+#ifdef _WIN32
+    /**************  rdcm: parsing "/" and ":" to underlines "_" for windows *******************/
+    char* cStrFolderName =  new char[strFolderName.size()+1];
+    strcpy_s(cStrFolderName, strFolderName.size()+1, strFolderName.c_str());
+    char* strFolderNameParts = strtok(cStrFolderName,"/:");
+    strFolderName = "logs/";
+    while(strFolderNameParts!=NULL) {
+        strFolderName.append(strFolderNameParts);
+        strFolderName.append("_");
+        strFolderNameParts = strtok(NULL,"/:");
+    }
+    strFolderName.append("/");
+    /************** END    rdcm: parsing "/" and ":" to underlines "_" for windows ****************/
+#endif
+
+    cout << "Creating directory " << strFolderName << endl;
+    boost::filesystem::create_directory(strFolderName);
+
+    return strFolderName;
 }

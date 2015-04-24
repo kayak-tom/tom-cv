@@ -53,7 +53,7 @@ public:
     eSaveDisplay
 #endif
     : eNoGui), szSaveLoc(0) {
-        szSaveLoc = strdup(getTimeAndDate(false));
+        szSaveLoc = strdup(getTimeAndDate(false).c_str());
 
         char szMapDir[100];
         sprintf_s(szMapDir, 100, "maps/%s", szSaveLoc);

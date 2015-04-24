@@ -126,14 +126,14 @@ oprfxstream::~oprfxstream()
     delete rdbuf();
 }
 
-char * getTimeAndDate(bool bAugment) //Todo: move
+std::string getTimeAndDate(bool bAugment) //Todo: move
 {
 #ifdef __GNUC__
     time_t rawtime;
 
     time ( &rawtime );
     char * dateTimeStr = ctime(&rawtime);
-    static char acDate[50];
+    char acDate[50];
     static int s_int=0;
     s_int++;
     s_int %= 1000;
