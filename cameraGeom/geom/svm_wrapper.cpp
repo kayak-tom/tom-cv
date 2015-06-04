@@ -93,7 +93,7 @@ public:
     {
         CHECKPROBABILITY(x);
 
-        return -log(1.0 / clip(x, 0.0001, 0.9999) - 1);
+        return -log(1.0 / clip<double>(x, 0.0001, 0.9999) - 1);
     }
 };
 

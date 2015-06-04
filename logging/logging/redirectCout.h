@@ -8,10 +8,11 @@ class redirectCout
 {
     std::streambuf * pBackupCout;
     oprfxstream    * pOut;
+    std::ostream & cout_or_cerr; //the stream that's redirected
 
     //char * szSaveLoc;
 public:
-    redirectCout(const char * szArgv, bool bSpawnGedit);
+    redirectCout(const char * szArgv, bool bSpawnGedit, std::ostream & cout_or_cerr = std::cout);
     ~redirectCout();
     
     int numBytesPrinted() const;

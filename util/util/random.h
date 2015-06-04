@@ -16,7 +16,7 @@
 class CRandom
 {
 public:
-	static const bool bernoulli(const double d)
+	static bool bernoulli(const double d)
 	{
 		return Uniform(0.0,1.0) < d;
 	}

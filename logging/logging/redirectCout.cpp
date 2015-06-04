@@ -4,21 +4,21 @@
 #include "prfxstream.h"
 #include <boost/filesystem.hpp>
 
-redirectCout::redirectCout(const char * szLogfileName, bool bSpawnGedit)
+redirectCout::redirectCout(const char * szLogfileName, bool bSpawnGedit, std::ostream & cout_or_cerr) : cout_or_cerr(cout_or_cerr)
 {
-    cout << "Redirecting cout...\n";
-    cout.flush();
-    pOut = new oprfxstream(cout.rdbuf(), szLogfileName, bSpawnGedit);
+    cout_or_cerr << "Redirecting cout...\n";
+    cout_or_cerr.flush();
+    pOut = new oprfxstream(cout_or_cerr.rdbuf(), szLogfileName, bSpawnGedit);
     //*pOut << "TEST data sent to oprfxstream" << endl;
-    pBackupCout = cout.rdbuf();
-    cout.rdbuf(pOut->rdbuf());
+    pBackupCout = cout_or_cerr.rdbuf();
+    cout_or_cerr.rdbuf(pOut->rdbuf());
     //cout << "TEST data sent to cout" << endl;
 };
 
 redirectCout::~redirectCout()
 {
     pOut->flush();
-    cout.rdbuf(pBackupCout);
+    cout_or_cerr.rdbuf(pBackupCout);
     delete pOut;
 };
 
