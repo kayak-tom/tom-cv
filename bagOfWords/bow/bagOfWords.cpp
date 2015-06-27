@@ -2252,9 +2252,9 @@ void CBoW::CBoWWordBag::BFCorrFromRange(const CDescriptorSet * pDS1, const CDesc
             if (pStrongestMatch != aStrongestMatch.end()) {
                 //We've already matched a different one to this descriptor
                 if (pStrongestMatch->second.second > nClosest) //but this one is closer
-                    pStrongestMatch->second = make_pair<CLocation, CDescriptor::TDist > (pDesc1->location(), nClosest);
+                    pStrongestMatch->second = std::pair<CLocation, CDescriptor::TDist > (pDesc1->location(), nClosest);
             } else
-                aStrongestMatch[pClosestDesc->location()] = make_pair<CLocation, CDescriptor::TDist > (pDesc1->location(), nClosest);
+                aStrongestMatch[pClosestDesc->location()] = std::pair<CLocation, CDescriptor::TDist > (pDesc1->location(), nClosest);
         }
     }
     //Now turn map into correspondences:

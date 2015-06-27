@@ -124,6 +124,8 @@ public:
 #define CHECKPROBABILITY(x) { CHECKNAN(x); /*do not CHECKBADNUM because probs can get tiny */ CHECK(x<0 || x>1, #x " is not a probability"); }
 #define CHECKEQUAL(x,y) { if(!zero(x-y)) { std::cout << #x "=" << x << " != " #y "=" << y << std::endl; THROW("Arguments not equal"); } }
 #define CHECKOPTIONAL(x) CHECKNOTNULL(x) //for boost::optional when we're expecting a return
+#define CHECK_MAT_INIT(M) CHECK(M.size().area() == 0, "cv::Mat " #M " is uninitialised")
+
 /*#ifdef __GNUC__
 #define CHECKOOB(n, N) { if(n<0 || n>=(typeof(n)) N) { cout <<  #n " is OOB: " #n " = " << n << ", upper bound " << #N " = " << N << endl; THROW("Index OOB");  } } 
 #else This one should work with C++11... */

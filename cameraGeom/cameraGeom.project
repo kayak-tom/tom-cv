@@ -28,7 +28,22 @@
   </Plugins>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="src"/>
+  <VirtualDirectory Name="src">
+    <File Name="geom/pointWithThickness.h"/>
+    <File Name="geom/lines.ipp"/>
+    <File Name="geom/lines.h"/>
+    <File Name="geom/lines.cpp"/>
+    <File Name="geom/polyline.ipp"/>
+    <File Name="geom/polyline.h"/>
+    <File Name="geom/polyline.cpp"/>
+    <File Name="geom/imageUtil.h"/>
+    <File Name="geom/imageUtil.cpp"/>
+    <File Name="geom/newCamera.h"/>
+    <File Name="geom/newCamera.cpp"/>
+    <File Name="geom/vectorPoints.h"/>
+    <File Name="geom/vectorAngles.h"/>
+    <File Name="geom/vectorAngles.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="include"/>
   <VirtualDirectory Name="geom">
     <File Name="geom/levMarNumerical.h"/>
@@ -54,6 +69,12 @@
     <File Name="geom/maximumSubarray.h"/>
     <File Name="geom/svm_wrapper_test.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="util"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="util"/>
+  </Dependencies>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -65,7 +86,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="clang" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g; -Wall; -Werror; -Wno-unknown-pragmas; -Werror=return-type; -Wextra; -Wno-ignored-qualifiers; -Wno-unused-parameter; -Wshorten-64-to-32;-fPIC" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-g;-std=c++11;-Wall;-Werror;-Wno-unknown-pragmas;-Werror=return-type;-Wextra;-Wno-ignored-qualifiers;-Wno-unused-parameter;-Wshorten-64-to-32;-fPIC" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="../util"/>
         <Preprocessor Value="_DEBUG"/>
@@ -97,7 +118,7 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
-      <Completion EnableCpp11="no">
+      <Completion EnableCpp11="no" EnableCpp14="no">
         <ClangCmpFlagsC/>
         <ClangCmpFlags/>
         <ClangPP/>
@@ -105,7 +126,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="clang" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3;-g; -Wall; -Werror; -Wno-unknown-pragmas; -Werror=return-type; -Wextra; -Wno-ignored-qualifiers; -Wno-unused-parameter; -Wshorten-64-to-32;-fPIC" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-g;-O3;-std=c++11;-Wall;-Werror;-Wno-unknown-pragmas;-Werror=return-type;-Wextra;-Wno-ignored-qualifiers;-Wno-unused-parameter;-Wshorten-64-to-32;-fPIC" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="../util"/>
       </Compiler>
@@ -136,7 +157,7 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
-      <Completion EnableCpp11="no">
+      <Completion EnableCpp11="no" EnableCpp14="no">
         <ClangCmpFlagsC/>
         <ClangCmpFlags/>
         <ClangPP/>
@@ -144,10 +165,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="util"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="util"/>
-  </Dependencies>
 </CodeLite_Project>

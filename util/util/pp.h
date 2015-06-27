@@ -97,4 +97,6 @@ std::string toString(const T & t)
 
 #define PPSTR(str)  (# str " length=" + ::toString(str.length()) + " " + str.substr(0,50) + (str.length() > 50 ? "... " : " "))
 
+#define ALWAYS_VERBOSE const bool bVerbose = true;
+
 #endif // PP_H
