@@ -33,16 +33,21 @@ These libraries must all be visible to gcc (automatic with OpenCV2.2, and the bo
 
 2) What to build
 
-Netbeans IDE 7.0 or later recommended (Eclipse CDT may also work). The netbeans makefiles also work from a terminal.
+a) Check out entire workspace: git clone https://github.com/kayak-tom/tom-cv
 
-a) Check out entire workspace:
+b) Compile using cmake. May require some minor fixes to work with your combination of libraries and compiler versions.
 
-svn co https://open.grcnz.com/svn/point-stereo/trunk/workspace
+Install in Linux (use cmake)
 
-b) Either build BoWSLAM project from Netbeans, or cd workspace/BoWSLAM; make. This should build each individual library: util, params, image, imagesource, ransac, cameraGeom, timer, bagOfWords, bowSpeedometer
+cd to the tom-cv directory.
 
-c) Build Release build of the project workspace/ShowIm. This program is run by BoWSLAM and displays images. Without it you won't get real-time feedback.
+mkdir build
 
+cd build
+
+cmake ..
+
+make -j8
 
 3) Configuration 
 
@@ -80,7 +85,7 @@ I've used workspace/BoWSLAM/config/params5-3-2.cfg for recent runs.
 
 5) Tips
 
-Use gcc 4.5 or later.
+Use gcc 4.5 or later, or clang.
 
 It helps if the first 10 or so frames are fairly easy (i.e. no rapid cornering, and not stationary), while the dictionary is initialised.
 
