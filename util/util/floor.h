@@ -7,7 +7,7 @@
 
 #pragma once
 #ifndef FLOOR_H
-#define	FLOOR_H
+#define    FLOOR_H
 
 /* This one is fast but doesn't work
 
@@ -62,16 +62,16 @@ inline int doubleToIntOld(double d) PURE_FN HARD_INLINE;
 inline int doubleToIntOld(double d)
 {
 #ifndef __GNUC__ 
-	#ifndef _WIN64
-	  int i;
+    #ifndef _WIN64
+      int i;
 
-	  _asm fld d
-	  _asm fistp i
+      _asm fld d
+      _asm fistp i
 
-	  return i;
-	#else
-	  return (int)d;
-	#endif
+      return i;
+    #else
+      return (int)d;
+    #endif
 #else
 
   volatile int n;
@@ -84,15 +84,15 @@ inline int doubleToIntOld(float d)
 {
 #ifndef __GNUC__ // Windows
     #ifndef _WIN64
-		int i;
+        int i;
 
-	  _asm fld d
-	  _asm fistp i
+      _asm fld d
+      _asm fistp i
 
-	  return i;
-	#else //Win64
-	  return (int)d;
-	#endif
+      return i;
+    #else //Win64
+      return (int)d;
+    #endif
 #else
   volatile int n;
   FLOAT_TO_INT(d, n)
@@ -132,5 +132,5 @@ inline int intFloor(float val)
 }
 
 
-#endif	/* FLOOR_H */
+#endif    /* FLOOR_H */
 

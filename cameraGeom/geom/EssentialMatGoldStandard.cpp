@@ -243,7 +243,7 @@ public:
             {
                 JTJ = J.transpose()*J;
 
-				//cout << JTJ << endl;
+                //cout << JTJ << endl;
                 //JTJ.diagonal() *= (1+lambda);
                 JTJ.diagonal().array() += lambda;
 

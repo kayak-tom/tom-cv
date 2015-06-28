@@ -56,7 +56,7 @@ public:
             cout << label << " one frame proportion of 2D canes with ground truth: "; 
             if(nTotalFound_in>0) 
             {
-				COUT(dPrecision);
+                COUT(dPrecision);
             }
             else 
             {

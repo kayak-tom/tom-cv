@@ -367,11 +367,11 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
             cg.compute(spJTJ);
             paramUpdateVec = cg.solve(grad);
             if (cg.iterations() == cg.maxIterations()) {
-				if(!bSuppressAllWarnings) 
-				{
-					std::cout << "Max # iterations hit: " << cg.iterations();
-					std::cout << " estimated error: " << cg.error() << std::endl;
-				}
+                if(!bSuppressAllWarnings) 
+                {
+                    std::cout << "Max # iterations hit: " << cg.iterations();
+                    std::cout << " estimated error: " << cg.error() << std::endl;
+                }
             }
 #else
             THROW("Need Eigen 3.1");
@@ -835,8 +835,8 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
     double dPreviousErr = dErr;
     for (nLMIter = 0; nLMIter < MAX_ITERS && iterState == eDescending; nLMIter++) { //Error will not actually go to 0
         s_nTotalIters++;
-		
-	    dPreviousErr = dErr;
+        
+        dPreviousErr = dErr;
 
         if (function.useAnalyticDerivatives())
         {
@@ -876,7 +876,7 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
 
     s_dTotalReduction += dPropInitialError;
 
-	const double dPropFinal = (dPreviousErr - dErr)/(((dErr_init - dErr) != 0) ? (dErr_init - dErr) : 1);
+    const double dPropFinal = (dPreviousErr - dErr)/(((dErr_init - dErr) != 0) ? (dErr_init - dErr) : 1);
     const bool bOutput = !bSuppressAllWarnings && (bVerbose || (iterState == eDescending && dPropFinal > 0.01));
 
     if (bOutput) {
@@ -887,9 +887,9 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
 
         cout << "error = " << dErr;
 
-		if (dErr_init > 0.00001 || bVerbose) {
+        if (dErr_init > 0.00001 || bVerbose) {
             cout << " = " << dPropInitialError << " of initial error";
-			cout << " " << dPropFinal << " of the reduction was on the final iteration";
+            cout << " " << dPropFinal << " of the reduction was on the final iteration";
         }
 
         cout << endl;

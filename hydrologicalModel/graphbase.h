@@ -23,66 +23,66 @@ Eigen::Matrix<double, 1, 1> UNINFORMATIVE_INFO_1D = Eigen::Matrix<double, 1, 1>:
 class CVertex1d : public BaseVertex<1, double>
 {
 protected:
-	CVertex1d()
-	{
-		_estimate = 1;
-		
-		static int id=0;
-		setId(id++);
-		optimizer.addVertex(this);		
-	}
-	
+    CVertex1d()
+    {
+        _estimate = 1;
+        
+        static int id=0;
+        setId(id++);
+        optimizer.addVertex(this);        
+    }
+    
 public:
-	EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-	virtual void oplus(double * update)
-	{
-		//cout << *update << endl;
-		_estimate += *update;
-	}
+    virtual void oplus(double * update)
+    {
+        //cout << *update << endl;
+        _estimate += *update;
+    }
 
-	virtual bool read(std::istream& is) {
-		string label;
-		is >> label;
-		is >> _estimate;
+    virtual bool read(std::istream& is) {
+        string label;
+        is >> label;
+        is >> _estimate;
 
-		return true;
-	}
-	
-	virtual bool write(std::ostream& os) const {
-		os << "VERTEX " << _estimate << endl;
-		return true;
-	}
-	
-	virtual void setToOrigin() {
-		_estimate=1; //Flow should never go to 0 (or below 'delta' really), as can then go negative easily
-	}
+        return true;
+    }
+    
+    virtual bool write(std::ostream& os) const {
+        os << "VERTEX " << _estimate << endl;
+        return true;
+    }
+    
+    virtual void setToOrigin() {
+        _estimate=1; //Flow should never go to 0 (or below 'delta' really), as can then go negative easily
+    }
 
-	virtual bool setEstimateData(const double* est) {
-		_estimate = *est;
-		return true;
-	}
+    virtual bool setEstimateData(const double* est) {
+        _estimate = *est;
+        return true;
+    }
 
-	virtual bool getEstimateData(double* est) const {
-		*est = _estimate;
-		return true;
-	}
+    virtual bool getEstimateData(double* est) const {
+        *est = _estimate;
+        return true;
+    }
 
-	virtual int estimateDimension() const {
-		return 1;
-	}
+    virtual int estimateDimension() const {
+        return 1;
+    }
 
-	virtual bool setMinimalEstimateData(const double* est) {
-		return setEstimateData(est);
-	}
+    virtual bool setMinimalEstimateData(const double* est) {
+        return setEstimateData(est);
+    }
 
-	virtual bool getMinimalEstimateData(double* est) const {
-		return getEstimateData(est);
-	}
+    virtual bool getMinimalEstimateData(double* est) const {
+        return getEstimateData(est);
+    }
 
-	virtual int minimalEstimateDimension() const {
-		return estimateDimension();
-	}	
+    virtual int minimalEstimateDimension() const {
+        return estimateDimension();
+    }    
 };
 
 

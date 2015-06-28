@@ -7,7 +7,7 @@
  */
 
 #ifndef OPENCV_HIGHGUI_H
-#define	OPENCV_HIGHGUI_H
+#define    OPENCV_HIGHGUI_H
 
 #include "opencv.h"
 
@@ -18,5 +18,5 @@
 #include "opencv2/highgui/highgui.hpp"
 #endif
 
-#endif	/* OPENCV_HIGHGUI_H */
+#endif    /* OPENCV_HIGHGUI_H */
 

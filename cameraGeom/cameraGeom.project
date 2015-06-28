@@ -69,12 +69,6 @@
     <File Name="geom/maximumSubarray.h"/>
     <File Name="geom/svm_wrapper_test.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug">
-    <Project Name="util"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="util"/>
-  </Dependencies>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -165,4 +159,10 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="util"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="util"/>
+  </Dependencies>
 </CodeLite_Project>

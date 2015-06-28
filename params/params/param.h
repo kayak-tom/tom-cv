@@ -112,7 +112,7 @@ public:
     }
 
     virtual void printParams(eParamStatus initd) const;
-	virtual void printParam(std::ostream & os = std::cout) const = 0;
+    virtual void printParam(std::ostream & os = std::cout) const = 0;
 
     virtual void printUseSummary() const;
 

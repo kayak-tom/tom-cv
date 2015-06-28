@@ -50,12 +50,12 @@ std::ostream & operator<<(std::ostream & s, const std::pair<T1, T2> & info)
 template<class T>
 std::ostream & operator<<(std::ostream & s, const optional<T> & info)
 {
-	s << "Optional";
-	if (info)
-		s << *info;
-	else
-		s << '-';
-	return s;
+    s << "Optional";
+    if (info)
+        s << *info;
+    else
+        s << '-';
+    return s;
 }
 
 template<typename T>
@@ -63,7 +63,7 @@ void doCout(const char * label, const T & t)
 {
     std::ostringstream ss;
     ss << std::setprecision(6);
-	ss << t;
+    ss << t;
     const bool bMultiline = (ss.str().find('\n') != std::string::npos);
     const bool bIsChar = (label[0] == '\"'); // COUT("Hello") syntax
 

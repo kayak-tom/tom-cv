@@ -111,16 +111,16 @@ protected:
 public:
     CPolyline_base() {}
     
-	/* size==numPoints()
+    /* size==numPoints()
      * std::size_t size() const { 
 		return aControlPoints.size();
 	}*/
 
-	const TControlPoint & front() const { return aControlPoints.front(); }
-	TControlPoint & front() { return aControlPoints.front(); }
-	const TControlPoint & back() const { return aControlPoints.back(); }
-	TControlPoint & back() { return aControlPoints.back(); }
-	
+    const TControlPoint & front() const { return aControlPoints.front(); }
+    TControlPoint & front() { return aControlPoints.front(); }
+    const TControlPoint & back() const { return aControlPoints.back(); }
+    TControlPoint & back() { return aControlPoints.back(); }
+    
     int numPoints() const {
         return (int)aControlPoints.size();
     }
@@ -211,12 +211,12 @@ public:
      */
     const TControlPoint closestPointAndWidth(const TVecType & p, double * pdPosition_idx=0) const;
 
-	//dPosition is strictly in the range 0...length(). Return point at that position.
+    //dPosition is strictly in the range 0...length(). Return point at that position.
     const TVecType pointAtDistance(const double dDistanceAlongPoly) const;
-	
+    
     //dPosition is strictly in the range 0...length(). Return point at that position.
     const TLineType segmentAtDistance(const double dDistanceAlongPoly) const;
-	
+    
     //dPositionAlongPoly is strictly in the range 0...numPoints() (even off the end), and integer values match corresponding control point positions.
     const TVecType pointAtPosition(const double dPositionAlongPoly) const;
     const TControlPoint controlPointAtPosition(const double dPosition) const;
@@ -317,7 +317,7 @@ public:
     //Find a polyline close to this one with maxKinkAngle below dNewKinkAngle;
     void dropKinkAngle(const double dNewKinkAngle);
     
-	void transform(const Eigen::Matrix<double, TControlPoint_in::TVecType::RowsAtCompileTime + 1, TControlPoint_in::TVecType::RowsAtCompileTime + 1> & T);
+    void transform(const Eigen::Matrix<double, TControlPoint_in::TVecType::RowsAtCompileTime + 1, TControlPoint_in::TVecType::RowsAtCompileTime + 1> & T);
 private:
     /**
      * @brief Douglas-Peucker minimum epsilon

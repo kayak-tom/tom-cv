@@ -16,11 +16,11 @@
 class CRandom
 {
 public:
-	static bool bernoulli(const double d)
-	{
-		return Uniform(0.0,1.0) < d;
-	}
-	
+    static bool bernoulli(const double d)
+    {
+        return Uniform(0.0,1.0) < d;
+    }
+    
     //! Return val ~ Unif[0, d]
     static double Uniform( double dmin, double dmax )
     {

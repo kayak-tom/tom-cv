@@ -780,8 +780,8 @@ int getDG(const T3dPointMatchVector &vPointMatches, const double ALIGNMENT_THETA
         return 0;
 
     //double (& pflog)(double) = log;
-	for (int i = 0; i < scales.size();i++)
-		scales[i] = log(i);
+    for (int i = 0; i < scales.size();i++)
+        scales[i] = log(i);
 
     if(bVerbose)
     {

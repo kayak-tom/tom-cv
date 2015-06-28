@@ -56,15 +56,15 @@ void findMaximalSubarray2d(const cv::Mat & image_in, const int nMean, cv::Rect &
 int percentile(const cv::Mat & M, const int nPercentile)
 {
     std::vector<int> aVals; aVals.reserve(M.rows*M.cols / 8);
-	for(int r=0; r<M.rows; r+=3) 
-    	for(int c=0; c<M.cols; c+=3) 
-	    	aVals.push_back(M.at<uchar>(r,c));
+    for(int r=0; r<M.rows; r+=3) 
+        for(int c=0; c<M.cols; c+=3) 
+            aVals.push_back(M.at<uchar>(r,c));
 
-	std::sort(aVals.begin(), aVals.end());
+    std::sort(aVals.begin(), aVals.end());
     int nIdx = (int)((double)nPercentile*0.01*(double)aVals.size());
     if(nIdx >= (int)aVals.size() || nIdx < 0)
         throw "Bad percentile";
-	
+    
     return aVals[nIdx];
 }
 

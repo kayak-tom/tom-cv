@@ -33,11 +33,11 @@ inline void pp(const cv::Mat & M) {
     else if (M.depth() == CV_64F)
         cout << "CV_64F";
 
-	if(M.channels() <= 4)
-	{
-		cout << " means: ";
-		cout << cv::mean(M);
-	}
+    if(M.channels() <= 4)
+    {
+        cout << " means: ";
+        cout << cv::mean(M);
+    }
 
     if(M.channels() == 1)
     {

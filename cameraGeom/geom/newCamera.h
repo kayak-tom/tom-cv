@@ -283,13 +283,13 @@ public:
      * @param structureType
      * @return 
      */
-	template<class T3dPoint>
-	const typename T3dPoint::T2dPoint projectToPx_checked(const T3dPoint & X) const
-	{
-		const optional<const typename T3dPoint::T2dPoint> px = projectToPx(X);
-		CHECK_P(!px, X, "Probably point is behind camera on projectToPx_checked");
-		return *px;
-	}
+    template<class T3dPoint>
+    const typename T3dPoint::T2dPoint projectToPx_checked(const T3dPoint & X) const
+    {
+        const optional<const typename T3dPoint::T2dPoint> px = projectToPx(X);
+        CHECK_P(!px, X, "Probably point is behind camera on projectToPx_checked");
+        return *px;
+    }
 };
 
 class COptimisableSceneComponent;

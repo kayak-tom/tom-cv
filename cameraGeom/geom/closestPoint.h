@@ -6,7 +6,7 @@
  */
 
 #ifndef CLOSESTPOINT_H
-#define	CLOSESTPOINT_H
+#define    CLOSESTPOINT_H
 
 #include <Eigen/Core>
 #include <util/dynArray.h>
@@ -171,7 +171,7 @@ public:
             //Add to all 2^DIMS surrounding bins
             //todo
         }
-		THROW("Todo: not implemented");
+        THROW("Todo: not implemented");
         
         
         //For each point, add to corresponding bin [almost always unnecessary]
@@ -236,5 +236,5 @@ public:
 
 
 
-#endif	/* CLOSESTPOINT_H */
+#endif    /* CLOSESTPOINT_H */
 

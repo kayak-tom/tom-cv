@@ -11,11 +11,11 @@
 class CStats
 {
     CDynArray<double> data;
-	std::string szName;
+    std::string szName;
 public:
-	CStats() {}
-	CStats(const std::string name) : szName(name) {}
-	void setName(const char * szName_in) { szName = szName_in; }
+    CStats() {}
+    CStats(const std::string name) : szName(name) {}
+    void setName(const char * szName_in) { szName = szName_in; }
 
     void reset() { data.clear(); }
     void add(double d) { data.push_back(d); };
@@ -89,7 +89,7 @@ public:
 
     void writeTSVdata(std::ostream & file, bool bCount= false)
     {
-	if(szName.size()) file << szName << '\t';
+    if(szName.size()) file << szName << '\t';
         if(bCount) file << data.size() << '\t';
         file << mean() << '\t'
              << confBound(eSymConf99) << '\t'

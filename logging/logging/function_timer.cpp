@@ -135,7 +135,7 @@ private:
     {
         if(dStartTime <= dWaitkeyTime && dEndTime >= dWaitkeyTime) 
             return;
-			
+            
         boost::mutex::scoped_lock timerLock(mxTimeFunctions);
         
         CTimedEvent timedEvent(dStartTime-dTimeOrigin, dEndTime-dTimeOrigin);
