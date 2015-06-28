@@ -28,20 +28,17 @@
   </Plugins>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="src">
-    <File Name="logging/imageViewUI.cpp"/>
-    <File Name="logging/imageViewUI_int.h"/>
-    <File Name="logging/imageViewUI.h"/>
-    <File Name="logging/PR.h"/>
-    <File Name="logging/function_timer.h"/>
-    <File Name="logging/function_timer.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="include"/>
   <VirtualDirectory Name="logging">
     <File Name="logging/redirectCout.h"/>
     <File Name="logging/redirectCout.cpp"/>
     <File Name="logging/prfxstream.cpp"/>
     <File Name="logging/prfxstream.h"/>
+    <File Name="logging/function_timer.cpp"/>
+    <File Name="logging/function_timer.h"/>
+    <File Name="logging/imageViewUI.cpp"/>
+    <File Name="logging/imageViewUI.h"/>
+    <File Name="logging/imageViewUI_int.h"/>
+    <File Name="logging/PR.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>

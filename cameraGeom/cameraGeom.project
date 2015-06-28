@@ -28,23 +28,6 @@
   </Plugins>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="src">
-    <File Name="geom/pointWithThickness.h"/>
-    <File Name="geom/lines.ipp"/>
-    <File Name="geom/lines.h"/>
-    <File Name="geom/lines.cpp"/>
-    <File Name="geom/polyline.ipp"/>
-    <File Name="geom/polyline.h"/>
-    <File Name="geom/polyline.cpp"/>
-    <File Name="geom/imageUtil.h"/>
-    <File Name="geom/imageUtil.cpp"/>
-    <File Name="geom/newCamera.h"/>
-    <File Name="geom/newCamera.cpp"/>
-    <File Name="geom/vectorPoints.h"/>
-    <File Name="geom/vectorAngles.h"/>
-    <File Name="geom/vectorAngles.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="include"/>
   <VirtualDirectory Name="geom">
     <File Name="geom/levMarNumerical.h"/>
     <File Name="geom/mvNormalSampler.h"/>
@@ -68,6 +51,20 @@
     <File Name="geom/maximumSubarray.cpp"/>
     <File Name="geom/maximumSubarray.h"/>
     <File Name="geom/svm_wrapper_test.cpp"/>
+    <File Name="geom/imageUtil.cpp"/>
+    <File Name="geom/imageUtil.h"/>
+    <File Name="geom/lines.cpp"/>
+    <File Name="geom/lines.h"/>
+    <File Name="geom/lines.ipp"/>
+    <File Name="geom/newCamera.cpp"/>
+    <File Name="geom/newCamera.h"/>
+    <File Name="geom/pointWithThickness.h"/>
+    <File Name="geom/polyline.cpp"/>
+    <File Name="geom/polyline.h"/>
+    <File Name="geom/polyline.ipp"/>
+    <File Name="geom/vectorAngles.cpp"/>
+    <File Name="geom/vectorAngles.h"/>
+    <File Name="geom/vectorPoints.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>

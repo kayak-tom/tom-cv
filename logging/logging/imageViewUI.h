@@ -4,7 +4,7 @@
 #include <util/pp.h>
 #include <boost/scoped_ptr.hpp>
 
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 
 enum eDisplayMode { eFullDisplay, eSlowDisplay, eFastDisplay, eNoDisplay, eMakeVideo, eMakeFastVideo, eMakeSplitVideo };
 enum eDisplaySize { eScaleToFitScreen, eScaleDown, eFullSize };
