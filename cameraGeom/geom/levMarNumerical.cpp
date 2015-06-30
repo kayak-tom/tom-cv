@@ -87,9 +87,9 @@ void CLevMar::computeDerivatives(const Eigen::VectorXd &x) {
 
     grad = J.transpose() * residual;
 
-    if(bVerbose) REPEAT(1, pp_sparse_warning(spJ));
+    if(nVerbose>0) REPEAT(1, pp_sparse_warning(spJ));
 
-    if (!bSuppressAllWarnings && nLMIter == 1 && time.elapsed() > 0.1)
+    if (nVerbose>=0 && nLMIter == 1 && time.elapsed() > 0.1)
         REPEAT(100, cout << "Compute J: " << time.elapsed() << endl);
 }
 
@@ -180,9 +180,9 @@ CLMFunction::eLMSuccessStatus CLevMar::computeDerivativesNumerically(const Eigen
     else
         grad = J.transpose() * residual;
 
-    if(bVerbose) REPEAT(1, pp_sparse_warning(spJ));
+    if(nVerbose>0) REPEAT(1, pp_sparse_warning(spJ));
 
-    if (!bSuppressAllWarnings && nLMIter == 1 && time.elapsed() > 0.1)
+    if (nVerbose>=0 && nLMIter == 1 && time.elapsed() > 0.1)
     {
         REPEAT(100, cout << "Compute J: " << time.elapsed() << endl);
     }
@@ -238,7 +238,7 @@ CLevMar::eIterState CLevMar::dampMarquardt(const double lambda, Eigen::SparseMat
     return (dSumDiagonalSq == 0) ? eConverged : eDescending;
 }
 
-CLevMar::CLevMar(CLMFunction & f, const bool bVerbose, const double dMinDelta, const eMethod method) : function(f), bVerbose(bVerbose), bSuppressAllWarnings(false), dMinDelta(dMinDelta), dMinStepLength(0.00001), pseudoHuber_t(-1), method(method), residual(function.values()) {
+CLevMar::CLevMar(CLMFunction & f, const bool bVerbose, const double dMinDelta, const eMethod method) : function(f), nVerbose(bVerbose ? 1 : 0), dMinDelta(dMinDelta), dMinStepLength(0.00001), pseudoHuber_t(-1), method(method), residual(function.values()) {
     paramUpdateVec.resize(function.inputs());
     paramUpdateVec.setConstant(1); //initial delta
     bMakeSparseJ = (method == eLMSparse || method == eCGD);
@@ -319,11 +319,11 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
         if (!bMakeSparseJ)
             denseToSparse(J, spJ);
 
-        if(bVerbose) REPEAT(1, pp_sparse_warning(spJ));
+        if(nVerbose>0) REPEAT(1, pp_sparse_warning(spJ));
 
         spJTJ = spJ.transpose() * spJ;
 
-        if(bVerbose) REPEAT(1, pp_sparse_warning(spJ));
+        if(nVerbose>0) REPEAT(1, pp_sparse_warning(spJ));
     }
 
     for (;;) {
@@ -332,8 +332,8 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
         if (method == eLM) {
             JTJ = J.transpose() * J; //TODO:Move outside loop
 
-            if (!bSuppressAllWarnings && nLMIter == 1 && time.elapsed() > 0.1) {
-                cout << "Compute JTJ: " << time.elapsed() << endl;
+            if (nVerbose>=0 && nLMIter == 1 && time.elapsed() > 0.1) {
+                cout << "Compute JTJ: " << time.elapsed() << "s" << endl;
                 time.restart();
             }
 
@@ -341,7 +341,7 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
             {
                 if(dampMarquardt(lambda, JTJ) == eConverged)
                 {
-                    //if (!bSuppressAllWarnings)
+                    //if (nVerbose>=0)
                     cout << "J with zero diagonal\n" << J << endl; //Usually an error
                     return eConverged;
                 }
@@ -351,10 +351,13 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
 
             if(IS_DEBUG) CHECK(JTJ.diagonal().array().minCoeff() <= 0, "LM damping failed to 'nonzero the diagonal");
 
-            /*if(bVerbose) {
+            if(nVerbose>1) {
+                cout << "Iter " << nLMIter << " lambda=" << lambda << ":\n";
                 pp("J", J, 1000);
+                pp("JTJ", JTJ, 1000);
                 pp("residual", residual, 1000);
-            }*/
+                pp("param update", paramUpdateVec);
+            }
             
             paramUpdateVec = JTJ.llt().solve(grad); //generally faster than .inverse() (todo: write fixed size version and restore?)
         } else if (method == eLMSparse) {
@@ -367,7 +370,7 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
             cg.compute(spJTJ);
             paramUpdateVec = cg.solve(grad);
             if (cg.iterations() == cg.maxIterations()) {
-				if(!bSuppressAllWarnings) 
+				if(nVerbose>=0) 
 				{
 					std::cout << "Max # iterations hit: " << cg.iterations();
 					std::cout << " estimated error: " << cg.error() << std::endl;
@@ -389,7 +392,7 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
             paramUpdateVec = grad.array() / JTJ_diag.array();
         }
 
-        if (!bSuppressAllWarnings && nLMIter == 1 && time.elapsed() > 0.1) {
+        if (nVerbose>=0 && nLMIter == 1 && time.elapsed() > 0.1) {
             cout << "Solve JTJ: " << time.elapsed() << endl;
         }
 
@@ -415,14 +418,14 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
 
         const double dUpdateStepLengthSq = paramUpdateVec.squaredNorm();
 
-        if (bVerbose)
+        if (nVerbose>0)
             cout << "Step size: " << sqrt(dUpdateStepLengthSq) << " dErr= " << dErr << " step: " << paramUpdateVec.transpose().segment(0, std::min<int>((int) paramUpdateVec.size(), 10)) << "..." << endl;
 
         const TParamVector paramsNew = params - paramUpdateVec;
 
-        const CLMFunction::eLMSuccessStatus successStatus = robustFunction(paramsNew, residual, bVerbose); 
+        const CLMFunction::eLMSuccessStatus successStatus = robustFunction(paramsNew, residual, nVerbose>0); 
         
-        if(bVerbose)
+        if(nVerbose>0)
         {
             pp("Residuals", residual, 100);
         }
@@ -435,7 +438,7 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
 
             if (dUpdateStepLengthSq < eps) //Step is tiny. 
             {
-                if (bVerbose)
+                if(nVerbose>0)
                     cout << "Lambda " << lambda << " - converged on small step of length " << sqrt(dUpdateStepLengthSq) << "\n";
 
                 return eConverged;
@@ -447,14 +450,14 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
         }
 
         if (dUpdateStepLengthSq < eps) {
-            if (bVerbose)
+            if(nVerbose>0)
                 cout << "Lambda " << lambda << " - converged on small step of length " << sqrt(dUpdateStepLengthSq) << "\n";
             return eConverged; // derivatives wrong near minimum, and damped until lambda is massive
         } 
         
         
         if(lambda > 100000) { //If we end up here then fn is not really approx quadratic. Does happen though, eg. cane reconstruction
-            if(bVerbose)
+            if(nVerbose>0)
             {
                 cout << "Converge on large lambda: Param Update Length = " << sqrt(dUpdateStepLengthSq);
                 cout << ", min delta = " << dMinDelta << " Iter = " << nLMIter << endl;
@@ -472,7 +475,7 @@ CLevMar::eIterState CLevMar::levMarIter(Eigen::VectorXd & params, double & lambd
         }
     }
     
-    if (!bSuppressAllWarnings && totaltime.elapsed() > 0.1) {
+    if (nVerbose>=0 && totaltime.elapsed() > 0.1) {
         cout << "LM iter total: " << totaltime.elapsed() << "s" << endl;
         totaltime.restart();
     }
@@ -591,7 +594,7 @@ CLevMar::eIterState CLevMar::minLineSearch(TParamVector & params, const TParamVe
 
     params = params + alpha * delXn;
 
-    dInitErr = function.sumSquare(params, residual, bVerbose); //To make sure residuals are reset
+    dInitErr = function.sumSquare(params, residual, nVerbose>0); //To make sure residuals are reset
 
     double dStepSize = dStepLength * alpha;
     if (dStepSize < dMinDelta)
@@ -632,7 +635,7 @@ CLevMar::eIterState CLevMar::CGDIter(TParamVector & params, const bool bReset, d
     delXn = (gradXn + beta * delXn).eval();
 
 
-    if (bVerbose) {
+    if (nVerbose>0) {
         cout << "beta " << beta << endl;
         cout << "Max: " << delXn.maxCoeff() << endl;
         cout << "Min: " << delXn.minCoeff() << endl;
@@ -695,7 +698,7 @@ CLevMar::eIterState CLevMar::minLineSearchNR(TParamVector & params, const TParam
 
         double f_zero = dErr;
         params_plus = params - delta*delXn;
-        double f_minus1 = function.sumSquare(params_plus, residual, bVerbose && (nNRIter == 0));
+        double f_minus1 = function.sumSquare(params_plus, residual, (nVerbose>0) && (nNRIter == 0));
 
         params_plus += 2 * delta*delXn;
         double f_plus1 = function.sumSquare(params_plus, residual);
@@ -726,7 +729,7 @@ CLevMar::eIterState CLevMar::minLineSearchNR(TParamVector & params, const TParam
             cout << "Set D2f=1" << endl;
         }
 
-        if (bVerbose) {
+        if (nVerbose>0) {
             cout << "f_minus1=" << f_minus1 << endl;
             cout << "f_zero=" << f_zero << endl;
             cout << "f_plus1=" << f_plus1 << endl;
@@ -741,11 +744,11 @@ CLevMar::eIterState CLevMar::minLineSearchNR(TParamVector & params, const TParam
         }
 
         if (nNRIter == 0 && Df >= 0) {
-            if (bVerbose) cout << "Converging when fn does not decrease in gradient direction\n";
+            if(nVerbose>0) cout << "Converging when fn does not decrease in gradient direction\n";
             nNRIter = MAX_NR_ITERS;
             break;
         } else if (dTotalUpdate - update < 0) {
-            if (bVerbose) cout << "dTotalUpdate - update < 0, choosing damped update...\n";
+            if(nVerbose>0) cout << "dTotalUpdate - update < 0, choosing damped update...\n";
             update = (nNRIter == 0) ? -1 : (dTotalUpdate * 0.5);
         }
 
@@ -755,7 +758,7 @@ CLevMar::eIterState CLevMar::minLineSearchNR(TParamVector & params, const TParam
             dErr = function.sumSquare(params_plus, residual);
             if(IS_DEBUG) CHECK(std::isnan(dErr) || std::isinf(dErr), "Inf or nan computing residual");
 
-            if (bVerbose) cout << "NR iter " << nNRIter << " Update " << update << " err=" << dErr << endl;
+            if(nVerbose>0) cout << "NR iter " << nNRIter << " Update " << update << " err=" << dErr << endl;
 
             if (dErr < f_zero) {
                 if(nNRIter == 0)
@@ -801,9 +804,9 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
     static int s_nTotalIters = 0;
     static double s_dTotalReduction = 0;
 
-    if(robustFunction(params, residual, bVerbose) == CLMFunction::eLMFail)
+    if(robustFunction(params, residual, nVerbose>0) == CLMFunction::eLMFail)
     {
-        if(!bSuppressAllWarnings)
+        if(nVerbose>=0)
         {
             cout << "LM failed on first function call--initial parameters are invalid" << endl;
         }
@@ -846,7 +849,7 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
         {
             if(computeDerivativesNumerically(params) == CLMFunction::eLMFail)
             {
-                if(!bSuppressAllWarnings)
+                if(nVerbose>=0)
                     cout << "LM failed to compute derivatives--we have stepped to the edge of the allowed parameter space" << endl;
                 return HUGE;
             }
@@ -857,14 +860,14 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
             iterState = CGDIter(params, bReset, alpha, dErr);
             if (iterState == eConverged && !bReset) {
                 iterState = CGDIter(params, true, alpha, dErr);
-                if (bVerbose && iterState != eConverged)
+                if (nVerbose>0 && iterState != eConverged)
                     cout << "Continued descent after reset" << endl;
             }
         } else {
             iterState = levMarIter(params, lambda, bMarquardt, dErr);
         }
 
-        if (bVerbose)
+        if(nVerbose>0)
             cout << "Iter=" << nLMIter << ", lambda=" << lambda << ", err=" << dErr << endl;
 
         //cout << "params = " << params.transpose() << endl;
@@ -877,7 +880,7 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
     s_dTotalReduction += dPropInitialError;
 
 	const double dPropFinal = (dPreviousErr - dErr)/(((dErr_init - dErr) != 0) ? (dErr_init - dErr) : 1);
-    const bool bOutput = !bSuppressAllWarnings && (bVerbose || (iterState == eDescending && dPropFinal > 0.01));
+    const bool bOutput = (nVerbose>0) || (iterState == eDescending && dPropFinal > 0.01 && nVerbose>=0);
 
     if (bOutput) {
         if (iterState == eConverged)
@@ -887,7 +890,7 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
 
         cout << "error = " << dErr;
 
-		if (dErr_init > 0.00001 || bVerbose) {
+		if (dErr_init > 0.00001 || nVerbose>0) {
             cout << " = " << dPropInitialError << " of initial error";
 			cout << " " << dPropFinal << " of the reduction was on the final iteration";
         }
@@ -897,7 +900,7 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
         if (params.size() < 25) cout << "params = " << params.transpose() << endl;
     }
 
-    if (!bSuppressAllWarnings && s_nTotalRuns % 2000 == 0) {
+    if (nVerbose>=0 && s_nTotalRuns % 2000 == 0) {
         cout << "Runs: " << s_nTotalRuns << endl;
         cout << "Iterations per run: " << (double) s_nTotalIters / s_nTotalRuns << endl;
         cout << "Reduction in error per run: " << (double) s_dTotalReduction / s_nTotalRuns << endl;
@@ -923,7 +926,7 @@ double CLevMar::optimiseGD(TParamVector & params, const bool bMinimise) {
     if(IS_DEBUG) CHECK(function.values() != 1, "For GD, function should have 1 value for now")
     TResidVector residual(function.values());
 
-    robustFunction(params, residual, bVerbose);
+    robustFunction(params, residual, nVerbose>0);
 
     double dScale = bMinimise ? 1 : -1;
 
@@ -965,7 +968,7 @@ double CLevMar::optimiseGD(TParamVector & params, const bool bMinimise) {
                 dVal = dNewVal;
                 bestParams = newParams;
                 gamma *= 2;
-                if (bVerbose) cout << "New val " << dNewVal << endl;
+                if(nVerbose>0) cout << "New val " << dNewVal << endl;
                 bImprovement = true;
             } else {
                 gamma *= 0.5;
@@ -983,7 +986,7 @@ double CLevMar::optimiseGD(TParamVector & params, const bool bMinimise) {
                     dVal = dNewVal;
                     bestParams = newParams;
                     bImprovement = true;
-                    if (bVerbose) cout << "New val " << dNewVal << endl;
+                    if(nVerbose>0) cout << "New val " << dNewVal << endl;
                     break;
                 } else {
                     gamma *= 0.5;
@@ -1099,7 +1102,7 @@ Eigen::VectorXd CLevMar::minimiseFunction(CLMFunction & lmFunction, const bool b
 }
 
 /*void CLMFunction::setLargeResids(Eigen::VectorXd &resids, const int nParamChanged, const bool bVerbose) { 
-    if(bVerbose) 
+    if(nVerbose>0) 
         cout << "Setting large residuals to force step back" << endl;
     
     if(nParamChanged >= 0)

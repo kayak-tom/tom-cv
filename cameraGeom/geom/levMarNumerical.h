@@ -91,7 +91,8 @@ class CLevMar : boost::noncopyable {
     typedef Eigen::Matrix<double, NUM_PARAMS, NUM_PARAMS> TJTJMatrix;
 
     TParamVector paramUpdateVec;
-    bool bVerbose, bSuppressAllWarnings;
+    int nVerbose; //-1 = Nothing, even warnings, 0 = minimal, 1 = summary of each iteration, 2 = full details
+    //bool bSuppressAllWarnings;
     double dMinDelta, dMinStepLength /*for both steps and reduction in error*/, pseudoHuber_t /* -1 == off */;
 
     int nLMIter; //Used for diagnostic output
@@ -172,8 +173,8 @@ public:
 
 	void setMinStepLength(const double dMinStepLength_in);
     void setPseudoHuberSD(const double t);
-    void setVerbose(const bool bVerbose_in) { bVerbose = bVerbose_in; }
-    void setSuppressWarnings(const bool bSuppressAllWarnings_in) { bSuppressAllWarnings = bSuppressAllWarnings_in; }
+    void setVerbose(const int nVerbose_in) { nVerbose = nVerbose_in; }
+    void setSuppressWarnings(const bool bSuppressAllWarnings_in) { nVerbose = (bSuppressAllWarnings_in ? -1 : 0); }
 	
 	
 
