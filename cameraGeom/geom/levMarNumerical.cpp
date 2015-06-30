@@ -142,7 +142,7 @@ CLMFunction::eLMSuccessStatus CLevMar::computeDerivativesNumerically(const Eigen
             Eigen::VectorXd resids_temp = residual;
             robustFunction(x_plus, resids_temp, false);
 
-            CHECK((resids_temp - resids_plus).squaredNorm() > 1e-10, "Param incremental updating failed");
+            CHECK((resids_temp - resids_plus).squaredNorm() > 1e-10, "Param incremental updating failed.");
 
             robustFunction(x, residual, false);
         }

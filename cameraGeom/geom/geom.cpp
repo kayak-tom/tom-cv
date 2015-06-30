@@ -917,6 +917,10 @@ C3dRotationQuat::C3dRotationQuat(C3dPoint axis, double angle) {
 
     Q[3] = cos(0.5 * angle);
 
+    const double dAbsAngle = fabs(angle);
+    if(dAbsAngle>0 && dAbsAngle < 1e-7)
+        cout << "Warning: loss of precision taking cosine of angle cos(" << angle << ")=" << Q[3] << endl;
+
     double dLength = axis.length();
     if (Q[3] < 1 && Q[3] > -1) {
         axis /= (dLength);
@@ -1650,6 +1654,33 @@ TTransformMat makeTransformMatrix(const C3dRotationQuat & q, const Eigen::Vector
     const TTransformMat T_extra = makeTransformMatrix(R, X);
     return T_extra;
 }
+
+Eigen::Matrix3d makeAxisAlignedRotationMatrix(const double dAngle, const int nAxisIdx)
+{ //Matches quaternion "axis-angle" construction
+    Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
+    const double s=sin(dAngle), c=cos(dAngle);
+    
+    if(nAxisIdx==0)
+    {
+        R(1,2) = -s;
+        R(2,1) = s;
+        R(1,1) = R(2,2) = c;
+    }
+    else if(nAxisIdx==1)
+    {
+        R(0,2) = s; //Note change of signs because the permutation should be the same
+        R(2,0) = -s;
+        R(0,0) = R(2,2) = c;
+    }
+    else if(nAxisIdx==2)
+    {
+        R(0,1) = -s;
+        R(1,0) = s;
+        R(1,1) = R(0,0) = c;
+    }
+    return R;
+}
+
 
 void transformMatrixToRt(const TTransformMat & T, C3dRotationQuat & q, Eigen::Vector3d & X)
 {
