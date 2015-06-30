@@ -1,4 +1,5 @@
 /* Code by Tom Botterill. Documentation and license at http://www.hilandtom.com/tombotterill/code */
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 
 #define DEPRECATED(x) THROW( "Calling deprecated code")
 

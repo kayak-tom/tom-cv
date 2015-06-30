@@ -76,10 +76,7 @@ public:
 
             double getPrecision() const {
                 //double dPrecision = 1.0/dVariance;
-                if (dPrecision <= 0 || isnan(dPrecision) || isinf(dPrecision)) {
-                    cout << "Precision " << dPrecision << endl;
-                    THROW("Invalid precision");
-                }
+                CHECKBADNUM(dPrecision);
                 if(IS_DEBUG) CHECK(!SLAMScaleObservedAt.hasScale(), "Missing scale");
                 //if(dPrecision==0) std::cout << "Warning, zero precision\n";
                 return dPrecision;

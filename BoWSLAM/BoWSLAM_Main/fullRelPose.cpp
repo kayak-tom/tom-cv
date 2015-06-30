@@ -44,7 +44,7 @@ void CFullRelPose::writeEdge(std::ostream & toroGraphFile, const bool b2d) const
 		LAMBDA(0,0) = dVar; //dVar may be zero
 		LAMBDA(1,1) = dVar * sqr(normalisedPose.SD.cameraMotionAngleSD());
 
-		CHECK(isnan(LAMBDA.sum()), "writeEdge: nan")
+		CHECK(std::isnan(LAMBDA.sum()), "writeEdge: nan")
 
 		const Matrix2d C = Q * LAMBDA * Q.transpose();
 		const Matrix2d & I = C.inverse();
@@ -78,24 +78,24 @@ void CFullRelPose::writeEdge(std::ostream & toroGraphFile, const bool b2d) const
 		Q << t, tperp1, tperp2;
 	}
 
-	CHECK(isnan(Q.sum()), "writeEdge: nan")
+	CHECK(std::isnan(Q.sum()), "writeEdge: nan")
 
 	Matrix3d LAMBDA; LAMBDA.setZero();
 	LAMBDA(0,0) = dVar; //dVar may be zero
 	LAMBDA(1,1) = LAMBDA(2,2) = dVar * sqr(normalisedPose.SD.cameraMotionAngleSD());
 
-	CHECK(isnan(LAMBDA.sum()), "writeEdge: nan")
+	CHECK(std::isnan(LAMBDA.sum()), "writeEdge: nan")
 
 	const Matrix3d C = Q * LAMBDA * Q.transpose();
 
 	//std::cout << "Covariance: " << std::endl << C << std::endl;
-	CHECK(isnan(C.sum()), "writeEdge: nan")
+	CHECK(std::isnan(C.sum()), "writeEdge: nan")
 
 	Matrix3d Crpy; Crpy.setZero();
 	Crpy.diagonal().setConstant(sqr(normalisedPose.SD.relOrientationSD()));
 	Matrix<double, 6, 6> Cfull; Cfull << C, Matrix3d::Zero(), Matrix3d::Zero(), Crpy;
 
-	CHECK(isnan(Cfull.sum()), "writeEdge: nan")
+	CHECK(std::isnan(Cfull.sum()), "writeEdge: nan")
 
 	if(Cfull.trace() < 0.0001)
 	{
@@ -109,7 +109,7 @@ void CFullRelPose::writeEdge(std::ostream & toroGraphFile, const bool b2d) const
 	//cout << "Warning: Not inverting information matrix\n"; Yes the information mat does work a little better.
 	//Possibly ok for 1 edge...if(IS_DEBUG) CHECK(Cfull.determinant()<0.0001, "CFullRelPose::writeEdge: Singular covariance matrix");
 
-	CHECK(isnan(Ifull.sum()), "writeEdge: nan")
+	CHECK(std::isnan(Ifull.sum()), "writeEdge: nan")
 
 	for (int nRow = 0; nRow <6; nRow++)
 	{

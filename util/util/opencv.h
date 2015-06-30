@@ -7,7 +7,7 @@
  */
 
 #ifndef OPENCV_H
-#define	OPENCV_H
+#define    OPENCV_H
 
 //#define USE_OLD_OPENCV
 
@@ -20,5 +20,5 @@
 #include "opencv2/imgproc/imgproc_c.h"
 #endif
 
-#endif	/* OPENCV_H */
+#endif    /* OPENCV_H */
 

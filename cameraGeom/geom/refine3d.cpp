@@ -23,7 +23,7 @@ class CLevMarRefine3d
 //    typedef Eigen::SparseMatrix<double/*, NUM_MODEL_VARS, NUM_PARAMS*/> TJMatrix;
 //    typedef Eigen::SparseMatrix<double/*, NUM_PARAMS, NUM_PARAMS*/> TJTJMatrix;
 
-	typedef Eigen::Matrix<double, NUM_MODEL_VARS, NUM_PARAMS> TJMatrix;
+    typedef Eigen::Matrix<double, NUM_MODEL_VARS, NUM_PARAMS> TJMatrix;
     typedef Eigen::Matrix<double, NUM_PARAMS, NUM_PARAMS> TJTJMatrix;
 
     static void getParamVector(const C3dRotation & rotation, const C3dPoint & cameraDir, const T3dPoints & points3d, TParamVector & params)

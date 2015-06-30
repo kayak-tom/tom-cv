@@ -859,9 +859,9 @@ int calcEssentialMat_5point_Eigen(const TSubSet & anHypSet, const T2dPoints & m0
         for (int i = 0; i < 6; i++) {
             M.row(i) = A_rhs.row(anColIndices[i]);
 
-            DEBUGONLY(if (isnan(M(i, 0)))
+            DEBUGONLY(if (std::isnan(M(i, 0)))
                     cout << A_rhs << endl;)
-                if(IS_DEBUG) CHECK(isnan(M(i, 0)), "NaN detected");
+                if(IS_DEBUG) CHECK(std::isnan(M(i, 0)), "NaN detected");
         }
         M *= -1;
         M(6, 0) = 1;

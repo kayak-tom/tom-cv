@@ -295,7 +295,7 @@ namespace grc {
 						int y_mask = (newStatus == eInMosaic) ? y_dest/SCALE : y_dest_old/SCALE ;
 						bound(x_mask, 1, scaledMosaicSize_.width-2);
 						bound(y_mask, 1, scaledMosaicSize_.height-2);
-                        search.push_back(make_pair<int,int>(x_mask, y_mask));
+                        search.push_back(std::pair<int,int>(x_mask, y_mask));
 					}
 					status = newStatus;
 				}
@@ -326,7 +326,7 @@ namespace grc {
 						int y_mask = (newStatus == eInMosaic) ? y_dest/SCALE : y_dest_old/SCALE ;
 						bound(x_mask, 1, scaledMosaicSize_.width-2);
 						bound(y_mask, 1, scaledMosaicSize_.height-2);
-                        search.push_back(make_pair<int,int>(x_mask, y_mask));
+                        search.push_back(std::pair<int,int>(x_mask, y_mask));
 					}
 					status = newStatus;
 				}
@@ -790,14 +790,14 @@ namespace grc {
 			while (iter != Q_.end() && (iter->first == oldDistance)) {
 				if ( (iter->second.first == x) && (iter->second.second ==y) ) {
 					Q_.erase(iter);
-					Q_.insert( make_pair<double, pair<int, int> >(newDistance, make_pair<int, int>(x,y)) );
+					Q_.insert( std::pair<double, pair<int, int> >(newDistance, std::pair<int, int>(x,y)) );
 					return;
 				}
 				iter++; //TODO: I think this is invalid now...
 			}
 		}
 	
-		Q_.insert( make_pair<double, pair<int, int> >(newDistance, make_pair<int, int>(x,y)) );
+		Q_.insert( std::pair<double, pair<int, int> >(newDistance, std::pair<int, int>(x,y)) );
 	
 	}
 

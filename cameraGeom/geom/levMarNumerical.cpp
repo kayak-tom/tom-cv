@@ -142,7 +142,7 @@ CLMFunction::eLMSuccessStatus CLevMar::computeDerivativesNumerically(const Eigen
             Eigen::VectorXd resids_temp = residual;
             robustFunction(x_plus, resids_temp, false);
 
-            CHECK((resids_temp - resids_plus).squaredNorm() > 1e-10, "Param incremental updating failed");
+            CHECK((resids_temp - resids_plus).squaredNorm() > 1e-10, "Param incremental updating failed.");
 
             robustFunction(x, residual, false);
         }
@@ -838,8 +838,8 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
     double dPreviousErr = dErr;
     for (nLMIter = 0; nLMIter < MAX_ITERS && iterState == eDescending; nLMIter++) { //Error will not actually go to 0
         s_nTotalIters++;
-		
-	    dPreviousErr = dErr;
+        
+        dPreviousErr = dErr;
 
         if (function.useAnalyticDerivatives())
         {
@@ -892,7 +892,7 @@ double CLevMar::minimise(TParamVector & params, const int MAX_ITERS) {
 
 		if (dErr_init > 0.00001 || nVerbose>0) {
             cout << " = " << dPropInitialError << " of initial error";
-			cout << " " << dPropFinal << " of the reduction was on the final iteration";
+            cout << " " << dPropFinal << " of the reduction was on the final iteration";
         }
 
         cout << endl;

@@ -21,12 +21,12 @@ public:
 
     enum eLMSuccessStatus { eLMSuccess, eLMFail };
 
-	/**
+    /**
 	 * @brief A penalty term for residuals that should prompt LM to step back (and not fail)
 	 * @return 
 	 */
-	inline static const double HUGE_RESIDUAL() { return 1e+12; }
-	
+    inline static const double HUGE_RESIDUAL() { return 1e+12; }
+    
     virtual int inputs() const = 0;
     virtual int values() const = 0;
 
@@ -171,15 +171,13 @@ public:
 
     double minimise(TParamVector & params, const int MAX_ITERS = 150);
 
-	void setMinStepLength(const double dMinStepLength_in);
+    void setMinStepLength(const double dMinStepLength_in);
     void setPseudoHuberSD(const double t);
     void setVerbose(const int nVerbose_in) { nVerbose = nVerbose_in; }
     void setSuppressWarnings(const bool bSuppressAllWarnings_in) { nVerbose = (bSuppressAllWarnings_in ? -1 : 0); }
-	
-	
 
-	//For debugging/profiling changes
-	int getNumIters() const { return nLMIter; }
+    //For debugging/profiling changes
+    int getNumIters() const { return nLMIter; }
 
     const Eigen::VectorXd & residuals() const;
     
@@ -200,16 +198,16 @@ public:
 
 class CLMIterLog
 {
-	std::string name;
-	double dCalls, dIters;
+    std::string name;
+    double dCalls, dIters;
 public:
-	CLMIterLog(const std::string & name) : name(name), dCalls(0), dIters(0) {}
-	void log(const CLevMar & LM)
-	{
-		dCalls++;
-		dIters +=	LM.getNumIters();
-		cout << name << " LM calls=" << dCalls << " LM iters=" << dIters << " Iters per call=" << (dIters/dCalls) << endl;
-	}
+    CLMIterLog(const std::string & name) : name(name), dCalls(0), dIters(0) {}
+    void log(const CLevMar & LM)
+    {
+        dCalls++;
+        dIters +=    LM.getNumIters();
+        cout << name << " LM calls=" << dCalls << " LM iters=" << dIters << " Iters per call=" << (dIters/dCalls) << endl;
+    }
 };
 
 #endif

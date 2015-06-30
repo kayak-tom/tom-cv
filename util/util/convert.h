@@ -372,10 +372,10 @@ template<typename T> inline void setZero(T * array, int nCount)
  */
 inline bool within(double val1, double val2, double thresh)
 {
-	if(val1<0)
-	    return val1*(1+thresh)<=val2 && val1*(1-thresh)>=val2;
-	else
-		return val1*(1+thresh)>=val2 && val1*(1-thresh)<=val2;
+    if(val1<0)
+        return val1*(1+thresh)<=val2 && val1*(1-thresh)>=val2;
+    else
+        return val1*(1+thresh)>=val2 && val1*(1-thresh)<=val2;
 }
 
 inline void checkProb(double p)
