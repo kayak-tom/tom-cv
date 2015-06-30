@@ -7,6 +7,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <string>
+#include <set>
 //#include <image/convert_OpenCV.h>
 //#include "newCamera.h"
 #include <boost/thread.hpp> 
