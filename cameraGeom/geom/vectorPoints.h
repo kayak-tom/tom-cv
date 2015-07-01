@@ -1,6 +1,11 @@
 #ifndef VECTORPOINTS_H
 #define VECTORPOINTS_H
 
+#include <util/exception.h>
+#include <vector>
+#include <Eigen/Core>
+#include <opencv2/core/core.hpp>
+
 //#include <boost/serialization/serialization.hpp>
 
 typedef Eigen::Matrix<double, 3, 1> TEigen3dPoint;

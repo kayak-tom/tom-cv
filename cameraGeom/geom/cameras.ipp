@@ -1,7 +1,8 @@
 #ifndef CAMERA_IPP
 #define CAMERA_IPP
+#include "newCamera.h"
+#include <util/pp.h>
 
-//#include "newCamera.h"
 #if defined(__GNUC__) || defined(INSTANTIATE_CAMERAS_IPP)
 
 #ifndef IPP_INLINE

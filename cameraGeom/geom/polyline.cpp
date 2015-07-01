@@ -70,16 +70,11 @@ void removeBuds(const TPolyline& polyline,
 
     const int nNumChanges = polyline.numPoints() - truncatedPolyline.numPoints();
 
-    if(bVerbose && nNumChanges > 0) {
+/*    if(bVerbose && nNumChanges > 0) {
         polyline.show("withBuds");
         truncatedPolyline.show("noBuds");
-        //        MAT(removeBuds);
-        //        polyline.draw(removeBuds, colour("2DCane2"), true);
-        //        truncatedPolyline.draw(removeBuds, colour("2DCane"), false);
-        //        SHOW2(removeBuds, TO_STRING(nNumChanges));
-    }
+    }*/
 
-    // std::swap(polyline /* this is the output */, truncatedPolyline);
 }
 
 template <class T2dPolyline>
@@ -300,12 +295,12 @@ eSuccessStatus approximate_int(const TPolyline& polyline_in,
                                const typename TPolyline::TPolyApproxSettings& polyApproxSettings,
                                const bool bVerbose)
 {
-    const bool bShowPolys = false;
+    //const bool bShowPolys = false;
 
     COUT2("Before approximation: ", polyline_in.numPoints());
     COUT2("Before approximation: ", polyline_in.length());
-    if(bShowPolys)
-        polyline_in.show("Original");
+    //if(bShowPolys)
+      //  polyline_in.show("Original");
 
     TPolyline polyline_temp;
 
@@ -315,8 +310,8 @@ eSuccessStatus approximate_int(const TPolyline& polyline_in,
         return eFail;
 
     COUT2("After bud removal: ", polyline_temp.toString());
-    if(bShowPolys)
-        polyline_temp.show("NoBuds");
+    //if(bShowPolys)
+      //  polyline_temp.show("NoBuds");
 
     polyline_out.clearAndReserve(polyline_in.numPoints());
 
@@ -327,8 +322,8 @@ eSuccessStatus approximate_int(const TPolyline& polyline_in,
 
     COUT2("After extendAndApproximate: ", polyline_out.numPoints());
     COUT2("After extendAndApproximate: ", polyline_out.length());
-    if(bShowPolys)
-        polyline_out.show("afterApproximate");
+    //if(bShowPolys)
+      //  polyline_out.show("afterApproximate");
 
     return (polyline_out.numPoints() > 0) ? eSuccess : eFail;
 }
@@ -816,7 +811,7 @@ void extendAndApproximate(const TPolyline& polyline_in,
                           const ePolyApproxMethod approxMethod,
                           const bool bVerbose)
 {
-    const bool bShowPolys = false;
+    //const bool bShowPolys = false;
 
     if(polyline_in.approxAsLine().length() < approxSettings.getMinMax().getMin())
         return;
@@ -941,17 +936,11 @@ void extendAndApproximate(const TPolyline& polyline_in,
     }
     // extraPoints add interp end point TODO
 
-    if(bShowPolys) {
+    /*if(bShowPolys) {
         polyline_in.show("polyBeforeApprox");
         thisPolylineWithExtraControlPoints.show("polyExtraPoints");
         extraPoints.show("alternativeControlPoints");
-        /*MAT(initPolylineWithManyPoints);
-        this->draw(initPolylineWithManyPoints, colour("2DCane"), false);
-        thisPolylineWithExtraControlPoints.draw(initPolylineWithManyPoints, colour("2DCane2"), true);
-        SHOW(initPolylineWithManyPoints);
-        extraPoints.draw(initPolylineWithManyPoints, colour("2DCane2"), false);
-        SHOW2(initPolylineWithManyPoints, "+Extra");*/
-    }
+    }*/
 
     CHECK(!zero(thisPolylineWithExtraControlPoints.maxKinkAngle() - polyline_in.maxKinkAngle()),
           "Adding points has changed poly max kink angle");
@@ -987,13 +976,9 @@ void extendAndApproximate(const TPolyline& polyline_in,
     } else
         THROW("polyline approx method not handled");
 
-    if(bShowPolys) {
+    /*if(bShowPolys) {
         polyline_out.show("bestApproximatn");
-        /*MAT(bestApproximatn);
-        this->draw(bestApproximatn, colour("2DCane"), false);
-        bestApproximation.draw(bestApproximatn, colour("2DCane2"), false);
-        SHOW(bestApproximatn); //, TO_STRING(dCumulativeError));*/
-    }
+    }*/
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2361,7 +2346,7 @@ void C2dPolyline_base<TControlPoint>::drawLine(cv::Mat& M, const cv::Scalar colo
         drawOutline(M, colour, 1);
     else {
         for(int i = 0; i < this->numSegments(); i++) {
-            drawSegment(M, colour, nThickness, this->aControlPoints[i], this->aControlPoints[i + 1]);
+            drawSegment(M, colour, nThickness, (*this)[i], (*this)[i + 1]);
             if(i > 0 && i < this->numSegments())
                 cv::circle(M,
                            this->aControlPoints[i].getPoint(),
@@ -2974,6 +2959,40 @@ void CPolyline_base<TControlPoint>::subPolyline(const CRange& indexRange, TPolyl
 
     COUT(subPoly.toString());
 }
+// Find a polyline close to this one with maxKinkAngle below dNewKinkAngle;
+template <class TControlPoint> void CPolyline_base<TControlPoint>::doubleUp()
+{
+    bool bVerbose = false;
+
+    double dLength = length();
+
+    const int numPointsNew = numPoints() * 2 - 1;
+
+    TPolylineVector aNewPoints(numPointsNew);
+
+    for (int nPoint = 0; nPoint<numPoints(); nPoint++)
+    {
+        aNewPoints[nPoint * 2] =  aControlPoints[nPoint].scale(2);
+    }
+
+    for (int nPoint = 1; nPoint<numPointsNew - 1; nPoint += 2)
+    {
+        if (TControlPoint::HAS_THICKNESS)
+        {
+            aNewPoints[nPoint] = TControlPoint(0.5*(aNewPoints[nPoint - 1].getPoint() + aNewPoints[nPoint + 1].getPoint()), 0.5*(aNewPoints[nPoint - 1].getWidth() + aNewPoints[nPoint + 1].getWidth()));
+        }
+        else
+        {
+            aNewPoints[nPoint] = TControlPoint(0.5*(aNewPoints[nPoint - 1].getPoint() + aNewPoints[nPoint + 1].getPoint()));
+        }
+    }
+
+    aControlPoints = aNewPoints;
+
+    CHECK_P(!within(dLength * 2, length(), 0.00001), length(), "Length upscale check failed");
+}
+
+
 
 // Find a polyline close to this one with maxKinkAngle below dNewKinkAngle;
 template <class TControlPoint> void CPolyline_base<TControlPoint>::dropKinkAngle(const double dNewKinkAngle)
@@ -3255,6 +3274,12 @@ eSuccessStatus C3dPolylineWithThickness::projectOneThickness(const CWorldCamera&
     cp_2d = C2dPolylineControlPointWithThickness(cp_2d.getPoint(), *pdThickness2d);
 
     return eSuccess;
+}
+
+std::ostream & operator<<(std::ostream & s, const CRange & range)
+{
+    s << "Range [" << range.getMin() << ", " << range.getMax() << "]";
+    return s;
 }
 
 template class CPolylineControlPointWithThickness<C2dBoundedLine>;

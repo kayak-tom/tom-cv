@@ -264,13 +264,13 @@ public:
 
     CWorldCamera() : bInit(false) { }
 
-    const CCameraPose & getCamPose() const;
+    //const CCameraPose & getCamPose() const;
 
     void setCamMatForAnimation(const TCamMat & Pnew);
-    double depth_z(const C3dWorldPoint & X) const;
+    //double depth_z(const C3dWorldPoint & X) const;
     
     //Y coordinate relative to this camera frame. Used for checking wires etc aren't below the ground or above the door entrance
-    double relativeY(const C3dWorldPoint & X) const;
+   //double relativeY(const C3dWorldPoint & X) const;
     
     const optional<const C2dImagePointPx> projectToPx(const C3dWorldPoint & X) const;
     const optional<const C3dPolylineControlPoint::T2dPoint> projectToPx(const C3dPolylineControlPoint & X) const;

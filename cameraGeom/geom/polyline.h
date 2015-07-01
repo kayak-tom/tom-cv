@@ -108,8 +108,9 @@ public:
     typedef typename TPolylineVector::iterator iterator;
 protected:
     TPolylineVector aControlPoints;
+    bool bClosed;
 public:
-    CPolyline_base() {}
+    CPolyline_base(const bool bClosed=false) : bClosed(bClosed) {}
     
     /* size==numPoints()
      * std::size_t size() const { 
@@ -136,7 +137,7 @@ public:
     void pop_back();
     void pop_end(const eEndpoints end);
     void erase(iterator start, iterator finish );
-    void insert(iterator pos, iterator start, iterator finish );
+    void insert(iterator pos, const_iterator start, const_iterator finish );
     void push_front(const TControlPoint & controlPoint );
 
     void push_end(const TControlPoint & p, const eEndpoints end) ;
@@ -146,14 +147,14 @@ public:
     
     TControlPoint & operator[] (const int nIdx) //'Ref' is important as g2o optimiser refers back to polyline points.
     { 
-        if(IS_DEBUG) CHECKOOB(nIdx, aControlPoints.size());
-        return aControlPoints[nIdx]; 
+        if(IS_DEBUG && !bClosed) CHECKOOB(nIdx, aControlPoints.size());
+        return aControlPoints[nIdx % numPoints()]; 
     }    
 
     const TControlPoint & operator[] (const int nIdx) const
     { 
-        /*if(IS_DEBUG) restore for a while*/ CHECKOOB(nIdx, aControlPoints.size());
-        return aControlPoints[nIdx]; 
+        if(!bClosed) /*if(IS_DEBUG) restore for a while*/ CHECKOOB(nIdx, aControlPoints.size());
+        return aControlPoints[nIdx% numPoints()];
     }
     
     //For conversion to/from vectors in LM optimisation
@@ -228,7 +229,7 @@ public:
 private:
     int closestControlPoint(const TVecType & p) const;
 public:
-    CPolyline_base(const typename TPolylineVector::const_iterator & begin, const typename TPolylineVector::const_iterator & end) : aControlPoints(begin, end) {}
+    CPolyline_base(const typename TPolylineVector::const_iterator & begin, const typename TPolylineVector::const_iterator & end) : aControlPoints(begin, end), bClosed(false) {}
 
     /**
      * @brief Position along polyline of p. Integer positions correspond to control points, and the fractional part corresponds to the relative position along the closest segment. NOT clipped to 0...numPoints
@@ -253,17 +254,22 @@ public:
     
     const TVecType & getStartPoint() const {
         CHECK(numPoints() == 0, "Empty polyline");
+        CHECK(bClosed, "Closed polylines don't really have 'ends'");
         return aControlPoints[0].getPoint();
     }
     const TVecType & getFinishPoint() const {
         CHECK(numPoints() == 0, "Empty polyline");
-        return aControlPoints[numPoints()-1].getPoint();
+        CHECK(bClosed, "Closed polylines don't really have 'ends'");
+        return aControlPoints[numPoints() - 1].getPoint();
     }
     //Allow iteration over endpoints
     const TVecType & getEndPoint(const eEndpoints end) const;
 
     //The index of the control point at end
-    int getEndIdx(const eEndpoints end) const { return (end==eStart) ? 0 : (numPoints()-1); }
+    int getEndIdx(const eEndpoints end) const {
+        CHECK(bClosed, "Closed polylines don't really have 'ends'");
+        return (end == eStart) ? 0 : (numPoints() - 1);
+    }
     
     //Allow iteration over endpoints
     const TControlPoint & getEndControlPoint(const eEndpoints end) const;
@@ -278,7 +284,7 @@ public:
     void reverseDirection();
 
     const int numSegments() const {
-        return numPoints()-1;
+        return bClosed ? numPoints() : (numPoints() - 1);
     }
     TLineType segment(const int nSegStart) const;
     TLineType endSegment(const eEndpoints end) const;
@@ -316,6 +322,9 @@ public:
 
     //Find a polyline close to this one with maxKinkAngle below dNewKinkAngle;
     void dropKinkAngle(const double dNewKinkAngle);
+
+    //Move up a pyramid level: points *= 2; extra points inserted.
+    void doubleUp();
     
     void transform(const Eigen::Matrix<double, TControlPoint_in::TVecType::RowsAtCompileTime + 1, TControlPoint_in::TVecType::RowsAtCompileTime + 1> & T);
 private:
@@ -345,7 +354,7 @@ public:
     /**
      * @brief Check polyline isn't too kinked.
      */
-    void checkNotTooKinked(const double dMaxKinkAngle = 0.8) const;
+    void checkNotTooKinked(const double dMaxKinkAngle = M_PI) const;
 
     void splitSegment(const int nSegmentToSplit);
     
@@ -455,7 +464,7 @@ public:
     typedef std::vector<C2dPolyline_base<TControlPoint> > TCandidateApproximations;
     typedef C2dPolyApproxSettings TPolyApproxSettings;
 
-    C2dPolyline_base() {}
+    C2dPolyline_base(const bool bClosed=false) : TPolyline_base(bClosed) {}
 
     /**
      * @brief Finds intersection between epiline and polygon, starting from section startIndex
@@ -497,7 +506,7 @@ public:
      */ 
     void draw(cv::Mat & M, const cv::Scalar colour, const bool bDrawDetails, const int nThickness=DEFAULT_THICKNESS) const;    
     //template compatible draw-and-show method
-    void show(std::string label) const;
+    //void show(std::string label) const;
 
     eSuccessStatus approximate(C2dPolyline_base & polyline_out, const C2dPolyApproxSettings & polyApproxSettings, const bool bVerbose) const;
     
@@ -520,9 +529,9 @@ typedef C2dPolyline_base<C2dPolylineControlPoint > T2dPolyline;
 class C2dPolyline : public T2dPolyline
 {
 public:
-    C2dPolyline() {}
-    C2dPolyline(const T2dPolyline & base) { T2dPolyline::operator=(base); }
-    C2dPolyline(const T2dPolyline::TPolyline_base & base) { T2dPolyline::TPolyline_base::operator=(base); }
+    C2dPolyline(const bool bClosed=false) : T2dPolyline(bClosed){}
+    C2dPolyline(const T2dPolyline & base) : T2dPolyline(base) {} //{ T2dPolyline::operator=(base); }
+    //C2dPolyline(const T2dPolyline::TPolyline_base & base) : T2dPolyline::TPolyline_base(base) {} //{ T2dPolyline::TPolyline_base::operator=(base); }
     
     //C2dPolyline approximate(const double dMinLength, const double dMaxLength, const double dEpsilon, const double dBudScale, const eApproxMethod approxMethod, const bool bVerbose) const;
 };
@@ -534,11 +543,11 @@ typedef C2dPolyline_base<C2dPolylineControlPointWithThickness > T2dPolylineWithT
 class C2dPolylineWithThickness : public T2dPolylineWithThickness
 {
 public:
-    C2dPolylineWithThickness() {}
+    C2dPolylineWithThickness(const bool bClosed=false) : T2dPolyline(bClosed){}
     
-    C2dPolylineWithThickness(const T2dPolylineWithThickness & base)  { T2dPolylineWithThickness::operator=(base); }
-    C2dPolylineWithThickness(const T2dPolylineWithThickness::TPolyline_base & base)  { T2dPolylineWithThickness::TPolyline_base::operator=(base); }
-    void operator=(const T2dPolylineWithThickness & base) { T2dPolylineWithThickness::operator=(base); }
+    C2dPolylineWithThickness(const T2dPolylineWithThickness & base) : T2dPolylineWithThickness(base) {} //{ T2dPolylineWithThickness::operator=(base); }
+    //C2dPolylineWithThickness(const T2dPolylineWithThickness::TPolyline_base & base)  { T2dPolylineWithThickness::TPolyline_base::operator=(base); }
+    //void operator=(const T2dPolylineWithThickness & base) { T2dPolylineWithThickness::operator=(base); }
 
     optional<const C3dPolylineWithThickness> polyToWorld(const CWorldCamera & P, const double dDepthPrior) const;
 };
@@ -564,8 +573,8 @@ protected:
     void projectOne_fast(const CWorldCamera & P, C2dPolyline & thinPoly, const int nControlPointIdx) const;
     //void projectOne_fast(const CWorldCamera & P, C2dPolylineWithThickness & thinPoly, const int nControlPointIdx) const;
 public:
-    C3dPolyline_base() {}
-    C3dPolyline_base(const TPolyline & base)  { TPolyline::operator=(base); }    
+    C3dPolyline_base(const bool bClosed=false) : TPolyline(bClosed){}
+    C3dPolyline_base(const TPolyline & base) : TPolyline(base) {} //{ TPolyline::operator=(base); }
 
     eSuccessStatus project(const CWorldCamera & P, C2dPolyline & thinPoly, const bool bVerboseOnFailure=false, const int nControlPointIdx = -1 /*Project all points*/) const;
     eSuccessStatus project(const CWorldCamera & P, C2dPolylineWithThickness & poly, const bool bVerboseOnFailure=false, const int nControlPointIdx = -1 /*Project all points*/) const;
@@ -580,9 +589,9 @@ typedef C3dPolyline_base<C3dPolylineControlPoint> T3dPolyline;
 class C3dPolyline : public T3dPolyline
 {
 public:
-    C3dPolyline() {}
-    C3dPolyline(const T3dPolyline & base)  { T3dPolyline::operator=(base); }    
-    C3dPolyline(const T3dPolyline::TPolyline & base)  { T3dPolyline::TPolyline::operator=(base); }    
+    C3dPolyline(const bool bClosed=false) : T3dPolyline(bClosed){}
+    C3dPolyline(const T3dPolyline & base) : T3dPolyline(base) {} // { T3dPolyline::operator=(base); }
+    //C3dPolyline(const T3dPolyline::TPolyline & base)  { T3dPolyline::TPolyline::operator=(base); }    
     /**
      * @brief Project and draw 3D polyline, should be compatible with C3dPolylineWithThickness::draw for template substitution.
      * @param M
@@ -594,7 +603,7 @@ public:
     void draw(cv::Mat & M, const CWorldCamera & P, const cv::Scalar colour, const bool bDrawDetails, const int nThickness=DEFAULT_THICKNESS) const;
 
     //template compatible draw-and-show method
-    void show(std::string label) const;
+    //void show(std::string label) const;
 
     eSuccessStatus approximate(C3dPolyline & polyline_out, const CPolyApproxSettings & polyApproxSettings, const bool bVerbose) const;
     
@@ -607,9 +616,9 @@ typedef C3dPolyline_base<C3dPolylineControlPointWithThickness> T3dPolylineWithTh
 class C3dPolylineWithThickness : public T3dPolylineWithThickness
 {
 public:
-    C3dPolylineWithThickness() {}
-    C3dPolylineWithThickness(const T3dPolylineWithThickness & base)  { T3dPolylineWithThickness::operator=(base); }
-    C3dPolylineWithThickness(const T3dPolylineWithThickness::TPolyline & base)  { T3dPolylineWithThickness::TPolyline::operator=(base); }
+    C3dPolylineWithThickness(const bool bClosed=false) : T3dPolylineWithThickness(bClosed) {}
+    C3dPolylineWithThickness(const T3dPolylineWithThickness & base) : T3dPolylineWithThickness(base) {} //{ T3dPolylineWithThickness::operator=(base); }
+    //C3dPolylineWithThickness(const T3dPolylineWithThickness::TPolyline & base)  { T3dPolylineWithThickness::TPolyline::operator=(base); }
     
     /**
      * @brief Project and draw 3D polyline, should be compatible with C3dPolyline::draw for template substitution.
@@ -622,7 +631,7 @@ public:
     void draw(cv::Mat & M, const CWorldCamera & P, const cv::Scalar colour, const bool bDrawDetails, const int nThickness=DEFAULT_THICKNESS) const;
 
     //template compatible draw-and-show method
-    void show(std::string label) const;
+    //void show(std::string label) const;
 
     eSuccessStatus approximate(C3dPolylineWithThickness & polyline_out, const CPolyApproxSettings & polyApproxSettings, const bool bVerbose) const;
     

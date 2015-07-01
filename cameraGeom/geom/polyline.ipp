@@ -561,12 +561,13 @@ template<class TControlPoint>
 typename CPolyline_base<TControlPoint>::TLineType CPolyline_base<TControlPoint>::segment(const int nSegStart) const
 {
     CHECK_P(nSegStart >= numSegments() || nSegStart < 0, numSegments()+10000*nSegStart, "Segment start point OOB");
-    return TLineType(aControlPoints[nSegStart].getPoint(), aControlPoints[nSegStart+1].getPoint());
+    return TLineType((*this)[nSegStart].getPoint(), (*this)[nSegStart+1].getPoint());
 }
 
 template<class TControlPoint>
 typename CPolyline_base<TControlPoint>::TLineType CPolyline_base<TControlPoint>::endSegment(const eEndpoints end) const
 {
+	CHECK(bClosed, "Closed polylines don't really have 'ends'");
     if(IS_DEBUG) CHECK(numSegments()<=0, "Segment start point OOB");
 
     if(end==eFinish)
@@ -633,7 +634,7 @@ void CPolyline_base<TControlPoint>::erase(typename CPolyline_base<TControlPoint>
     aControlPoints.erase(start, finish);
 }
 template<class TControlPoint>
-void CPolyline_base<TControlPoint>::insert(typename CPolyline_base<TControlPoint>::iterator pos, typename CPolyline_base<TControlPoint>::iterator start, typename CPolyline_base<TControlPoint>::iterator finish )
+void CPolyline_base<TControlPoint>::insert(typename CPolyline_base<TControlPoint>::iterator pos, typename CPolyline_base<TControlPoint>::const_iterator start, typename CPolyline_base<TControlPoint>::const_iterator finish )
 {
     aControlPoints.insert(pos, start, finish);
 }

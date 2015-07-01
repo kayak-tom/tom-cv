@@ -33,6 +33,8 @@ public:
         }
     }*/
 
+    CPolylineControlPoint<TLineType> scale(const double s) const { return CPolylineControlPoint<TLineType>(x*s); }
+
     CPolylineControlPoint() {}
     CPolylineControlPoint(const TVecType & x/*, const CConstructFromPoint &*/) : x(x) {
         checkBadNum();
@@ -127,6 +129,8 @@ public:
     static CPolylineControlPointWithThickness uninitCP() {
         return CPolylineControlPointWithThickness(uninit(), 0.1);
     }
+
+    CPolylineControlPointWithThickness<TLineType> scale(const double s) const { return CPolylineControlPointWithThickness<TLineType>(x*s, dWidth*s); }
 
     TVecType & getPoint() {//'Ref' is important as g2o optimiser refers back to polyline points.
         return x;

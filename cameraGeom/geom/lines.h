@@ -13,7 +13,10 @@
 #ifndef LINES_H
 #define LINES_H
 
- 
+#include <boost/optional.hpp>
+#include <util/optimisation_attributes.h>
+using boost::optional;
+
 class C2dBoundedLine;
 class C2dLine;
 class C3dBoundedLine;
