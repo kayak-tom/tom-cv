@@ -465,6 +465,7 @@ public:
     typedef C2dPolyApproxSettings TPolyApproxSettings;
 
     C2dPolyline_base(const bool bClosed=false) : TPolyline_base(bClosed) {}
+    C2dPolyline_base(const TPolyline_base & base) : TPolyline_base(base) {}
 
     /**
      * @brief Finds intersection between epiline and polygon, starting from section startIndex
@@ -531,7 +532,7 @@ class C2dPolyline : public T2dPolyline
 public:
     C2dPolyline(const bool bClosed=false) : T2dPolyline(bClosed){}
     C2dPolyline(const T2dPolyline & base) : T2dPolyline(base) {} //{ T2dPolyline::operator=(base); }
-    //C2dPolyline(const T2dPolyline::TPolyline_base & base) : T2dPolyline::TPolyline_base(base) {} //{ T2dPolyline::TPolyline_base::operator=(base); }
+    C2dPolyline(const T2dPolyline::TPolyline_base & base) : T2dPolyline(base) {} //{ T2dPolyline::TPolyline_base::operator=(base); }
     
     //C2dPolyline approximate(const double dMinLength, const double dMaxLength, const double dEpsilon, const double dBudScale, const eApproxMethod approxMethod, const bool bVerbose) const;
 };

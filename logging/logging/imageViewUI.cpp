@@ -700,7 +700,7 @@ void CFrameJoiner::show(const string & title) const
     UI().showOneImage(joinedFrame, title, 0);
 }
 
-inline /*duplicate fn*/ void drawText(cv::Mat & image, const cv::Point location, const std::string label, const cv::Scalar colour= CV_RGB(255,255,255), const int nSize=1, const bool bOutline=false)
+inline /*duplicate fn*/ void drawTextx(cv::Mat & image, const cv::Point location, const std::string label, const cv::Scalar colour= CV_RGB(255,255,255), const int nSize=1, const bool bOutline=false)
 {
     if(bOutline)
         cv::putText(image, label, location, CV_FONT_HERSHEY_PLAIN, 1.2*nSize, cv::Scalar(), nSize+6);
@@ -714,11 +714,11 @@ void outputVideoTitles(const cv::Size & size) //match alphabetically with videoR
     cv::Mat TITLE(size.height, cvRound(size.width*2.5), CV_8UC3, cv::Scalar(255,255,255));
     const double dSize = 4;
 
-    drawText(TITLE, cv::Point (250,400), "Vision-based automated pruning", cv::Scalar(), cvRound(dSize+1));
+    drawTextx(TITLE, cv::Point (250,400), "Vision-based automated pruning", cv::Scalar(), cvRound(dSize+1));
     //drawText(TITLE, cv::Point (250,550), "3D reconstruction pipeline", cv::Scalar(), cvRound(dSize+1));
-    drawText(TITLE, cv::Point (250,750), "Tom Botterill et al.", cv::Scalar(), cvRound(dSize));
-    drawText(TITLE, cv::Point (250,900), "University of Canterbury, Christchurch, NZ", cv::Scalar(), cvRound(dSize));
-    drawText(TITLE, cv::Point (250,1050), "May 2015", cv::Scalar(), cvRound(dSize));
+    drawTextx(TITLE, cv::Point (250,750), "Tom Botterill et al.", cv::Scalar(), cvRound(dSize));
+    drawTextx(TITLE, cv::Point (250,900), "University of Canterbury, Christchurch, NZ", cv::Scalar(), cvRound(dSize));
+    drawTextx(TITLE, cv::Point (250,1050), "May 2015", cv::Scalar(), cvRound(dSize));
     for(int i=0; i<2; i++)
         UI().showOneImage(TITLE, "A");
 
@@ -726,34 +726,34 @@ void outputVideoTitles(const cv::Size & size) //match alphabetically with videoR
 
     TITLE.setTo(cv::Scalar(255,255,255));
 
-    drawText(TITLE, cv::Point (250,400), "Vine pruning robot", cv::Scalar(), cvRound(dSize+1));
+    drawTextx(TITLE, cv::Point (250,400), "Vine pruning robot", cv::Scalar(), cvRound(dSize+1));
     for(int i=0; i<2; i++)
         UI().showOneImage(TITLE, "A");
 
 
 
     TITLE.setTo(cv::Scalar(255,255,255));
-    drawText(TITLE, cv::Point (250,400), "3D vine reconstruction pipeline", cv::Scalar(), cvRound(dSize+1));
-    drawText(TITLE, cv::Point (250,700), "May 2015", cv::Scalar(), cvRound(dSize));
+    drawTextx(TITLE, cv::Point (250,400), "3D vine reconstruction pipeline", cv::Scalar(), cvRound(dSize+1));
+    drawTextx(TITLE, cv::Point (250,700), "May 2015", cv::Scalar(), cvRound(dSize));
     for(int i=0; i<25; i++)
         UI().showOneImage(TITLE, "A");
     UI().showOneImage(TITLE, "Z");
 
     TITLE.setTo(cv::Scalar(255,255,255));
-    drawText(TITLE, cv::Point (250,400), "Match 2D vines between views", cv::Scalar(), cvRound(dSize+1));
-    drawText(TITLE, cv::Point (250,700), "Green = matches selected by minimum", cv::Scalar(), cvRound(dSize));
-    drawText(TITLE, cv::Point (250,850), "        expected loss corresponder", cv::Scalar(), cvRound(dSize));
+    drawTextx(TITLE, cv::Point (250,400), "Match 2D vines between views", cv::Scalar(), cvRound(dSize+1));
+    drawTextx(TITLE, cv::Point (250,700), "Green = matches selected by minimum", cv::Scalar(), cvRound(dSize));
+    drawTextx(TITLE, cv::Point (250,850), "        expected loss corresponder", cv::Scalar(), cvRound(dSize));
     for(int i=0; i<25; i++)
         UI().showOneImage(TITLE, "B");
 
     TITLE.setTo(cv::Scalar(255,255,255));
-    drawText(TITLE, cv::Point (250,400), "Detect 2D canes in each image", cv::Scalar(), cvRound(dSize+1));
+    drawTextx(TITLE, cv::Point (250,400), "Detect 2D canes in each image", cv::Scalar(), cvRound(dSize+1));
     //drawText(TITLE, cv::Point (250,700), "", cv::Scalar(), cvRound(dSize));
     for(int i=0; i<25; i++)
         UI().showOneImage(TITLE, "C");
 
     TITLE.setTo(cv::Scalar(255,255,255));
-    drawText(TITLE, cv::Point (250,400), "Incrementally reconstruct 3D vines", cv::Scalar(), cvRound(dSize+1));
+    drawTextx(TITLE, cv::Point (250,400), "Incrementally reconstruct 3D vines", cv::Scalar(), cvRound(dSize+1));
     //drawText(TITLE, cv::Point (250,700), "", cv::Scalar(), cvRound(dSize));
     for(int i=0; i<25; i++)
         UI().showOneImage(TITLE, "R");

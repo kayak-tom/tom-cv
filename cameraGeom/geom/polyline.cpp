@@ -2351,7 +2351,7 @@ void C2dPolyline_base<TControlPoint>::drawLine(cv::Mat& M, const cv::Scalar colo
                 cv::circle(M,
                            this->aControlPoints[i].getPoint(),
                            getCircleRad(this->aControlPoints[i], nThickness),
-                           colour,
+                           0.5*colour,
                            -1);
         }
     }
