@@ -12,6 +12,8 @@ std::vector<CTotalFlowConstraint*> g_aTotalFlowConstraints;
 
 #include "subcatchment.h"
 
+#include <logging/redirectCout.h>
+
 
 g2o::SparseOptimizer optimizer; //Make optimiser global for now (todo: singleton)
 
@@ -90,6 +92,14 @@ CCatchmentBase * setupSimCatchment() //Simple simulation with 3 subcatchment str
     return pCatchment;
 }
 
+void testLogistics()
+{
+    for(int x=0;x<10;x=(x+0.001)*1.1)
+    {
+        cout << x << '\t' << stateToEstimate(x) << '\t' << estimateToState(x) << '\t' << stateToEstimate(estimateToState(x)) << endl;
+    }
+}
+
 int main(int argc, char** argv)
 {
     //testOptimiser();
@@ -113,7 +123,7 @@ int main(int argc, char** argv)
     //Add all the nodes/edges to optimiser:
     CCatchmentBase * pCatchment = setupSimCatchment();
     //CCatchmentBase * pCatchment = setupSimTopnetCatchment();
-
+    
 
     cout << "Optimizing" << endl;
     optimizer.initializeOptimization();

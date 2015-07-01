@@ -68,7 +68,7 @@ void removeBuds(const TPolyline& polyline,
         }
     }
 
-    const int nNumChanges = polyline.numPoints() - truncatedPolyline.numPoints();
+    //const int nNumChanges = polyline.numPoints() - truncatedPolyline.numPoints();
 
 /*    if(bVerbose && nNumChanges > 0) {
         polyline.show("withBuds");
@@ -2962,8 +2962,6 @@ void CPolyline_base<TControlPoint>::subPolyline(const CRange& indexRange, TPolyl
 // Find a polyline close to this one with maxKinkAngle below dNewKinkAngle;
 template <class TControlPoint> void CPolyline_base<TControlPoint>::doubleUp()
 {
-    bool bVerbose = false;
-
     double dLength = length();
 
     const int numPointsNew = numPoints() * 2 - 1;

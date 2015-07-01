@@ -13,18 +13,18 @@ class CFlowBetweenStoresElement : public CFlowVertex
 {
     COutFlowConstraint * pOutFlowConstraint;
 public:
-    CFlowBetweenStoresElement(CStoreElement * pStoreSource, CStoreElement * pStoreDest, const CDrainageFunction * pDrainage) : CFlowVertex(pStoreSource->time()) {
+    CFlowBetweenStoresElement(CStoreElement * pStoreSource, CStoreElement * pStoreDest, const CDrainageFunction * pDrainage, const CFlowBase * pParentFlow) : CFlowVertex(pStoreSource->time(), pParentFlow) {
         pOutFlowConstraint = new COutFlowConstraint(pStoreSource, this, pDrainage);
     }
 };
 
-/* A flow out of a catchment (ET or final outflow), and the corresponding drainage function/constraint connecting it with the store it is from
+/* A flow out of a catchment (ET or fCFlowVertexinal outflow), and the corresponding drainage function/constraint connecting it with the store it is from
  */
 class CFlowSinkElement : public CFlowVertex
 {
     COutFlowConstraint * pOutFlowConstraint=0;
 public:
-    CFlowSinkElement(CStoreElement * pStoreSource, const CDrainageFunction * pDrainage) : CFlowVertex(pStoreSource->time()) {
+    CFlowSinkElement(CStoreElement * pStoreSource, const CDrainageFunction * pDrainage, const CFlowBase * pParentFlow) : CFlowVertex(pStoreSource->time(), pParentFlow) {
         if(pDrainage)
             pOutFlowConstraint = new COutFlowConstraint(pStoreSource, this, pDrainage);
         else
@@ -33,16 +33,16 @@ public:
 };
 
 //need one of these from the canopy, one from the soil. Don't own constraints (so relatively simple). Do we actually need?
-class CPETDependentETElement : public CFlowVertex
+/*class CPETDependentETElement : public CFlowVertex
 {
     //COutFlowTemperatureConstraint * pOutFlowConstraint;
 public:
-    CPETDependentETElement(const int nTime /*CStoreElement * pStoreSource, CTemperatureVertex * pPETEstimate, const CPETDependantCanopyDrainageFunction_base * pDrainage*/) : CFlowVertex(nTime) {
+    CPETDependentETElement(const int nTime, const CFlowBase * pParentFlow ) : CFlowVertex(nTime, pParentFlow) {
         //pOutFlowConstraint = new COutFlowTemperatureConstraint_TODONEW(pStoreSource, pTempEstimate, pHumidityEstimate, this, pDrainage);
 
         if(bVeryVerbose) cout << "T" << nTime << ": Added ET flow edge" << endl;
     }
-};
+};*/
 
 class CStore;
 
@@ -109,61 +109,6 @@ public:
     virtual void addFlowVertex(const int nTime);
 };
 
-/* Flow out of a store (a sink), temperature dependent. Over time.
- * 
- * 
-class CTemperatureDependentOutFlow : public CFlowBase
-{
-    CStore * pSource;
-    const CTempDependantDrainageFunction *pDrainageFunction;
-
-    // CFlowBase::apFlowElements contains the estimates of the actual flow out by ET
-    //TODO: merge these 4 vectors into one timestep struct.
-    vector<CTemperatureMeasurement *> apTemperatureElements, apHumidityElements; //Actual temperature measurements
-    vector<CTemperatureVertex *> apTemperatureEstimates, apHumidityEstimates; //Estimated temperature measurements
-public:
-    CTemperatureDependentOutFlow(const string label, CStore * pSource, CTempDependantDrainageFunction *pDrainageFunction);
-
-    virtual void addFlowVertex(const int nTime); //Called by the store (e.g. surface water), actually adds the 3ary constraint on temp,humidity,store,flowOut
-    
-    CTemperatureVertex * getTemperatureElement(const int nTime)
-    {
-        return apTemperatureEstimates[nTime];
-    }
-    CTemperatureVertex * getHumidityElement(const int nTime) //TODO Estimate vs element naming
-    {
-        return apHumidityEstimates[nTime];
-    }
-    
-    void addTemperatureMeasurement(const int nTime, const double dTemperatureMeasurement, const double dHumidityMeasurement) { 
-        / * vertex with temp estimate * /CTemperatureVertex* pTemperatureEstimateOneTimestep = new CTemperatureVertex(nTime);
-        apTemperatureEstimates.push_back(pTemperatureEstimateOneTimestep);
-        
-        const double dTemperatureSD = 0.5, dHumiditySD=0.5;
-        //MUST have a measurement for every estimate, otherwise MLE will be unconstrained (could add forward-backward constraints instead?). Each CTemperatureMeasurement constrains a temperature estimate
-        / * unary edge constraining temp estimate * / CTemperatureMeasurement * pTemperatureMeasurement = new CTemperatureMeasurement(pTemperatureEstimateOneTimestep, dTemperatureMeasurement, sqr(dTemperatureSD));
-        apTemperatureElements.push_back(pTemperatureMeasurement);
-
-        / * vertex with humidity estimate * /CTemperatureVertex* pHumidityEstimateOneTimestep = new CTemperatureVertex(nTime);
-        apHumidityEstimates.push_back(pHumidityEstimateOneTimestep);
-        / * unary edge constraining humidity estimate * / CTemperatureMeasurement * pHumidityMeasurement = new CTemperatureMeasurement(pHumidityEstimateOneTimestep, dHumidityMeasurement, sqr(dHumiditySD));
-        apHumidityElements.push_back(pHumidityMeasurement);
-    }
-
-    virtual void addHeaders(std::ostream & of) const
-    {
-        of << label << "_TempMeasured" << '\t' << label << "_TempMLE" << '\t'; //TODO: humidity
-        CFlowBase::addHeaders(of);
-    }
-    
-    / * outflow * /
-    virtual void addData(const int nTime, std::ostream & of) const
-    {
-        of << apTemperatureElements[nTime]->measurement() << '\t' << apTemperatureEstimates[nTime]->T() << '\t'; //TODO: humidity
-        CFlowBase::addData(nTime, of);
-    }    
-};*/
-
 /* Flow out of the canopy and soil, which is dependent on PET from TOPNET. Over time.
  * 
  * 
@@ -180,15 +125,13 @@ class CPETDependentETOutFlow// : public CFlowBase
 public:
     CPETDependentETOutFlow(const string label, CStore * pSoilSource, CStore * pCanopySource, CComplexPETDrainageFunction *pETFunction);
 
-    //virtual void addETFlowVertex(const int nTime); todo call only once //Called by the store (e.g. surface water), actually adds the 3ary constraint on temp,humidity,store,flowOut
-    
     CPETVertex * getPETElement(const int nTime)
     {
         return apPETEstimates[nTime];
     }
     
     void addPETEstimate(const int nTime, const double dPETEstimate) { 
-        /* vertex with PET estimate */CPETVertex* pPETEstimateOneTimestep = new CPETVertex(nTime);
+        /* vertex with PET estimate */CPETVertex* pPETEstimateOneTimestep = new CPETVertex(nTime, this);
         apPETEstimates.push_back(pPETEstimateOneTimestep);
         
         const double dPETSD = 0.01 * dPETEstimate; //very low
@@ -215,7 +158,7 @@ public:
         //CFlowBase::addData(nTime, of);
     }   
     void addETComplexFlowVertex(const int nTime);
- 
+    string label() const { return "ET" + pCanopyETFlow->label + "-" + pSoilETFlow->label; }
 };
 
 /*Represents one store over time,
@@ -256,7 +199,7 @@ public:
     }
 
     CStore(const string label) : label(label), pInitAssumption(0) {
-        CStoreElement * pFirstStoreElement = new CStoreElement(0);
+        CStoreElement * pFirstStoreElement = new CStoreElement(0, this);
         apStoreElements.push_back(pFirstStoreElement);
 
         if(bVeryVerbose) cout << "Creating first store with weak prior on initial storage" << endl;
@@ -266,7 +209,7 @@ public:
 
     //Set up the catchment *before* adding timesteps
     void addTimestep(const int nTime) { //for now, times must start from 0 and be integer steps
-        CStoreElement * pNextStoreElement = new CStoreElement(nTime+1); //Actually adds a t+1 timestep, for this time to flow into, plus the constraint on time t->t+1
+        CStoreElement * pNextStoreElement = new CStoreElement(nTime+1, this); //Actually adds a t+1 timestep, for this time to flow into, plus the constraint on time t->t+1
         apStoreElements.push_back(pNextStoreElement);
     }
 
@@ -336,7 +279,7 @@ CFlow::CFlow(const string label, CStore * pSource, CStore * pDest, CDrainageFunc
 
 void CFlow::addFlowVertex(const int nTime)
 {
-    CFlowBetweenStoresElement * pElement = new CFlowBetweenStoresElement(pSource->getStoreElement(nTime), pDest->getStoreElement(nTime+1), pDrainageFunction);
+    CFlowBetweenStoresElement * pElement = new CFlowBetweenStoresElement(pSource->getStoreElement(nTime), pDest->getStoreElement(nTime+1), pDrainageFunction, this);
     apFlowElements.push_back(pElement);
 }
 
@@ -347,7 +290,7 @@ CSinkFlow::CSinkFlow(const string label, CStore * pSource, CDrainageFunction * p
 
 void CSinkFlow::addFlowVertex(const int nTime)
 {
-    CFlowSinkElement * pElement = new CFlowSinkElement(pSource->getStoreElement(nTime), pDrainageFunction);
+    CFlowSinkElement * pElement = new CFlowSinkElement(pSource->getStoreElement(nTime), pDrainageFunction, this);
     apFlowElements.push_back(pElement);
 }
 
@@ -385,7 +328,7 @@ public:
     }
 
     void addRainfallMeasurement(const int nTime, const double dMeasurement) { //in cubic metres per timestep
-        CFlowVertex* pRainfallEstimateOneTimestep = new CFlowVertex(nTime);
+        CFlowVertex* pRainfallEstimateOneTimestep = new CFlowVertex(nTime, this);
         apFlowElements.push_back(pRainfallEstimateOneTimestep);
 
         const double dRainfallSD = 0.1*dMeasurement + 1.0/EXACT_INFO; //todo: measurement should be distributed about actual rainfall
@@ -799,5 +742,27 @@ public:
 		
 	}
 };*/
+
+string CFlowVertex::label() const 
+{ 
+    if(!pParentFlow)
+        throw "Shouldn't be asking for label if no parent flow";
+    return pParentFlow->label + std::to_string(nTimeFrom); 
+}
+
+string CPETVertex::label() const
+{
+    if(!pParent)
+        throw "Shouldn't be asking for label if no parent flow";
+    return pParent->label() + std::to_string(nTimeFrom); 
+}
+
+string CStoreElement::label() const
+{
+    if(!pParent)
+        throw "Shouldn't be asking for label if no parent flow";
+    return pParent->label + std::to_string(nTime); 
+}
+
 
 #endif

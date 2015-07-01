@@ -10,6 +10,10 @@
 
 static const bool bVeryVerbose = false;
 
+class CFlowBase;
+class CPETDependentETOutFlow;
+class CStore;
+
 /**
  * @class CFlowVertex
  * @brief A flow from a store at time nTimeFrom to nTimeFrom+1
@@ -17,10 +21,11 @@ static const bool bVeryVerbose = false;
 class CFlowVertex : public CVertex1d
 {
     const int nTimeFrom;
+    const CFlowBase * pParentFlow;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     
-    CFlowVertex(const int nTimeFrom=-1) : nTimeFrom(nTimeFrom)
+    CFlowVertex(const int nTimeFrom=-1, const CFlowBase * pParentFlow=0) : nTimeFrom(nTimeFrom), pParentFlow(pParentFlow) 
     {
         if(bVeryVerbose) cout << "T" << nTimeFrom << ": Added flow vertex to following time" << endl;
     }
@@ -28,71 +33,94 @@ public:
     double deltaV() const { return pseudoHuber(_estimate); }
     const int timeFrom() const { return nTimeFrom; }
     
+    string label() const;
+    
     virtual void oplusImpl(const double* v) 
     {
         _estimate += *v;
-        if(_estimate < -0.1)
-            throw "Flow estimate going negative";
+        if(_estimate < -10 || _estimate > 10000)
+        {
+            cout << label() << ": _estimate=" << _estimate << " warning large flow" << endl;
+            //throw "Flow estimate going negative";
+        }
     }
 
     //! sets the node to the origin (used in the multilevel stuff)
     virtual void setToOriginImpl() 
     {
-        setEstimate(0.1 /*cu m/timestep*/);
+        setEstimate(stateToEstimate(0.1) /*cu m/timestep*/);
     }    
 };
+
 
 /* A PET measurement at time t */
 class CPETVertex : public CVertex1d
 {
     const int nTimeFrom;
+    const CPETDependentETOutFlow * pParent;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     
-    CPETVertex(const int nTimeFrom=-1) : nTimeFrom(nTimeFrom)
+    CPETVertex(const int nTimeFrom=-1, const CPETDependentETOutFlow *pParent=0) : nTimeFrom(nTimeFrom), pParent(pParent)
     {
-        if(bVeryVerbose) cout << "T" << nTimeFrom << ": Added temperature estimate" << endl;
+        if(bVeryVerbose) cout << label() << ": Added temperature estimate" << endl;
     }
     
-    double T() const { return _estimate; }
+    double T() const { return  estimateToState(_estimate); }
     const int timeFrom() const { return nTimeFrom; }
+
+    string label() const;
     
     virtual void oplusImpl(const double* v)
     {
         _estimate += *v;
+        if(_estimate < -100 || _estimate > 100)
+        {
+            cout << label() << ": _estimate=" << _estimate << " warning large ET (m^3 per timestep)" << endl;
+            //throw "Flow estimate going negative";
+        }
     }
 
     //! sets the node to the origin (used in the multilevel stuff)
-    virtual void setToOriginImpl() { setEstimate(1/*cu m per timestep*/); }
+    virtual void setToOriginImpl() { setEstimate(stateToEstimate(1)/*cu m per timestep*/); }
     
 };
 
 class CStoreElement : public CVertex1d
 {
     const int nTime;
+    const CStore * pParent;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-    CStoreElement(const int nTime=-1) : nTime(nTime)
+    CStoreElement(const int nTime=-1, const CStore * pParent=0) : nTime(nTime), pParent(pParent)
     {
         
     }
+
+    string label() const;
     
     double volume() const 
     {
-        return pseudoHuber(_estimate);
+        return estimateToState(_estimate);
     }
     
     virtual void oplusImpl(const double* v) 
     {
         _estimate += *v;
+        
+        if(_estimate < -10 || _estimate > 100)
+        {
+            cout << label() << ": _estimate=" << _estimate << " warning large ET (m^3 per timestep)" << endl;
+            //throw "Flow estimate going negative";
+        }
     }
 
 
     //! sets the node to the origin (used in the multilevel stuff)
     virtual void setToOriginImpl() 
     {
-        setEstimate(1 /*cu m*/);
+        setEstimate(stateToEstimate(1) /*cu m*/);
     }
     
     
@@ -141,8 +169,8 @@ public:
 };
 
 /**
- * @class CTemperatureMeasurement
- * @brief Measurement of temperature
+ * @class CPETMeasurement
+ * @brief Measurement of PET (cu m per timestep)
  */
 class CPETMeasurement : public BaseUnaryEdge<1, double, CFlowVertex>
 {
@@ -151,24 +179,24 @@ class CPETMeasurement : public BaseUnaryEdge<1, double, CFlowVertex>
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-    CPETMeasurement(CPETVertex* pTemperatureVertex, const double dTemperatureMeasurement, const double dTemperatureVariance)
+    CPETMeasurement(CPETVertex* pPETVertex, const double dPETMeasurement, const double dPETVariance)
     {
-        _vertices[0] = pTemperatureVertex;
-        setMeasurement(dTemperatureMeasurement);
+        _vertices[0] = pPETVertex;
+        setMeasurement(dPETMeasurement);
         Base::InformationType info;
-        info(0) = 1.0/dTemperatureVariance;
+        info(0) = 1.0/dPETVariance;
         setInformation(info);
         
         optimizer.addEdge(this);
         
-        if(bVeryVerbose) cout << "T" << pTemperatureVertex->timeFrom() << ": Added temperature measurement of " << dTemperatureMeasurement << endl;
+        if(bVeryVerbose) cout << "T" << pPETVertex->timeFrom() << ": Added temperature measurement of " << dPETMeasurement << endl;
     }
 
     void computeError() {
         const CPETVertex* pThisState = CAST<const CPETVertex*>(_vertices[0]);
 
         _error(0) = (pThisState->T() - _measurement);
-        if(bVeryVerbose) cout << "Temperature error = " << _error << endl;
+        if(bVeryVerbose) cout << "PET error = " << _error << endl;
     }
     
     virtual bool read(std::istream& is)
@@ -239,13 +267,13 @@ public:
 		const double dPrior = 0.1;
 		
 		setMeasurement(dPrior);
-		setInverseMeasurement(-dPrior);
+		setInverseMeasurement(-dPrior);Temperature
 		setInformation(EXACT_INFO_1D);
 
 		optimizer.addEdge(this);
 	}CPETDependantCanopyDrainageFunction_base
 
-	void computeError() {
+	void computeError() {Temperature
 		const CFlowVertex* pThisState = CAST<const CFlowVertex*>(_vertices[0]);
 
 		if(pThisState->deltaV() < 1e-4)
@@ -544,7 +572,7 @@ class CComplexPETDrainageFunction
         //const double dTemperatureERF = boost::math::cdf(tempCDFdistn, dTemperature);
         //return dMaxDrainageRate * dVolume * dTemperatureERF;
         const double fS_c = f(dVolume);
-        const double evaporationRate = c_t * fS_c;
+        const double evaporationRate = estimateToState(c_t * fS_c, 0.0001);
         
         if(evaporationRate < 0 || evaporationRate > 1)
             throw "evaporationRate is the rate at which water can be evaporated from the canopy";

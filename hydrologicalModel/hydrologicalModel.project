@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="hydrologicalModel" InternalType="Console">
   <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
     <Plugin Name="CMakePlugin">
       <![CDATA[[{
   "name": "Debug",
@@ -21,9 +24,6 @@
   "arguments": [],
   "parentProject": ""
  }]]]>
-    </Plugin>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
   <Description/>
@@ -53,8 +53,22 @@
         <IncludePath Value="/home/tom/workspace/g2o/trunk/EXTERNAL/csparse"/>
         <IncludePath Value="ext_csparse"/>
         <IncludePath Value="/usr/include/suitesparse/"/>
+        <IncludePath Value="../tom-cv/util/Debug"/>
+        <IncludePath Value="../tom-cv/cameraGeom/Debug"/>
+        <IncludePath Value="../tom-cv/image/Debug"/>
+        <IncludePath Value="../tom-cv/logging/Debug"/>
+        <IncludePath Value="../tom-cv/params/Debug"/>
+        <IncludePath Value="../tom-cv/timing/Debug"/>
+        <IncludePath Value="../tom-cv/"/>
       </Compiler>
       <Linker Options="-v" Required="yes">
+        <LibraryPath Value="../../tom-cv/util/Debug"/>
+        <LibraryPath Value="../../tom-cv/cameraGeom/Debug"/>
+        <LibraryPath Value="../../tom-cv/image/Debug"/>
+        <LibraryPath Value="../../tom-cv/logging/Debug"/>
+        <LibraryPath Value="../../tom-cv/params/Debug"/>
+        <LibraryPath Value="../../tom-cv/timing/Debug"/>
+        <LibraryPath Value="../../tom-cv/"/>
         <Library Value="cholmod"/>
         <Library Value="g2o_core"/>
         <Library Value="g2o_solver_csparse"/>
@@ -78,6 +92,7 @@
         <Library Value="QtCore"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
+        <Library Value="logging"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
