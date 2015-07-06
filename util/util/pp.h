@@ -99,4 +99,17 @@ std::string toString(const T & t)
 
 #define ALWAYS_VERBOSE const bool bVerbose = true;
 
+template<typename TContainer>
+std::string stlContainerToString(const TContainer & container, const bool bRow)
+{
+    std::string asStr = "Size=" + toString(container.size()) + (bRow ? ' ' : '\n');
+    for(auto & x : container)
+    {
+        asStr += toString(x) + (bRow ? ' ' : '\n');
+    }
+    return asStr;
+}
+
+#define COUTCONTAINER(container, bRow) if(bVerbose) doCout(#container, stlContainerToString(container, bRow));
+
 #endif // PP_H
