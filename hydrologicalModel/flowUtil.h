@@ -24,6 +24,9 @@ inline double logisticPlusLinear(const double x, const double t=0.01)
 }
 inline double logisticPlusLinear_inv(const double q, const double t=0.01)
 {
+    if(q<=0)
+        throw "q OOB";
+        
     const double L = 4/t;
     if(q>0.5*t)
         return q-0.5*t;
@@ -31,12 +34,12 @@ inline double logisticPlusLinear_inv(const double q, const double t=0.01)
     return -log(L/q-1)/t;
 }
 
-inline double estimateToState(const double x, const double t=0.01)
+inline double estimateToState(const double x, const double t=0.1)
 {
     return logisticPlusLinear(x, t);
 }
 
-inline double stateToEstimate(const double q, const double t=0.01)
+inline double stateToEstimate(const double q, const double t=0.1)
 {
     return logisticPlusLinear_inv(q, t);
 }

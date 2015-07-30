@@ -53,22 +53,20 @@
         <IncludePath Value="/home/tom/workspace/g2o/trunk/EXTERNAL/csparse"/>
         <IncludePath Value="ext_csparse"/>
         <IncludePath Value="/usr/include/suitesparse/"/>
-        <IncludePath Value="../tom-cv/util/Debug"/>
-        <IncludePath Value="../tom-cv/cameraGeom/Debug"/>
-        <IncludePath Value="../tom-cv/image/Debug"/>
-        <IncludePath Value="../tom-cv/logging/Debug"/>
-        <IncludePath Value="../tom-cv/params/Debug"/>
-        <IncludePath Value="../tom-cv/timing/Debug"/>
-        <IncludePath Value="../tom-cv/"/>
+        <IncludePath Value="../util/"/>
+        <IncludePath Value="../cameraGeom/"/>
+        <IncludePath Value="../image/"/>
+        <IncludePath Value="../logging/"/>
+        <IncludePath Value="../params/"/>
+        <IncludePath Value="../timing/"/>
       </Compiler>
       <Linker Options="-v" Required="yes">
-        <LibraryPath Value="../../tom-cv/util/Debug"/>
-        <LibraryPath Value="../../tom-cv/cameraGeom/Debug"/>
-        <LibraryPath Value="../../tom-cv/image/Debug"/>
-        <LibraryPath Value="../../tom-cv/logging/Debug"/>
-        <LibraryPath Value="../../tom-cv/params/Debug"/>
-        <LibraryPath Value="../../tom-cv/timing/Debug"/>
-        <LibraryPath Value="../../tom-cv/"/>
+        <LibraryPath Value="../util/Debug"/>
+        <LibraryPath Value="../cameraGeom/Debug"/>
+        <LibraryPath Value="../image/Debug"/>
+        <LibraryPath Value="../logging/Debug"/>
+        <LibraryPath Value="../params/Debug"/>
+        <LibraryPath Value="../timing/Debug"/>
         <Library Value="cholmod"/>
         <Library Value="g2o_core"/>
         <Library Value="g2o_solver_csparse"/>
@@ -93,6 +91,8 @@
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="logging"/>
+        <Library Value="boost_system"/>
+        <Library Value="boost_filesystem"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -133,8 +133,20 @@
         <IncludePath Value="/home/hilandtom/workspace/g2o/trunk/EXTERNAL/csparse"/>
         <IncludePath Value="ext_csparse"/>
         <IncludePath Value="/usr/include/suitesparse/"/>
+        <IncludePath Value="../util/"/>
+        <IncludePath Value="../cameraGeom/"/>
+        <IncludePath Value="../image/"/>
+        <IncludePath Value="../logging/"/>
+        <IncludePath Value="../params/"/>
+        <IncludePath Value="../timing/"/>
       </Compiler>
       <Linker Options="-v" Required="yes">
+        <LibraryPath Value="../util/Release"/>
+        <LibraryPath Value="../cameraGeom/Release"/>
+        <LibraryPath Value="../image/Release"/>
+        <LibraryPath Value="../logging/Release"/>
+        <LibraryPath Value="../params/Release"/>
+        <LibraryPath Value="../timing/Release"/>
         <Library Value="cholmod"/>
         <Library Value="g2o_core"/>
         <Library Value="g2o_solver_csparse"/>
@@ -158,6 +170,9 @@
         <Library Value="QtCore"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
+        <Library Value="logging"/>
+        <Library Value="boost_system"/>
+        <Library Value="boost_filesystem"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>

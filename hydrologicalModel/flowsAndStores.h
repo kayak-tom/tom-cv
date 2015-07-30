@@ -555,35 +555,50 @@ public:
     }    
 };*/
 
-class CComplexPETDrainageFunction
+class CCanopyStoreElement : public CStoreElement
 {
     const double C_c_m3, c_t; //Canopy parameters
-    const double theta_pa_m3; //Soil parameter
-    
-    double f(const double S_c) const
+public:
+    CCanopyStoreElement(const int nTime=-1, const CCanopyStore * pParent=0) : CStoreElement(nTime, pParent)
     {
-        double dFrac = S_c/C_c_m3;
-        return dFrac*(2-dFrac);
+        
     }
     
-    virtual double canopyET(const double dVolume, const double epot) const 
+    const CCanopyStore * getParent() const { return dynamic_cast<const CCanopyStore *>(pParent); }
+    
+    double f(const double S_c) const //Measures how full the canopy store is. At each timestep
     {
-        //const boost::math::normal_distribution<double> tempCDFdistn(20, 5);
-        //const double dTemperatureERF = boost::math::cdf(tempCDFdistn, dTemperature);
-        //return dMaxDrainageRate * dVolume * dTemperatureERF;
-        const double fS_c = f(dVolume);
-        const double evaporationRate = estimateToState(c_t * fS_c, 0.0001);
+        double dFrac = S_c/C_c_m3;
+        const double dFrac = dFrac*(2-dFrac);
+        if(dFrac < 0 || dFrac > 1)
+            throw "";
+        return dFrac;
+    }
+    
+    
+};
+
+class CComplexPETDrainageFunction
+{
+    const double theta_pa_m3; //Soil parameter
+    
+    
+    virtual double canopyET(const CCanopyStoreElement * pCanopyStoreEl, const double epot) const 
+    {
+        const double dVolume /* canopy store volume */ =
+        const double fS_c = estimateToState(f(dVolume), 0.0001);
+        const double evaporationRate = /*estimateToState*/(c_t * fS_c);
         
         if(evaporationRate < 0 || evaporationRate > 1)
-            throw "evaporationRate is the rate at which water can be evaporated from the canopy";
+            cout << "Warning: evaporationRate is the rate at which water can be evaporated from the canopy: looks far too high (but will be clipped to volume). evaporationRate=" << evaporationRate << endl;
         const double e_c = epot * evaporationRate;
         if(e_c > dVolume)
-            throw "Error: e_c greater than canopy store volume (I don't see how the equations prevent this from happening? Maybe just needs a min(.))";
+            cout << "Warning: e_c greater than canopy store volume (I don't see how the equations prevent this from happening? Maybe just needs a min(.)) e_c=" << e_c << " dVolume=" << dVolume << endl;
             
         if(e_c<0)
             throw "e_c is negative";
         
-        return std::min<double>(dVolume, e_c);
+        return std::min<double>(dVolume, e_c); //TODO soft min
     }
 
     /**

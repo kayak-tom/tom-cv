@@ -66,7 +66,7 @@ void testOptimiser()
 CCatchmentBase * setupSimCatchment() //Simple simulation with 3 subcatchment structure, 1000 timesteps, temperature 15 for 500 then 30 for 500.
 {
     
-    double C_c_m3 = 100; double c_t = 0.01; //parameters for ET from canopy
+    double C_c_m3 = 100; double c_t = 0.0001; //parameters for ET from canopy
     double theta_pa_m3 = 10;
     
     const std::vector<CSubcatchmentParams> aSubcatchmentsParams =
@@ -94,7 +94,7 @@ CCatchmentBase * setupSimCatchment() //Simple simulation with 3 subcatchment str
 
 void testLogistics()
 {
-    for(int x=0;x<10;x=(x+0.001)*1.1)
+    for(double x=0.0001;x<10;x=(x+0.001)*1.1)
     {
         cout << x << '\t' << stateToEstimate(x) << '\t' << estimateToState(x) << '\t' << stateToEstimate(estimateToState(x)) << endl;
     }
@@ -102,6 +102,10 @@ void testLogistics()
 
 int main(int argc, char** argv)
 {
+    string strLogfilePath = makeNiceFolderName() + "output.log";
+    redirectCout redir(strLogfilePath.c_str(), true);
+    
+    testLogistics();
     //testOptimiser();
 
     //typedef BlockSolver< BlockSolverTraits<-1, -1> >  HydroBlockSolver;

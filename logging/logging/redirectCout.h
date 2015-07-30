@@ -12,7 +12,7 @@ class redirectCout
 
     //char * szSaveLoc;
 public:
-    redirectCout(const char * szArgv, bool bSpawnGedit, std::ostream & cout_or_cerr = std::cout);
+    redirectCout(const char * szLogfilePath, bool bSpawnGedit, std::ostream & cout_or_cerr = std::cout);
     ~redirectCout();
     
     int numBytesPrinted() const;

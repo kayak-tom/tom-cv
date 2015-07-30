@@ -52,6 +52,8 @@ inline bool UNINIT(const void * p) //heuristic indicating pointer that's been ov
 #include <signal.h>
 #include <string> //use strings in exception handling
 #include <stdlib.h>
+#include <stdexcept>
+#include <string.h>
 
 //Actually breakInCpp is useful in Windows as well #ifndef _WIN32
 #define BREAK_IN_CPP
