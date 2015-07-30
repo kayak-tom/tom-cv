@@ -26,9 +26,14 @@ inline double crossProd<C3dWorldPoint>(const C3dWorldPoint & v1, const C3dWorldP
 }
 
 template<>
-inline double crossProd<C2dImagePointPx>(const C2dImagePointPx & v1, const C2dImagePointPx & v2)
+inline double crossProd<TEigen2dPoint>(const TEigen2dPoint & v1, const TEigen2dPoint & v2)
 {
     return v1.y() * v2.x() - v1.x() * v2.y(); //Match signs with 3D cross prod
+}
+template<>
+inline double crossProd<C2dImagePointPx>(const C2dImagePointPx & v1, const C2dImagePointPx & v2)
+{
+    return crossProd<TEigen2dPoint>(v1, v2);
 }
 
 template<class TVecType>
@@ -39,7 +44,6 @@ double tanAngleBetweenVectors(const TVecType & seg1vec, const TVecType & seg2vec
 
     return penalisedTanAngle(dDot, dCross);
 }
-
 
 template<class TControlPoint>
 bool CPolyline_base<TControlPoint>::tooShort() const //a threshold used in a few places for getting rid of very short polylines--e.g. shorter than 1.5*thickness

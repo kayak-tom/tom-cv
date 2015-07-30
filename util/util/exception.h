@@ -53,54 +53,41 @@ inline bool UNINIT(const void * p) //heuristic indicating pointer that's been ov
 #include <string> //use strings in exception handling
 #include <stdlib.h>
 
-#ifndef _WIN32
+//Actually breakInCpp is useful in Windows as well #ifndef _WIN32
 #define BREAK_IN_CPP
-#endif
+//#endif
 
 void breakInCpp(); //Dummy function so a breakpoint can be placed in a cpp file for netbeans.
 
-class CException
+class CException : public std::runtime_error
 {
 protected:
-    const char * szError;
     
 public:
-    CException(const char * szError_in, const char * szFnName=0) : szError(szError_in)
+    CException(const std::string & errorString, const char * szFnName = 0) : std::runtime_error(std::string("ERROR: ") + (szFnName ? szFnName : "") + " " + errorString)
     {
-        if(szError)
-        {
-            std::cout << getErrorString(szFnName) << std::endl;
-            std::cerr << getErrorString(szFnName) << std::endl; //because we sometimes direct cout only to file.
+
+        std::cout << getErrorString() << std::endl;
+        std::cerr << getErrorString() << std::endl; //because we sometimes direct cout only to file.
 
 #ifdef BREAK_IN_CPP
-            breakInCpp();
+        breakInCpp();
 #endif
-#ifdef __GNUC__
-            //raise(SIGINT);
-#endif
-        }
     }
-    CException() : szError(0) {}
-    CException(const CException & ex) : szError(ex.GetErrorMessage()) {}
-    void operator=(const CException & ex)
+    CException() : std::runtime_error("") {}
+    //CException(const CException & ex) : szError(ex.GetErrorMessage()) {}
+    /*void operator=(const CException & ex)
     {
         *const_cast<char **>( &szError ) = const_cast<char *>(ex.GetErrorMessage());
-    };
+    };*/
 
-    const char * GetErrorMessage() const { return szError; };
+    const char * GetErrorMessage() const { return what(); };
     std::string getErrorString(const char * szFnName=0) const
     {
-        std::string errorMessage("ERROR: ");
-        if(szFnName)
-        {
-            errorMessage += szFnName;
-            errorMessage += " ";
-        }
-        errorMessage += szError;
-        return errorMessage;
+        return what();
     }
 
-    operator bool() const { return szError != 0; }
+    operator bool() const { return strlen(what()) > 0; }
 };
 
 #ifdef __GNUC__

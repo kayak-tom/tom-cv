@@ -27,7 +27,7 @@ prfxbuf::prfxbuf(streambuf *sb, const char * szLogfileName, bool bSpawnGedit):
         char szCommand[200];
         //Was: sprintf(szCommand, "gedit %s &", strFile.c_str()); but hangs when child isn't killed on exit
         sprintf(szCommand, "ps x | egrep 'geX?dit' > temp; if [ -s temp ]; then gedit %s; fi; rm temp &", strFile.c_str());
-        if(-1==system(szCommand)) throw "Error spawning stdout display thread";
+        if(-1==system(szCommand)) THROW("Error spawning stdout display thread");
     }
 //        ps x | egrep 'geX?dit' > temp; if [ -s temp ]; then echo 'gedit running'; fi; rm temp
 //#endif

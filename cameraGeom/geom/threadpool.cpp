@@ -5,7 +5,7 @@
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 #include <util/random.h>
 
-static const char * szEXITING = "Exiting from worker thread", * szUnknown = "Unknown exception caught from job run by threadpool";
+static const char /* szEXITING = "Exiting from worker thread",*/ * szUnknown = "Unknown exception caught from job run by threadpool";
 
 /**
  * @class CThreadpool
@@ -22,8 +22,10 @@ class CThreadpool : public CThreadpool_base
     
     bool bExiting;
     
-    const char * szErrorMessage;
-    
+    //const char * szErrorMessage;
+    CException exception;
+    bool bExitByException = false; //TODO shold this be merged with bExiting?
+
     //Return false if there's no jobs left
     bool onejobHandler()
     {
@@ -53,23 +55,30 @@ class CThreadpool : public CThreadpool_base
                     return;
             }
         }
-        catch(const CException & ex)
+        /*catch(const CException & ex)
         {
             szErrorMessage = ex.GetErrorMessage();
             if(!szErrorMessage)
                 szErrorMessage = szEXITING;
-        }
+        }*/
         catch(const std::exception & ex)
         {
-            cout << "ERROR: std::exception caught in threadpool: " << ex.what() << endl;
-            szErrorMessage = "std::exception"; 
+            if (strlen(ex.what()) == 0)
+            {
+                bExitByException = true;
+            }
+            else
+            {
+                cout << "ERROR: std::exception caught in threadpool: " << ex.what() << endl;
+                exception = CException(std::string("ERROR: std::exception caught in threadpool: ") + ex.what());
+            }
         }
         catch(...)
         {
-            szErrorMessage = szUnknown;
+            exception = CException(szUnknown);
         }
         
-        if(szErrorMessage)
+        if (exception)
         {
             boost::mutex::scoped_try_lock scopedLock(mxLockVector);
             if(scopedLock)
@@ -96,7 +105,7 @@ class CThreadpool : public CThreadpool_base
     int getActualNumThreads() const  { return (int)aThreads.size(); } 
     
 public:
-    CThreadpool(const int nNumThreads) : semaphore_workers(0), semaphore_waitForAll(0), bExiting(false), szErrorMessage(0)
+    CThreadpool(const int nNumThreads) : semaphore_workers(0), semaphore_waitForAll(0), bExiting(false)
     {
         CHECK(nNumThreads < 1, "Set at least 1 thread (1 is a special case and won't actually create any threads)");
         
@@ -138,7 +147,7 @@ public:
             TNullaryFnObj fn = CThreadpool::delay;
             addJob(fn);
         }*/
-            
+
         if(getActualNumThreads() == 0 || aJobs.size() <= 1) //special case
         {
             mainThreadFn();
@@ -155,29 +164,29 @@ public:
             {
                 mainThreadFn();
             }
-            catch(CException & ex) {
-                if(ex.GetErrorMessage())
-                    szErrorMessage = ex.GetErrorMessage();
+            catch(std::exception & ex) {
+                if(strlen(ex.what())>0)
+                    exception = CException(ex.what());
                 else
-                    szErrorMessage = szEXITING;
+                    bExitByException = true;
             }
             catch(...) {
-                szErrorMessage = szUnknown;
+                exception = CException(szUnknown);
             }
 
             for(int i=0;i<nNumThreadsToDispatch;i++)
                 semaphore_waitForAll.wait();
         }
-        
-        if(szErrorMessage)
+        if (bExitByException)
         {
-            if(szErrorMessage == szEXITING)
-            {
-                std::cout << "Exit triggered from a worker thread" << std::endl;
-                throw CException();
-            }
-            std::cerr << "ERROR thrown in worker thread: " << szErrorMessage << endl;
-            THROW("ERROR thrown in threadpool worker thread");
+            std::cout << "Exit triggered from a worker thread" << std::endl;
+            throw CException();
+        }
+        
+        if(strlen(exception.what()) > 0)
+        {
+            std::cerr << "ERROR thrown in worker thread: " << exception.what() << endl;
+            throw exception;
         }
     }
     

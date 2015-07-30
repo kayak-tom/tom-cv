@@ -34,5 +34,9 @@ void breakInCpp()
     //raise(SIGINT);
     static int dummy=0; 
     dummy++;
+
+#ifdef WIN32
+    __debugbreak();
+#endif
 }
 

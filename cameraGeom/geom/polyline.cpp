@@ -3311,5 +3311,5 @@ template double intersection<C2dPolylineWithThickness>(const C2dPolylineWithThic
                                                        const bool bSlowAndAccurate);
 
 template double tanAngleBetweenVectors<C3dWorldPoint>(const C3dWorldPoint& seg1vec, const C3dWorldPoint& seg2vec);
-template double tanAngleBetweenVectors<C2dImagePointPx>(const C2dImagePointPx& seg1vec, const C2dImagePointPx& seg2vec);
+template double tanAngleBetweenVectors<TEigen2dPoint>(const TEigen2dPoint& seg1vec, const TEigen2dPoint& seg2vec);
 

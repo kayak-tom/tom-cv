@@ -453,7 +453,7 @@ char CImageViewUI::showOneImage(const cv::Mat & im_in, const string TITLE, const
         return 0;
         
     if(isMT()) {
-        cout << "NOT displaying frame in call from thread " << boost::this_thread::get_id() << endl;
+        cout << "NOT displaying frame in call from thread " << boost::this_thread::get_id() << " TITLE=" << TITLE << endl;
         return 0;
     }
 
@@ -472,8 +472,10 @@ char CImageViewUI::showOneImage(const cv::Mat & im_in, const string TITLE, const
     else
         im = im_in;
 
-    if(fastDisplay())
-        nWait = SHORT_DISPLAY;
+    if (fastDisplay())
+    {
+        if (nWait==0) nWait = SHORT_DISPLAY; //Otherwise if we've set a wait, we still want to animate slowly or whatever.
+    }
     else if (displayMode == eSlowDisplay || displayMode == eMakeVideo)
         nWait = (nWaitMS==0) ? 1000 : nWaitMS;
 

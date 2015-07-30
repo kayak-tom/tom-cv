@@ -64,6 +64,9 @@ double signedAngleBetweenUnitVectors(const TEigen2dPoint & direction1, const TEi
 
 double safe_acos(const double dCosAngle);
 
+template<class TVecType>
+double tanAngleBetweenVectors(const TVecType & seg1vec, const TVecType & seg2vec);
+
 //Return a vector perpendicular to v, of the same magnitude
 TEigen2dPoint perpendicular(const TEigen2dPoint & v);
 

@@ -41,6 +41,7 @@ protected:
     bool includesK() const;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+    CCameraMat_base(const TCamMat & P) : P(P) {}
 
     CCameraMat_base();
     /**
@@ -157,6 +158,8 @@ public:
     CPixelCameraMat(const TEigen3dRotation & K, const CNormalisedCameraMat & P_in);
 
     CPixelCameraMat(const CPixelCameraMat & localToPixel, const TTransformMat & worldToLocal);
+    
+    CPixelCameraMat(const TCamMat & P) : CCameraMat_base(P) {}
 
     /*Converts this camera to one which can project to enlarged images (for drawing structure which is out of view)*/
     void setPxOffset(const int nRows, const int nCols);
@@ -264,6 +267,7 @@ public:
 
     CWorldCamera() : bInit(false) { }
 
+    CWorldCamera(const TCamMat & P) : CPixelCameraMat(P) {}
     //const CCameraPose & getCamPose() const;
 
     void setCamMatForAnimation(const TCamMat & Pnew);
