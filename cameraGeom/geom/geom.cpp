@@ -1655,11 +1655,18 @@ TTransformMat makeTransformMatrix(const C3dRotationQuat & q, const Eigen::Vector
     return T_extra;
 }
 
-Eigen::Matrix3d makeAxisAlignedRotationMatrix(const double dAngle, const int nAxisIdx)
+Eigen::Matrix3d makeAxisAlignedRotationMatrix(const double dAngle, const int nAxisIdx, const bool bFast)
 { //Matches quaternion "axis-angle" construction
     Eigen::Matrix3d R = Eigen::Matrix3d::Identity();
-    const double s=sin(dAngle), c=cos(dAngle);
-    
+    double s,c;
+    if(bFast)
+    {
+        s=(double)sinf(dAngle);
+        c=(double)cosf(dAngle);
+    } else {
+        s=sin(dAngle);
+        c=cos(dAngle);
+    }
     if(nAxisIdx==0)
     {
         R(1,2) = -s;

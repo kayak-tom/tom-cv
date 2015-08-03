@@ -755,7 +755,7 @@ typedef Eigen::Matrix4d TTransformMat;
 
 TTransformMat makeTransformMatrix(const Eigen::Matrix3d & R, const Eigen::Vector3d & X);
 TTransformMat makeTransformMatrix(const C3dRotationQuat & q, const Eigen::Vector3d & X);
-Eigen::Matrix3d makeAxisAlignedRotationMatrix(const double dAngle, const int nAxisIdx);
+Eigen::Matrix3d makeAxisAlignedRotationMatrix(const double dAngle, const int nAxisIdx, const bool bFast /*use the float versions (sinf/cosf) */);
 void transformMatrixToRt(const TTransformMat & T, C3dRotationQuat & q, Eigen::Vector3d & X);
 Eigen::Vector3d rotatePoint(const Eigen::Vector3d & point_in, const C3dRotationQuat & q);
 

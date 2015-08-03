@@ -23,7 +23,7 @@ double median(std::vector<double> & adNumbers)
     
     if(IS_DEBUG) CHECK(adNumbers.size()==0, "Median not defined for 0 element vec");
     const int nMax = (int)adNumbers.size() / 2;
-    std::vector<double>::iterator pMid = adNumbers.begin()+nMax;
+    std::vector<double>::iterator pMid = adNumbers.begin()+nMax+1;
     //std::nth_element(adNumbers.begin(), pMid, adNumbers.end());
     std::partial_sort(adNumbers.begin(), pMid, adNumbers.end());
     double dMedian = *(adNumbers.begin()+nMax);

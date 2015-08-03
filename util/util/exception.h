@@ -84,7 +84,7 @@ public:
     };*/
 
     const char * GetErrorMessage() const { return what(); };
-    std::string getErrorString(const char * szFnName=0) const
+    std::string getErrorString(/*const char * szFnName=0*/) const
     {
         return what();
     }
