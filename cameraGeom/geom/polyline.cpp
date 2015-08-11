@@ -1389,6 +1389,19 @@ template <class TControlPoint> double CPolyline_base<TControlPoint>::maxKinkAngl
     return dMaxKinkAngle;
 }
 
+template <class TControlPoint> double C2dPolyline_base<TControlPoint>::maxKinkAngle_signed(int& nMaxKinkAnglePos, const bool bFromBelow) const
+{
+    double dMaxKinkAngle = 0;
+    for (int i = 1; i < numPoints() - 1; i++) {
+        const double dKinkAngle = signedKinkAngleAtPoint(i);
+        if ((bFromBelow && (dKinkAngle < dMaxKinkAngle)) || (!bFromBelow && (dKinkAngle > dMaxKinkAngle))) {
+            dMaxKinkAngle = dKinkAngle;
+            nMaxKinkAnglePos = i;
+        }
+    }
+    return dMaxKinkAngle;
+}
+
 template <class TControlPoint> double CPolyline_base<TControlPoint>::maxKinkAngle() const
 {
     int nMaxKinkAnglePos = -1;
@@ -2990,6 +3003,50 @@ template <class TControlPoint> void CPolyline_base<TControlPoint>::doubleUp()
     CHECK_P(!within(dLength * 2, length(), 0.00001), length(), "Length upscale check failed");
 }
 
+template <class TControlPoint> void C2dPolyline_base<TControlPoint>::dropKinkAngle_signed(const double dNewKinkAngle, const bool bFromBelow)
+{
+    bool bVerbose = false;
+
+    for (;;) {
+        int nNewMKIndex = -1;
+        CHECK(!bFromBelow && dNewKinkAngle < 0, "Need dNewKinkAngle>0");
+        CHECK(bFromBelow && dNewKinkAngle > 0, "Need dNewKinkAngle<0");
+        for (int nIter = 0; nIter < 200; nIter++) {
+            int nMaxKinkAnglePos = -1;
+            const double dMaxKinkAngle = maxKinkAngle_signed(nMaxKinkAnglePos, bFromBelow);
+
+            const double eps = 1e-5;
+            if ((bFromBelow && (dNewKinkAngle <= dMaxKinkAngle + eps)) || (!bFromBelow && (dNewKinkAngle >= dMaxKinkAngle - eps)))
+                return;
+
+            TControlPoint& cp = aControlPoints[nMaxKinkAnglePos];
+
+            const TLineType lineAround(aControlPoints[nMaxKinkAnglePos - 1].getPoint(),
+                aControlPoints[nMaxKinkAnglePos + 1].getPoint());
+            TVecType zeroAnglePoint = lineAround.closestPoint(cp.getPoint());
+            // zeroAnglePoint can be far too close to one end for near-right angle corners. Average it with the midpoint
+            // to keep it sensible
+            zeroAnglePoint = 0.5 * (zeroAnglePoint + lineAround.midPoint()).eval(/*eval needed*/);
+
+            const double dShift = /* The 0.975 prevents steps being so small that it never converges */ 0.975 *
+                dNewKinkAngle / dMaxKinkAngle;
+            const TVecType newPoint = (1 - dShift) * zeroAnglePoint + dShift * cp.getPoint();
+
+            cp.getPoint() = newPoint;
+            
+            const double dNewMKA = maxKinkAngle_signed(nNewMKIndex, bFromBelow);
+            CHECK(((!bFromBelow && dNewMKA > dMaxKinkAngle+eps) || (bFromBelow && dNewMKA+eps < dMaxKinkAngle)) && nNewMKIndex == nMaxKinkAnglePos,
+                "Max kink angle increased (without being transferred to a different control point) " + TO_STRING(dMaxKinkAngle) + TO_STRING(dNewMKA));
+
+            // if(bVerbose) show3dPolyline<C3dPolyline>(*this, ::toString(dNewMKA) + '-' + ::toString(nNewMKIndex));
+
+            COUT2("After an iteration dropping kink angle", toString());
+        }
+
+        erase(begin() + nNewMKIndex,
+            begin() + nNewMKIndex + 1); // Should always converge to a straight line if necessary (not ideal though)
+    }
+}
 
 
 // Find a polyline close to this one with maxKinkAngle below dNewKinkAngle;
@@ -3023,7 +3080,7 @@ template <class TControlPoint> void CPolyline_base<TControlPoint>::dropKinkAngle
             cp.getPoint() = newPoint;
 
             const double dNewMKA = maxKinkAngle_int(nNewMKIndex);
-            CHECK(dNewMKA > dMaxKinkAngle && nNewMKIndex == nMaxKinkAnglePos,
+            CHECK(dNewMKA > dMaxKinkAngle + 1e-5 && nNewMKIndex == nMaxKinkAnglePos,
                   "Max kink angle increased (without being transferred to a different control point)");
 
             // if(bVerbose) show3dPolyline<C3dPolyline>(*this, ::toString(dNewMKA) + '-' + ::toString(nNewMKIndex));
@@ -3033,12 +3090,7 @@ template <class TControlPoint> void CPolyline_base<TControlPoint>::dropKinkAngle
 
         erase(begin() + nNewMKIndex,
               begin() + nNewMKIndex + 1); // Should always converge to a straight line if necessary (not ideal though)
-        // if(bVerbose) THROW("Failed to truncate polyline");
-
-        // bVerbose = true;
     }
-    // cout << "Polyline which can't be truncated: " << toString() << endl;
-    // THROW("Failed to truncate polyline");
 }
 
 template <class TControlPoint>

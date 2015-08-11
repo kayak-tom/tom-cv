@@ -70,6 +70,7 @@ cv::Rect scaleRect(const cv::Rect & rect_in, const double dScale);
 
 void imageToTSV(const std::string filename, const std::string label);
 void imageToTSV_float(const cv::Mat & M, const std::string label);
+void imageToTSV_uchar(const cv::Mat & M, const std::string label);
 
 //For finding wire pixels
 template<typename T> void nonMaxSuppression_vertical(cv::Mat & M, const int nStartRow, const int nEndRow)

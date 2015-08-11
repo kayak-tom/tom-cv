@@ -372,19 +372,31 @@ cv::Rect scaleRect(const cv::Rect & rect_in, const double dScale)
     return cv::Rect(cvRound(rect_in.x*dScale), cvRound(rect_in.y*dScale), cvRound(rect_in.width*dScale), cvRound(rect_in.height*dScale));
 }
 
-void imageToTSV_float(const cv::Mat & M, const std::string label)
+template<typename T>
+void imageToTSV_C1_int(const cv::Mat & M, const std::string label)
 {
     const std::string filename = label + ".tsv";
-    std::ofstream tsv(filename.c_str()); 
-    
-    for(int r=0;r<M.rows;r++)
+    std::ofstream tsv(filename.c_str());
+
+    for (int r = 0; r<M.rows; r++)
     {
-        for(int c=0;c<M.cols;c++)
+        for (int c = 0; c<M.cols; c++)
         {
-            tsv << M.at<float>(r,c) << '\t';
+            tsv << (double)M.at<T>(r, c) << '\t';
         }
         tsv << endl;
     }
+}
+
+
+void imageToTSV_float(const cv::Mat & M, const std::string label)
+{
+    imageToTSV_C1_int<float>(M, label);
+}
+
+void imageToTSV_uchar(const cv::Mat & M, const std::string label)
+{
+    imageToTSV_C1_int<uchar>(M, label);
 }
 
 void imageToTSV_8UC3(const cv::Mat & M, const std::string label)

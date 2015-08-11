@@ -498,6 +498,8 @@ public:
      */
     double getCurvature() const;
 
+    void dropKinkAngle_signed(const double dNewKinkAngle, const bool bFromBelow);
+
     /**
      * @brief Draw 2D polyline
      * @param M
@@ -515,12 +517,15 @@ public:
     enum ePolyTruncationJoinType { eNoJoin, eReplaceWithIntersection, eReplaceWithOneEdge };
     ePolyTruncationJoinType isBud(const int nBudSegmentEnd, int & nBudEnd, typename TPolyline_base::TVecType & interpControlPoint, const double dMinSegmentLength, const double dBudScale, const bool bVerbose) const;
 
+    double maxKinkAngle_signed(int& nMaxKinkAnglePos, const bool bFromBelow) const;
+    double signedKinkAngleAtPoint(const int nPoint) const;
+
 protected:
     //For each chain which is in total shorter than dMinLength, either deletes a point or interpolates a join as appropriate
     T2dPolyline removeShortSections_new(const double dMinLength, const bool bVerbose) const;
     T2dPolyline decideHowToTruncateShortSection(const CShortSection & shortSection, const double dMinLength, const bool bVerbose) const;
     double measureApproximationQuality(const CShortSection & shortSection, T2dPolyline & candidateApproximation, const double dMinLength, const bool bVerbose) const;
-
+    
 public:    
     //Assumes this polyline is not self-intersecting
     double polygonalArea_nonSelfIntersecting() const;

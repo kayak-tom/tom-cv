@@ -137,13 +137,18 @@ CLMFunction::eLMSuccessStatus CLevMar::computeDerivativesNumerically(const Eigen
         if(robustFunction(x_plus, resids_plus, false, nParam) == CLMFunction::eLMFail)
             return CLMFunction::eLMFail;
 
-        if (IS_DEBUG && nParam == 12) //Check param updates working properly
+        if (false && IS_DEBUG && nParam == 12) //Check param updates working properly
         {
             Eigen::VectorXd resids_temp = residual;
             robustFunction(x_plus, resids_temp, false);
+            if ((resids_temp - resids_plus).squaredNorm() > 1e-10)
+            {
+                pp("resids_temp", resids_temp, 1000);
+                pp("resids_plus", resids_plus, 1000);
+                pp("diff", resids_temp - resids_plus, 1000);
 
-            CHECK((resids_temp - resids_plus).squaredNorm() > 1e-10, "Param incremental updating failed.");
-
+                THROW("Param incremental updating failed.");
+            }
             robustFunction(x, residual, false);
         }
 

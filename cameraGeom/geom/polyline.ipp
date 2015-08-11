@@ -113,6 +113,13 @@ double CPolyline_base<TControlPoint>::kinkAngleAtPoint(const int nPoint) const
 
     return angleBetween3Points<TVecType>(aControlPoints[nPoint-1].getPoint(), aControlPoints[nPoint].getPoint(), aControlPoints[nPoint+1].getPoint());
 }
+template<class TControlPoint>
+double C2dPolyline_base<TControlPoint>::signedKinkAngleAtPoint(const int nPoint) const
+{
+    if(IS_DEBUG) CHECK_P(nPoint < 1 || nPoint > numPoints()-2, nPoint, "nPoint OOB");
+
+    return signedAngleBetweenVectors(segment(nPoint-1).startToFinish(), segment(nPoint).startToFinish());
+}
 
 template<class TControlPoint>
 void CPolyline_base<TControlPoint>::reverseDirection()
