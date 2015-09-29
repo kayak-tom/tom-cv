@@ -611,6 +611,7 @@ char CImageViewUI::showOneImage_int(const cv::Mat & image, const string TITLE, c
             } else if ('d' == key) {
                 COUT("Opening directory in Nautilus...");
                 tryStartNautilus();
+                eState = eDone; //A bit of a hack, it is useful to capture the key 'd' for DIET work
             } else if(key==-1 || ' ' == key || (key >= 'a' && key <= 'z') || (key >= '0' && key <= '9')) {
                 if(key > 0 && key != ' ') COUT2("Returning key: ", key)
                     eState = eDone; //We want to return the key

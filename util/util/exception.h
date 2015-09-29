@@ -100,7 +100,7 @@ public:
 
 #define ex_OP(z) ex_OP2(__FILE__, __LINE__, z)
 #define ex_OP2(x,y,z) ex_OP3(x, y, z)
-#define ex_OP3(x,y,z) x ":" #y ": " z
+#define ex_OP3(x,y,z) x ":" #y ": " + std::string(z)
 
 #define CHECK_PROFILING // rand(); // Define this to a non-pure function so that the callgrind profile shows up how often CHECK conditions are been hit, in case there are any which are slowing the program down.
 

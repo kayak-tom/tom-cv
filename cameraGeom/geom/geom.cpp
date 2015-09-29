@@ -1661,8 +1661,8 @@ Eigen::Matrix3d makeAxisAlignedRotationMatrix(const double dAngle, const int nAx
     double s,c;
     if(bFast)
     {
-        s=(double)sinf(dAngle);
-        c=(double)cosf(dAngle);
+        s=(double)sinf((float)dAngle);
+        c = (double)cosf((float)dAngle);
     } else {
         s=sin(dAngle);
         c=cos(dAngle);

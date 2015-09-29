@@ -36,7 +36,7 @@ void breakInCpp()
     dummy++;
 
 #ifdef WIN32
-    //__debugbreak();
+    __debugbreak();
 #endif
 }
 

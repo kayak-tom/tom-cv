@@ -137,7 +137,7 @@ CLMFunction::eLMSuccessStatus CLevMar::computeDerivativesNumerically(const Eigen
         if(robustFunction(x_plus, resids_plus, false, nParam) == CLMFunction::eLMFail)
             return CLMFunction::eLMFail;
 
-        if (false && IS_DEBUG && nParam == 12) //Check param updates working properly
+        if (IS_DEBUG && nParam == 12) //Check param updates working properly
         {
             Eigen::VectorXd resids_temp = residual;
             robustFunction(x_plus, resids_temp, false);
