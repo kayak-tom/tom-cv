@@ -39,7 +39,7 @@ inline void pp(const cv::Mat & M) {
         cout << cv::mean(M);
     }
 
-    if(M.channels() == 1)
+	if (M.channels() == 1 && M.rows>0)
     {
         double dMin,dMax;
         cv::minMaxLoc(M, &dMin, &dMax);

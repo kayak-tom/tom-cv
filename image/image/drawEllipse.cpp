@@ -1,6 +1,6 @@
 #include "drawEllipse.h"
 #include "util/convert.h"
-
+#include <opencv2/opencv.hpp>
 
 //From #include "geom/mvNormalSampler.h"
 template<class MatrixType>

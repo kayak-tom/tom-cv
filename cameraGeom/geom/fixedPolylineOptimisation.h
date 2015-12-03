@@ -154,7 +154,20 @@ public:
         int nClosestSeg = -1;
         return closestPoint_distanceSq_position(p, dClosestDistanceSq, dPosition_index, nClosestSeg);
     }
-    
+	double signedDistanceToPoint(const typename TPolyline::TVecType & p) const
+	{
+		double dClosestDistanceSq = -1, dPosition_index = -1;
+		int nClosestSeg = -1;
+		typename TPolyline::TVecType closestPoint = closestPoint_distanceSq_position(p, dClosestDistanceSq, dPosition_index, nClosestSeg);
+
+		const double dDist = sqrt(dClosestDistanceSq);
+
+		if ((closestPoint-p).dot(perpendicular(nClosestSeg)) < 0)
+			return -dDist;
+		else
+			return dDist;
+	}
+
     void unboundedSegment(const int nSeg, typename TPolyline::TLineType::TUnboundedLine & line) const
     {
         line.fromPointAndDir(aPoints[nSeg], aDirections[nSeg]);

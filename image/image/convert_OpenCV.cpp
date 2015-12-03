@@ -146,3 +146,73 @@ void markCorrespondences(const CBoWCorrespondences * pCorr, const CMask & mask, 
         cvLine(pImOut, p1, p2, col, 2);
     }
 }
+
+void fastBlur(cv::Mat & im, const double dSigma/*, const double dSigma_box*/)
+{
+	//We need 3 integer filter radii n1,n2,n3 that sum to dSigma_box
+
+	/*
+	Best approximations: Sigma, Sigma_box, mean difference between blurred and fastBlurred
+	5	12	0.0019651
+10	26	0.122756
+15	39	0.122226
+20	55	0.364318 [I don't know why this is a worse approximation]
+25	67	0.0178849
+30	79	0.00146146
+35	88	0.00202969
+y = 2.6086x
+
+  Code for testing:
+
+  void testFilters(const cv::Mat & M)
+  {
+  cv::Mat gaussian, approx1, approx2;
+  for (double dSigma = 5; dSigma <= 35; dSigma += 5)
+  {
+  ALWAYS_VERBOSE;
+  SHOW(M)
+  M.copyTo(gaussian);
+
+  blur(gaussian, dSigma);
+  SHOW(gaussian);
+
+  //    fastBlur(approx1, dSigma, false);
+  //  SHOW(approx1);
+
+  for (double dSigma_box = std::floor(1.5*dSigma); dSigma_box <= 3*dSigma; dSigma_box++)
+  {
+  M.copyTo(approx2);
+  fastBlur(approx2, dSigma, dSigma_box);
+
+  const double dDiff = cv::mean(approx2 - gaussian)[0];
+
+  SHOW2(approx2, toString(dDiff));
+
+  cout << dSigma << '\t' << dSigma_box << '\t' << dDiff << endl;
+  }
+  }
+  //SHOW(approx1 - approx2);
+  //SHOW(approx2 - gaussian);
+
+  TIME("exact", for (int i = 0; i < 100; i++) blur(gaussian, 22););
+  TIME("approx", for (int i = 0; i < 100; i++) fastBlur(gaussian, 22, true););
+
+  }
+
+	*/
+
+	const double dSigma_box = dSigma*2.6086;
+
+	const int nTotalSize = cvRound(dSigma_box);
+	const int n1 = nTotalSize / 3;
+	const int n2 = (nTotalSize - n1) / 2;
+	const int n3 = (nTotalSize - (n1+n2));
+
+	const std::vector<int> aSizes = { n1, n2, n3 };
+
+	for (const int nRad : aSizes)
+	{
+		const int nDiam = 2 * nRad + 1;
+		cv::boxFilter(im, im, im.depth(), cv::Size(nDiam, nDiam));
+	}
+}

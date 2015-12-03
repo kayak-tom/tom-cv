@@ -28,6 +28,13 @@ double nCr(double n,double r)//could be implemented efficiently...
     return factorial(n)/(factorial(r)*factorial(n-r));
 }
 
+double angleTo0_2Pi(const double dAngle)
+{
+	const double dAngle_int = floor(dAngle/(2*M_PI));
+	return dAngle - dAngle_int * 2 * M_PI;
+}
+
+
 void breakInCpp()
 {
     cout << "Break in convert.cpp" << endl;
@@ -36,7 +43,7 @@ void breakInCpp()
     dummy++;
 
 #ifdef WIN32
-    __debugbreak();
+    //__debugbreak();
 #endif
 }
 

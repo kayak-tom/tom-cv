@@ -459,4 +459,6 @@ inline double log_2(const double d) { return log_b(d,2.0); }
 
 inline double exp_b(const double d, const double b) { return pow(b, d); }
 
+double angleTo0_2Pi(const double dAngle);
+
 #define ARRAYZ(T, atName, length) ARRAY(T, atName, length); setZero(PTR(atName), length)

@@ -2370,7 +2370,7 @@ void C2dPolyline_base<TControlPoint>::drawLine(cv::Mat& M, const cv::Scalar colo
     }
 
     const bool bMasking = (M.channels() == 1);
-    if(this->numPoints() > 0 && !bMasking)
+    if(this->numPoints() > 0 && !bMasking && !bClosed)
         cv::circle(M, this->getStartPoint(), getCircleRad(this->aControlPoints[0], nThickness), 0.5 * colour);
 }
 

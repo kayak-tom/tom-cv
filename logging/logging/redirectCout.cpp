@@ -1,4 +1,5 @@
 /* Code by Tom Botterill. Documentation and license at http://www.hilandtom.com/tombotterill/code */
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "redirectCout.h"
 #include "prfxstream.h"
@@ -53,6 +54,9 @@ std::string makeNiceFolderName()
     strFolderName.append("/");
 
 #ifdef _WIN32
+/*needs to be above the header #  ifndef _CRT_SECURE_NO_WARNINGS
+#    define _CRT_SECURE_NO_WARNINGS
+#  endif*/
     /**************  rdcm: parsing "/" and ":" to underlines "_" for windows *******************/
     char* cStrFolderName =  new char[strFolderName.size()+1];
     strcpy_s(cStrFolderName, strFolderName.size()+1, strFolderName.c_str());
