@@ -212,7 +212,7 @@ private:
     optional<const double> pxToWidth_int(const C3dWorldPoint & location, const double dSizePx) const;
 
 public:
-
+	const C3dWorldPoint cameraPosition() const;
 };
 
 inline CNormalisedCameraMat operator|(const C3dRotation & q, const C3dWorldPoint & T);

@@ -114,6 +114,7 @@ public:
 #define CHECKEQUAL(x,y) { if(!zero(x-y)) { std::cout << #x "=" << x << " != " #y "=" << y << std::endl; THROW("Arguments not equal"); } }
 #define CHECKOPTIONAL(x) CHECKNOTNULL(x) //for boost::optional when we're expecting a return
 #define CHECK_MAT_INIT(M) CHECK(M.size().area() == 0, "cv::Mat " #M " is uninitialised")
+#define CHECKNORMALISED(x) CHECK_P(!zero(x.squaredNorm() - 1), x.transpose(), "x is not normalised");
 
 /*#ifdef __GNUC__
 #define CHECKOOB(n, N) { if(n<0 || n>=(typeof(n)) N) { cout <<  #n " is OOB: " #n " = " << n << ", upper bound " << #N " = " << N << endl; THROW("Index OOB");  } } 

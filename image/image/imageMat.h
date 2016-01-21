@@ -300,7 +300,7 @@ inline void blur(cv::Mat & im, const double dSigma)
 }
 inline void blur(const cv::Mat & src, cv::Mat & dest, const double dSigma)
 {
-    const int nSize = 2*(cvRound(2*(dSigma))) + 1;
+    const int nSize = std::max<int>(3, 2*(cvRound(2*(dSigma))) + 1);
     cv::GaussianBlur(src, dest, cv::Size(nSize, nSize), dSigma);
 }
 void fastBlur(cv::Mat & im, const double dSigma/* <- sigma is equivalent to the Gaussian blur sigma, const double dSigma_box*/);

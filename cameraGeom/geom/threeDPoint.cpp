@@ -821,6 +821,15 @@ void CPixelCameraMat::setPxOffset(const int nRows, const int nCols)
     COUT(P);
 }
 
+const C3dWorldPoint CPixelCameraMat::cameraPosition() const
+{
+	C2dImagePointPx middle(800,600); //shouldn't actually make a difference
+	const C3dWorldPoint camPos_1 = pxToWorld_depth(middle, 0.1);
+	const C3dWorldPoint camPos_2 = pxToWorld_depth(middle, 0.2);
+	const C3dWorldPoint camPos = camPos_1 + (camPos_1 - camPos_2);
+	return camPos;
+}
+
 std::ostream& operator<<(std::ostream& s, const CCameraMat_base & P) { return s << P.P; }
 
 C2dImagePoint::C2dImagePoint(const double x, const double y) : TEigen2dPoint(x,y) 
